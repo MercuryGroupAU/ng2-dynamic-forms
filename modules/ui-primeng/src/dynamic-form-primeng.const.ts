@@ -14,6 +14,7 @@ export const enum PrimeNGFormControlType {
     RadioGroup = 12, //"RADIO_GROUP",
     Slider = 13, //"SLIDER",
     TextArea = 14, //"TEXTAREA"
+	Disclaimer = 15 //"DISCLAIMER"
 }
 
 export const PRIME_NG_VIEW_CHILD_SELECTOR = `pAutoComplete,pCalendar,pCheckbox,pChips,pDropdown,pEditor,pInputText,

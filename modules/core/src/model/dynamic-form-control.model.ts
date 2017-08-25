@@ -55,6 +55,7 @@ export interface DynamicFormControlModelConfig {
     id?: string;
     label?: string;
     relation?: DynamicFormControlRelationGroup[];
+    step?: number;
 }
 
 export abstract class DynamicFormControlModel implements DynamicPathable {
@@ -62,12 +63,14 @@ export abstract class DynamicFormControlModel implements DynamicPathable {
     @serializable() cls: any = {};
     @serializable("disabled") _disabled: boolean;
     disabledUpdates: Subject<boolean>;
+    hiddenUpdates: Subject<boolean>;
     @serializable() errorMessages: DynamicValidatorsMap | null;
     @serializable() id: string;
     @serializable() label: string | null;
     @serializable() name: string;
     parent: DynamicPathable | null = null;
     @serializable() relation: DynamicFormControlRelationGroup[];
+    @serializable() step: number | null;
 
     abstract readonly type: string;
 
@@ -89,14 +92,24 @@ export abstract class DynamicFormControlModel implements DynamicPathable {
 
         this.disabledUpdates = new Subject<boolean>();
         this.disabledUpdates.subscribe((value: boolean) => this.disabled = value);
-    }
 
-    get disabled(): boolean {
-        return this._disabled;
+        this.hiddenUpdates = new Subject<boolean>();
+        this.hiddenUpdates.subscribe((value: boolean) => {
+            return value ?
+                this.cls.grid.container = "hidden" :
+                this.cls.grid.container = "ui-grid-row";
+        });
+
+        this.step = Utils.isNumber(config.step) ? config.step : null;
+
     }
 
     set disabled(value: boolean) {
         this._disabled = value;
+    }
+
+    get disabled(): boolean {
+        return this._disabled;
     }
 
     get hasErrorMessages(): boolean {

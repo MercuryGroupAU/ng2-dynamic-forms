@@ -16,9 +16,11 @@ import {
     MultiSelectModule,
     RadioButtonModule,
     SliderModule,
-    SpinnerModule
+    SpinnerModule,
+	InputMaskModule,
+	FieldsetModule
 } from "primeng/primeng";
-
+import { NgxDnDModule } from "@swimlane/ngx-dnd";
 @NgModule({
 
     imports: [
@@ -37,7 +39,10 @@ import {
         MultiSelectModule,
         RadioButtonModule,
         SliderModule,
-        SpinnerModule
+        SpinnerModule,
+		InputMaskModule,
+		FieldsetModule,
+		NgxDnDModule
     ],
     declarations: [
         DynamicFormPrimeNGComponent

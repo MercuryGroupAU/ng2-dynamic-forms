@@ -33,6 +33,18 @@ export interface DynamicFormControlEvent {
     model: DynamicFormControlModel;
 }
 
+export interface DocumentEvent {
+	modelId: string;
+	documentId: number;
+}
+
+export interface DropEvent {
+	type:any;
+	el:any;
+	source:any;
+	value:any;
+}
+
 export abstract class DynamicFormControlComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
 
     bindId: boolean;
@@ -51,11 +63,26 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     change: EventEmitter<DynamicFormControlEvent>;
     //filter: EventEmitter<DynamicFormControlEvent>;
     focus: EventEmitter<DynamicFormControlEvent>;
-
+	downloadFile: EventEmitter<DocumentEvent>;
+	deleteFile: EventEmitter<DocumentEvent>;
+	drop: EventEmitter<DropEvent>;
+	dragMode: boolean = false;
     private subscriptions: Subscription[] = [];
 
     abstract type: number | string | null;
 
+	onDrop(event:any) {
+		this.drop.emit({ type:event.type, el: event.el, source: event.source, value:event.value });
+	}
+	
+	onDownloadFile($event: Event | CustomEvent | DynamicFormControlEvent | any) {
+		this.downloadFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId });
+	}
+	
+	onDeleteFile($event: Event | CustomEvent | DynamicFormControlEvent | any) {
+		this.deleteFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId });
+	}
+	
     constructor(protected validationService: DynamicFormValidationService) { }
 
     ngOnChanges(changes: SimpleChanges) {
@@ -76,6 +103,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
                 }
 
                 this.subscriptions.push(this.model.disabledUpdates.subscribe(value => this.onModelDisabledUpdates(value)));
+                this.subscriptions.push(this.model.hiddenUpdates.subscribe(value => this.onModelHiddenUpdates(value)));
 
                 if (this.model instanceof DynamicFormValueControlModel) {
 
@@ -96,6 +124,9 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
         if (!Utils.isDefined(this.model) || !Utils.isDefined(this.group)) {
             throw new Error(`no [model] or [group] input set for DynamicFormControlComponent`);
         }
+		if (this.model.relation.length > 0) {
+			this.setControlRelations();
+		}
     }
 
     ngAfterViewInit(): void {
@@ -142,10 +173,15 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     protected setTemplates(): void {
 
         this.templates.forEach((template: DynamicTemplateDirective) => {
-
-            if (template.as === null && (template.modelType === this.model.type || template.modelId === this.model.id)) {
-                this.template = template;
-            }
+			if (template.modelType !== undefined || template.modelId !== undefined) {
+				if (template.as === null && (template.modelType === this.model.type || template.modelId === this.model.id)) {
+					this.template = template;
+				}
+			} else {
+				if (template.as === null) {
+					this.template = template;
+				}
+			}
         });
     }
 
@@ -163,11 +199,25 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
                 this.subscriptions.push(control.statusChanges.subscribe(() => this.updateModelDisabled(relActivation)));
             });
         }
+        let relActivationHidden = RelationUtils.findActivationRelationHidden(this.model.relation);
+        if (relActivationHidden) {
+
+            this.updateModelHidden(relActivationHidden);
+
+            RelationUtils.getRelatedFormControls(this.model, this.group).forEach(control => {
+
+                this.subscriptions.push(control.valueChanges.subscribe(() => this.updateModelHidden(relActivationHidden)));
+                this.subscriptions.push(control.statusChanges.subscribe(() => this.updateModelHidden(relActivationHidden)));
+            });
+        }
     }
 
     updateModelDisabled(relation: DynamicFormControlRelationGroup): void {
 
         this.model.disabledUpdates.next(RelationUtils.isFormControlToBeDisabled(relation, this.group));
+    }
+    updateModelHidden(relation: DynamicFormControlRelationGroup): void {
+        this.model.hiddenUpdates.next(RelationUtils.isFormControlToBeHidden(relation, this.group));
     }
 
     unsubscribe(): void {
@@ -199,6 +249,10 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 
     onModelDisabledUpdates(value: boolean): void {
         value ? this.control.disable() : this.control.enable();
+    }
+
+    onModelHiddenUpdates(value: boolean): void {
+        value ? this.model.cls.grid.container = "hidden" : this.model.cls.grid.container = "ui-grid-row";
     }
 
     onValueChange($event: Event | DynamicFormControlEvent | any): void {

@@ -4,7 +4,7 @@ export const DYNAMIC_TEMPLATE_DIRECTIVE_ALIGN_START = "START";
 export const DYNAMIC_TEMPLATE_DIRECTIVE_ALIGN_END = "END";
 
 @Directive({
-    selector: "ng-template[modelId],ng-template[modelType]"
+    selector: "ng-template[modelId],ng-template[modelType],ng-template"
 })
 export class DynamicTemplateDirective {
 

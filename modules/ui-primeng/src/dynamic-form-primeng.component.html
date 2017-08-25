@@ -6,7 +6,7 @@
                  [ngTemplateOutletContext]="model"></ng-template>
 
 
-    <fieldset *ngIf="type === 12" role="radiogroup"
+    <!--<fieldset *ngIf="type === 12" role="radiogroup"
               [attr.tabindex]="model.tabIndex"
               [dynamicId]="bindId && model.id"
               [name]="model.name"
@@ -23,29 +23,38 @@
                                [name]="model.name"
                                [value]="option.value"></p-radioButton>
             </div>
-            <!--
-            <div [ngClass]="model.cls.grid.label">
-
-                <label [attr.for]="model.id" [innerHTML]="option.label" [ngClass]="model.cls.element.label"></label>
-
-            </div>
-            -->
         </div>
+    </fieldset>-->
 
-    </fieldset>
+    <div [ngClass]="model.cls.grid.container">
 
-
-    <div *ngIf="type !== 12" [ngClass]="model.cls.grid.container">
-
-        <div *ngIf="model.label && type !== 4" [ngClass]="model.cls.grid.label">
+        <div *ngIf="model.label && type !== 4 && type !== 15" [ngClass]="model.cls.grid.label">
 
             <label [attr.for]="model.id" [innerHTML]="model.label" [ngClass]="model.cls.element.label"></label>
-
+			
         </div>
 
-
         <div [ngClass]="model.cls.grid.control" [ngSwitch]="type">
+			<fieldset *ngIf="type === 12" role="radiogroup"
+              [attr.tabindex]="model.tabIndex"
+              [dynamicId]="bindId && model.id"
+              [name]="model.name"
+              (change)="onValueChange($event)">
 
+				<legend *ngIf="model.legend" [innerHTML]="model.legend"></legend>
+
+				<div *ngFor="let option of model.options$ | async" [ngClass]="model.cls.grid.container">
+
+					<div [ngClass]="model.cls.grid.control">
+
+						<p-radioButton [formControlName]="model.id"
+									   [label]="option.label"
+									   [name]="model.name"
+									   [value]="option.value"></p-radioButton>
+					</div>
+				</div>
+			</fieldset>
+		
             <div *ngSwitchCase="1"
                  [dynamicId]="bindId && model.id"
                  [formArrayName]="model.id"
@@ -53,25 +62,28 @@
 
                 <div *ngFor="let groupModel of model.groups; let idx = index" role="group"
                      [formGroupName]="idx" [ngClass]="[model.cls.element.group, model.cls.grid.group]">
+					 
+					<dynamic-form-primeng-control *ngFor="let item of groupModel.group"
+												  [bindId]="false"
+												  [context]="groupModel"
+												  [group]="control.at(idx)"
+												  [hasErrorMessaging]="item.hasErrorMessages"
+												  [model]="item"
+												  [nestedTemplates]="templates"
+												  [ngClass]="[item.cls.element.host, item.cls.grid.host]"
+												  (blur)="onFocusChange($event)"
+												  (change)="onValueChange($event)"
+												  (focus)="onFocusChange($event)"></dynamic-form-primeng-control>
 
-                    <dynamic-form-primeng-control *ngFor="let item of groupModel.group"
-                                                  [bindId]="false"
-                                                  [context]="groupModel"
-                                                  [group]="control.at(idx)"
-                                                  [hasErrorMessaging]="item.hasErrorMessages"
-                                                  [model]="item"
-                                                  [nestedTemplates]="templates"
-                                                  [ngClass]="[item.cls.element.host, item.cls.grid.host]"
-                                                  (blur)="onFocusChange($event)"
-                                                  (change)="onValueChange($event)"
-                                                  (focus)="onFocusChange($event)"></dynamic-form-primeng-control>
-
-                    <ng-container *ngTemplateOutlet="template?.templateRef; context: groupModel"></ng-container>
-
+					<ng-container *ngTemplateOutlet="template?.templateRef; context: groupModel"></ng-container>
+					
                 </div>
 
             </div>
 
+			<p-fieldset *ngSwitchCase="15" #pDisclaimer legend="{{model.label}}" [toggleable]="true">
+				{{model.content}}
+			</p-fieldset>
 
             <p-autoComplete *ngSwitchCase="2" #pAutoComplete
                             [dynamicId]="bindId && model.id"
@@ -135,6 +147,7 @@
                       (onTextChange)="onValueChange($event)"></p-editor>
 
 
+			<!-- group -->
             <fieldset *ngSwitchCase="8"
                       [dynamicId]="bindId && model.id"
                       [formGroupName]="model.id"
@@ -142,8 +155,9 @@
                       [ngClass]="model.cls.element.control">
 
                 <legend *ngIf="model.legend" [innerHTML]="model.legend"></legend>
-
-                <dynamic-form-primeng-control *ngFor="let controlModel of model.group"
+				<ngx-dnd-container [model]="model.group" *ngIf="dragMode && model.type != 'CHECKBOX_GROUP'" (drop)="onDrop($event)" dropZone="internal-target">
+					<ng-template let-controlModel="model">
+						<dynamic-form-primeng-control
                                               [group]="control"
                                               [hasErrorMessaging]="controlModel.hasErrorMessages"
                                               [model]="controlModel"
@@ -151,12 +165,27 @@
                                               [ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
                                               (blur)="onFocusChange($event)"
                                               (change)="onValueChange($event)"
-                                              (focus)="onFocusChange($event)"></dynamic-form-primeng-control>
+                                              (focus)="onFocusChange($event)">
+					    </dynamic-form-primeng-control>
+				 	</ng-template>
+				</ngx-dnd-container>
+				<div *ngIf="!dragMode || model.type === 'CHECKBOX_GROUP'">
+					<dynamic-form-primeng-control *ngFor="let controlModel of model.group"
+												  [group]="control"
+												  [hasErrorMessaging]="controlModel.hasErrorMessages"
+												  [model]="controlModel"
+												  [nestedTemplates]="templates"
+												  [ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
+												  (blur)="onFocusChange($event)"
+												  (change)="onValueChange($event)"
+												  (focus)="onFocusChange($event)">
+					</dynamic-form-primeng-control>
+				</div>
             </fieldset>
 
 
             <ng-container *ngSwitchCase="9">
-
+				<div *ngIf="!model.mask">
                 <input pInputText #pInputText
                        [attr.accept]="model.accept"
                        [attr.autoComplete]="model.autoComplete"
@@ -181,8 +210,21 @@
                        [type]="model.inputType"
                        (blur)="onFocusChange($event)"
                        (change)="onValueChange($event)"
-                       (focus)="onFocusChange($event)"/>
+                       (focus)="onFocusChange($event)"
+					   *ngIf="model.documentId === null"/>
 
+					 <div *ngIf="model.inputType === 'file' && model.documentId !== null">
+						<a href="#" (click)="onDownloadFile($event); false">{{model.documentName}}</a>
+						<button (click)="onDeleteFile($event)">remove</button>
+					</div>
+				</div>
+				<p-inputMask *ngIf="model.mask" #pInputMask
+							 [formControlName]="model.id" 
+							 mask="{{model.mask}}" 
+							 [dynamicId]="bindId && model.id"
+							 [tabindex]="model.tabIndex"
+							 (onChange)="onValueChange($event)"></p-inputMask>
+				
                 <datalist *ngIf="model.list" [id]="model.listId">
 
                     <option *ngFor="let option of model.list" [value]="option">
@@ -258,7 +300,7 @@
 
         </ul>
 
-    </div>
+    </div> 
 
 
     <ng-template *ngIf="type !== 1 && template?.align === 'END'"

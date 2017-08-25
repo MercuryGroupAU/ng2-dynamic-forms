@@ -33,6 +33,8 @@ export interface DynamicInputModelConfig extends DynamicInputControlModelConfig<
     multiple?: boolean;
     pattern?: string;
     step?: number;
+    documentId?: number;
+    documentName?: string;
 }
 
 export class DynamicInputModel extends DynamicInputControlModel<string | number | Date | string[]> {
@@ -47,6 +49,8 @@ export class DynamicInputModel extends DynamicInputControlModel<string | number 
     @serializable() multiple: boolean | null;
     @serializable() pattern: string | null;
     @serializable() step: number | null;
+    @serializable() documentId: number | null;
+    @serializable() documentName: string | null;
 
     private listId: string | null = null;
 
@@ -65,7 +69,8 @@ export class DynamicInputModel extends DynamicInputControlModel<string | number 
         this.multiple = Utils.isBoolean(config.multiple) ? config.multiple : null;
         this.pattern = config.pattern || null;
         this.step = Utils.isNumber(config.step) ? config.step : null;
-
+        this.documentId = Utils.isNumber(config.documentId) ? config.documentId : null;
+        this.documentName = config.documentName || null;
         if (this.list) {
             this.listId = `${this.id}List`;
         }

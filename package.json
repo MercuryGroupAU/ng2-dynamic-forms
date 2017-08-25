@@ -57,6 +57,7 @@
     "@progress/kendo-angular-upload": "^1.1.1",
     "@progress/kendo-date-math": "^1.0.3",
     "@progress/kendo-theme-default": "^2.38.2",
+    "@swimlane/ngx-dnd": "^3.0.0",
     "@telerik/kendo-intl": "^1.2.0",
     "angular2-text-mask": "^8.0.2",
     "bootstrap": "^3.3.7",

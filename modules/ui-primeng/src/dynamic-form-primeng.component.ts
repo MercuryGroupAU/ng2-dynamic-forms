@@ -27,6 +27,8 @@ import {
     DynamicFormControlModel,
     DynamicFormArrayGroupModel,
     DynamicFormControlEvent,
+	DocumentEvent,
+	DropEvent,
     DynamicTemplateDirective,
     DynamicInputModel,
     DynamicSelectModel,
@@ -43,6 +45,7 @@ import {
     DYNAMIC_FORM_CONTROL_TYPE_SWITCH,
     DYNAMIC_FORM_CONTROL_TYPE_TEXTAREA,
     DYNAMIC_FORM_CONTROL_TYPE_TIMEPICKER,
+	DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER,
     Utils
 } from "@ng2-dynamic-forms/core";
 import {
@@ -70,11 +73,14 @@ export class DynamicFormPrimeNGComponent extends DynamicFormControlComponent imp
     @Input() hasErrorMessaging: boolean = false;
     @Input() model: DynamicFormControlModel;
     @Input() nestedTemplates: QueryList<DynamicTemplateDirective>;
-
+	@Input() dragMode:boolean = false;
     @Output() blur: EventEmitter<DynamicFormControlEvent> = new EventEmitter<DynamicFormControlEvent>();
     @Output() change: EventEmitter<DynamicFormControlEvent> = new EventEmitter<DynamicFormControlEvent>();
     @Output() focus: EventEmitter<DynamicFormControlEvent> = new EventEmitter<DynamicFormControlEvent>();
-
+	@Output() downloadFile: EventEmitter<DocumentEvent> = new EventEmitter<DocumentEvent>();
+	@Output() deleteFile: EventEmitter<DocumentEvent> = new EventEmitter<DocumentEvent>();
+	@Output() drop: EventEmitter<DropEvent> = new EventEmitter<DropEvent>();
+	
     @ContentChildren(DynamicTemplateDirective) contentTemplates: QueryList<DynamicTemplateDirective>;
 
     @ViewChild(PRIME_NG_VIEW_CHILD_SELECTOR) pViewChild: PrimeNGFormControlComponent | undefined;
@@ -173,6 +179,9 @@ export class DynamicFormPrimeNGComponent extends DynamicFormControlComponent imp
             case DYNAMIC_FORM_CONTROL_TYPE_TEXTAREA:
                 return PrimeNGFormControlType.TextArea;
 
+			case DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER:
+				return PrimeNGFormControlType.Disclaimer;
+				
             default:
                 return null;
         }
