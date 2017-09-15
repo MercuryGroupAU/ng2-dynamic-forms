@@ -1,0 +1,19 @@
+<link rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+      integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+      crossorigin="anonymous"/>
+
+<div class="overflow-hidden content-margin container-fluid" style="width: 50%;">
+
+    <form class="form-horizontal" [formGroup]="formGroup">
+
+        <dynamic-ng-bootstrap-form [group]="formGroup"
+                                   [model]="formModel"></dynamic-ng-bootstrap-form>
+
+    </form>
+
+    <!--button (click)="test()" type="button">Test</button-->
+
+    <pre>{{formGroup.value | json}}</pre>
+
+</div>

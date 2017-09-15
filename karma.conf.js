@@ -52,6 +52,8 @@ module.exports = function (config) {
             "node_modules/zone.js/dist/async-test.js",
             "node_modules/zone.js/dist/fake-async-test.js",
 
+            {pattern: "systemjs-angular-loader.js", included: false, watched: false},
+
             {pattern: "node_modules/rxjs/**/*.js", included: false, watched: false},
             {pattern: "node_modules/rxjs/**/*.js.map", included: false, watched: false},
 
@@ -73,8 +75,8 @@ module.exports = function (config) {
 
             {pattern: "node_modules/tslib/**/*.js", included: false, watched: false},
 
-            {pattern: "dist/@ng2-dynamic-forms/**/*.js", included: false, watched: false},
-            {pattern: "dist/@ng2-dynamic-forms/**/*.js.map", included: false, watched: false},
+            {pattern: "dist/@ng-dynamic-forms/**/*.js", included: false, watched: false},
+            {pattern: "dist/@ng-dynamic-forms/**/*.js.map", included: false, watched: false},
 
             {pattern: "test/**/*.*", included: false, watched: true},
 

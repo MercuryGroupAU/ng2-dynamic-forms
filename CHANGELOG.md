@@ -1,3 +1,112 @@
+# 1.4.31
+
+### **Announcement** 
+
+:bangbang:**@ng2-dynamic-forms has been renamed to @ng-dynamic-forms**:bangbang:
+***
+**Please update your dependencies**:
+```
+npm uninstall @ng2-dynamic-forms/core @ng2-dynamic-forms/ui-<package_name> -S
+npm install @ng-dynamic-forms/core @ng-dynamic-forms/ui-<package_name> -S
+```
+***
+
+
+# 1.4.30
+
+### **Features** 
+
+* Minor template improvements:
+    * full support for grid classes in Basic, Material and Kendo
+    * class `k-required` is now automatically added to error messages in Kendo for color styling
+    * `<ng-content>` has been removed as it has little benefit and never been officially documented 
+* Library code now passes `noUnusedParameters` and `strictNullChecks` TypeScript transpiler checks (closes [#497](https://github.com/udos86/ng2-dynamic-forms/issues/497))
+                                                                                                   
+
+# 1.4.29
+
+### **Bugfixes** 
+
+* `DynamicValidationService` now correctly resolves alternate validator notation
+
+
+# 1.4.28
+
+### **Features** 
+
+* `options` property added to `ClsConfig` for applying CSS classes to a single option in a radio groups
+* **brand new sample forms for Material, Kendo, ng-bootstrap and Prime NG**
+* major template improvements for Material, Kendo, ng-bootstrap and Prime NG
+* initial support for Spinner and InputMask in `ui-primeng`
+* update to ng-bootstrap `beta.4` 
+
+
+# 1.4.27
+
+### **Bugfixes** 
+
+* error messages working again on `FormGroup`s (closes [#475](https://github.com/udos86/ng2-dynamic-forms/issues/475))
+
+
+# 1.4.26
+
+### **Features** 
+
+* **support for Material beta.10** (closes [#479](https://github.com/udos86/ng2-dynamic-forms/issues/479) and [#480](https://github.com/udos86/ng2-dynamic-forms/issues/480))
+
+
+# 1.4.25
+
+### **Features** 
+
+* error messaging template improvements
+
+
+# 1.4.24
+
+### **Features** 
+
+* `indeterminated` support added for `DynamicCheckboxModel` in most UI templates
+* update to NG Bootstrap beta.1
+
+
+# 1.4.23
+
+### **Non-Breaking Changes** 
+
+* **new `DynamicFormControlComponent` selectors have been added** 
+    * word order has been changed, e.g. `<dynamic-form-bootstrap-control>` becomes `<dynamic-bootstrap-form-control>`
+    * old selectors will still work but should be considered deprecated
+    * consult **README.md** of UI packages for usage
+
+### **Features** 
+
+* **Introducing the all new `DynamicFormComponent`**
+    * available for all UI packages, e.g `<dynamic-bootstrap-form>`
+    * makes form markup even more straightforward
+    * is now preferred over manually adding `DynamicFormControlComponents` via `*ngFor`  
+    * consult updated [**sample code**](https://github.com/udos86/ng2-dynamic-forms/tree/master/example), [**README.md**](https://github.com/udos86/ng2-dynamic-forms/blob/master/README.md) and [**API docs**](http://ng2-dynamic-forms.udos86.de/docs/) for proper usage
+ 
+
+# 1.4.22
+
+### **Features** 
+* **NG Bootstrap UI template improvements**: 
+    * initial support for native checkbox group via `DynamiCheckboxGroupModel`
+    * radio group is working again (closes [#457](https://github.com/udos86/ng2-dynamic-forms/issues/457))
+    * CSS class `btn-primary` is not applied automatically anymore 
+* update to NG Bootstrap alpha.30
+
+
+# 1.4.21
+
+### **Features** 
+
+* **initial support for Rating controls** in Prime NG UI package via newly introduced model `DynamicRatingModel` 
+* `filterable` support for dropdown and multiselect controls in Prime NG UI package (closes [#448](https://github.com/udos86/ng2-dynamic-forms/issues/448)) 
+* enhanced datepicker support in NG Bootstrap UI package (closes [#447](https://github.com/udos86/ng2-dynamic-forms/issues/447))
+
+
 # 1.4.20
 
 ### **Bugfixes**

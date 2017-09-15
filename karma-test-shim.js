@@ -4,8 +4,8 @@ function isSpecFile(filePath) {
     return filePath.startsWith("/base/test/") && filePath.slice(-8) === ".spec.js";
 }
 
-function toImportPromise(module) {
-    return System.import(module);
+function importModule(modulePath) {
+    return System.import(modulePath);
 }
 
 window.Error.stackTraceLimit = Infinity;
@@ -18,7 +18,7 @@ System.config({
     baseURL: "./base/",
 
     paths: {
-        "lib:": "dist/@ng2-dynamic-forms/",
+        "lib:": "dist/@ng-dynamic-forms/",
         "npm:": "node_modules/"
     },
 
@@ -26,7 +26,18 @@ System.config({
         "@angular/animations": "npm:@angular/animations/bundles/animations.umd.js",
         "@angular/animations/browser": "npm:@angular/animations/bundles/animations-browser.umd.js",
         "@angular/animations/testing": "npm:@angular/animations/bundles/animations-browser-testing.umd.js",
-        "@angular/cdk": "npm:@angular/cdk/bundles/cdk.umd.js",
+        "@angular/cdk/a11y": "npm:@angular/cdk/bundles/cdk-a11y.umd.js",
+        "@angular/cdk/bidi": "npm:@angular/cdk/bundles/cdk-bidi.umd.js",
+        "@angular/cdk/coercion": "npm:@angular/cdk/bundles/cdk-coercion.umd.js",
+        "@angular/cdk/collections": "npm:@angular/cdk/bundles/cdk-collections.umd.js",
+        "@angular/cdk/keycodes": "npm:@angular/cdk/bundles/cdk-keycodes.umd.js",
+        "@angular/cdk/observers": "npm:@angular/cdk/bundles/cdk-observers.umd.js",
+        "@angular/cdk/overlay": "npm:@angular/cdk/bundles/cdk-overlay.umd.js",
+        "@angular/cdk/platform": "npm:@angular/cdk/bundles/cdk-platform.umd.js",
+        "@angular/cdk/portal": "npm:@angular/cdk/bundles/cdk-portal.umd.js",
+        "@angular/cdk/rxjs": "npm:@angular/cdk/bundles/cdk-rxjs.umd.js",
+        "@angular/cdk/scrolling": "npm:@angular/cdk/bundles/cdk-scrolling.umd.js",
+        "@angular/cdk/table": "npm:@angular/cdk/bundles/cdk-table.umd.js",
         "@angular/core": "npm:@angular/core/bundles/core.umd.js",
         "@angular/core/testing": "npm:@angular/core/bundles/core-testing.umd.js",
         "@angular/common": "npm:@angular/common/bundles/common.umd.js",
@@ -46,14 +57,14 @@ System.config({
         "@angular/forms": "npm:@angular/forms/bundles/forms.umd.js",
         "@angular/forms/testing": "npm:@angular/forms/bundles/forms-testing.umd.js",
         "@ng-bootstrap/ng-bootstrap": "npm:@ng-bootstrap/ng-bootstrap/bundles/ng-bootstrap.js",
-        "@ng2-dynamic-forms/core": "lib:core/bundles/core.umd.js",
-        "@ng2-dynamic-forms/ui-basic": "lib:ui-basic/bundles/ui-basic.umd.js",
-        "@ng2-dynamic-forms/ui-bootstrap": "lib:ui-bootstrap/bundles/ui-bootstrap.umd.js",
-        "@ng2-dynamic-forms/ui-foundation": "lib:ui-foundation/bundles/ui-foundation.umd.js",
-        "@ng2-dynamic-forms/ui-kendo": "lib:ui-kendo/bundles/ui-kendo.umd.js",
-        "@ng2-dynamic-forms/ui-material": "lib:ui-material/bundles/ui-material.umd.js",
-        "@ng2-dynamic-forms/ui-ng-bootstrap": "lib:ui-ng-bootstrap/bundles/ui-ng-bootstrap.umd.js",
-        "@ng2-dynamic-forms/ui-primeng": "lib:ui-primeng/bundles/ui-primeng.umd.js",
+        "@ng-dynamic-forms/core": "lib:core/bundles/core.umd.js",
+        "@ng-dynamic-forms/ui-basic": "lib:ui-basic/bundles/ui-basic.umd.js",
+        "@ng-dynamic-forms/ui-bootstrap": "lib:ui-bootstrap/bundles/ui-bootstrap.umd.js",
+        "@ng-dynamic-forms/ui-foundation": "lib:ui-foundation/bundles/ui-foundation.umd.js",
+        "@ng-dynamic-forms/ui-kendo": "lib:ui-kendo/bundles/ui-kendo.umd.js",
+        "@ng-dynamic-forms/ui-material": "lib:ui-material/bundles/ui-material.umd.js",
+        "@ng-dynamic-forms/ui-ng-bootstrap": "lib:ui-ng-bootstrap/bundles/ui-ng-bootstrap.umd.js",
+        "@ng-dynamic-forms/ui-primeng": "lib:ui-primeng/bundles/ui-primeng.umd.js",
         "@progress": "npm:@progress",
         "@progress/kendo-angular-dateinputs": "npm:@progress/kendo-angular-dateinputs/dist/npm/main.js",
         "@progress/kendo-angular-dropdowns": "npm:@progress/kendo-angular-dropdowns/dist/npm/main.js",
@@ -79,7 +90,7 @@ System.config({
     },
 
     packages: {
-        "@ng2-dynamic-forms": {
+        "@ng-dynamic-forms": {
             defaultExtension: "js"
         },
         "@progress": {
@@ -95,7 +106,12 @@ System.config({
             defaultExtension: "js"
         },
         "test": {
-            defaultExtension: "js"
+            defaultExtension: "js",
+            meta: {
+                "./*.js": {
+                    loader: "systemjs-angular-loader.js"
+                }
+            }
         },
         "text-mask-core": {
             defaultExtension: "js"
@@ -115,14 +131,12 @@ Promise.all([
 
     return ngCoreTesting.TestBed.initTestEnvironment(
         ngPlatformBrowserDynamicTesting.BrowserDynamicTestingModule,
-        ngPlatformBrowserDynamicTesting.platformBrowserDynamicTesting()
-    );
+        ngPlatformBrowserDynamicTesting.platformBrowserDynamicTesting());
 
 }).then(function () {
 
     return Promise.all(Object.keys(karma.files)
                              .filter(isSpecFile)
-                             .map(toImportPromise)
-    );
+                             .map(importModule));
 
 }).then(karma.start, karma.error);

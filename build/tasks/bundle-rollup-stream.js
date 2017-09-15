@@ -37,7 +37,7 @@ module.exports = function (entryRootPath, moduleName, globalsName, pkg, dest) {
         "@angular/platform-browser-dynamic": "ng.platformBrowserDynamic",
         "@angular/router": "ng.router",
         "@ng-bootstrap/ng-bootstrap": "@ng-bootstrap/ng-bootstrap",
-        "@ng2-dynamic-forms/core": "ng2DF.core",
+        "@ng-dynamic-forms/core": "ngDF.core",
         "@progress/kendo-angular-dateinputs": "progress/kendo-angular-dateinputs", // TODO
         "@progress/kendo-angular-dropdowns": "progress/kendo-angular-dropdowns", // TODO
         "@progress/kendo-angular-inputs": "progress/kendo-angular-inputs", // TODO
@@ -60,12 +60,12 @@ module.exports = function (entryRootPath, moduleName, globalsName, pkg, dest) {
 
         return {
 
-            entry: path.join(entryRootPath, moduleName, "index.js"),
+            input: path.join(entryRootPath, moduleName, "public_api.js"),
             format: format,
             banner: `/*!\n${pkg.name} ${pkg.version} ${dateFormat(Date.now(), "UTC:yyyy-mm-dd HH:MM")} UTC\n${license}\n*/`,
             context: "this",
             external: Object.keys(globals),
-            moduleName: `${globalsName}.${toCamelCase(moduleName)}`,
+            name: `${globalsName}.${toCamelCase(moduleName)}`,
             globals,
             plugins: minify ? [uglify({output: {comments: (node, comment) => comment.value.startsWith("!")}})] : []
         };
