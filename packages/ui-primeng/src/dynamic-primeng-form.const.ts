@@ -17,7 +17,8 @@ export const enum PrimeNGFormControlType {
     Slider = 15, //"SLIDER",
     Spinner = 16, //"SPINNER,
     TextArea = 17, //"TEXTAREA",
-	Disclaimer = 18 //"DISCLAIMER"
+	Disclaimer = 18, //"DISCLAIMER",
+	Signature = 19 //"SIGNATURE"
 }
 
 export const PRIME_NG_VIEW_CHILD_SELECTOR = `pAutoComplete,pCalendar,pCheckbox,pChips,pDropdown,pEditor,pInputMask,

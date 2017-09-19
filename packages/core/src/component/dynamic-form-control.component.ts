@@ -144,8 +144,9 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
 
     ngAfterViewInit(): void {
-
+		//console.log("ON INIT");
         this.setTemplates();
+		//console.log("AFTER SET TEMPLATES");
         this.changeDetectorRef.detectChanges();
     }
 
@@ -183,13 +184,15 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
 
     get templates(): QueryList<DynamicTemplateDirective> {
+		//console.log("GETTING INPUT TEMPLATES", this.inputTemplates);
+		//console.log("GETTING CONTENT contentTemplates", this.contentTemplates);
         return this.inputTemplates ? this.inputTemplates : this.contentTemplates;
     }
 
     protected setTemplates(): void {
-
+		//console.log("SETTING TEMPLATES", this.templates);
         this.templates.forEach((template: DynamicTemplateDirective) => {
-
+			//console.log("TEMPLATE", template);
             if (template.modelType !== undefined || template.modelId !== undefined) {
                 if (template.as === null && (template.modelType === this.model.type || template.modelId === this.model.id)) {
                     this.template = template;

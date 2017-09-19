@@ -6,4 +6,7 @@
                               [templates]="templates"
                               (blur)="onEvent($event, 0)"
                               (change)="onEvent($event, 1)"
-                              (focus)="onEvent($event, 2)"></dynamic-primeng-form-control>
+                              (focus)="onEvent($event, 2)"
+							  (downloadFile)="onFileDownloadEvent($event)"
+							  (deleteFile)="onFileDeleteEvent($event)"
+							  (drop)="onDropEvent($event)"></dynamic-primeng-form-control>

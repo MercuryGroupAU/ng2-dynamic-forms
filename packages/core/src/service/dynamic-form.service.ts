@@ -40,6 +40,8 @@ import {
     DYNAMIC_FORM_CONTROL_TYPE_TIMEPICKER,
     DynamicTimePickerModel
 } from "../model/timepicker/dynamic-timepicker.model";
+import { DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER, DynamicDisclaimerModel } from "../model/disclaimer/dynamic-disclaimer.model";
+import { DYNAMIC_FORM_CONTROL_TYPE_SIGNATURE, DynamicSignatureModel } from "../model/signature/dynamic-signature.model";
 import { Utils } from "../utils/core.utils";
 import { DynamicFormValidationService } from "./dynamic-form-validation.service";
 
@@ -391,6 +393,14 @@ export class DynamicFormService {
                 case DYNAMIC_FORM_CONTROL_TYPE_TIMEPICKER:
                     group.push(new DynamicTimePickerModel(model, model.cls));
                     break;
+					
+				case DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER:
+					group.push(new DynamicDisclaimerModel(model, model.cls));
+					break;
+				
+				case DYNAMIC_FORM_CONTROL_TYPE_SIGNATURE:
+					group.push(new DynamicSignatureModel(model, model.cls));
+					break;
 
                 default:
                     throw new Error(`unknown form control model type defined on JSON object with id "${model.id}"`);

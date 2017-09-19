@@ -8,7 +8,7 @@ import {
     Output,
     QueryList,
     SimpleChanges,
-    ViewChild
+    ViewChild, AfterViewInit
 } from "@angular/core";
 import { FormGroup } from "@angular/forms";
 import {
@@ -52,7 +52,9 @@ import {
     DYNAMIC_FORM_CONTROL_TYPE_TEXTAREA,
     DYNAMIC_FORM_CONTROL_TYPE_TIMEPICKER,
 	DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER,
-    Utils
+	DYNAMIC_FORM_CONTROL_TYPE_SIGNATURE,
+    Utils,
+	DynamicFormValueControlModel
 } from "@ng-dynamic-forms/core";
 import {
     PrimeNGFormControlType,
@@ -61,7 +63,7 @@ import {
     PRIME_NG_CHIPS_TEMPLATE_DIRECTIVES,
     PRIME_NG_DROPDOWN_LIST_TEMPLATE_DIRECTIVES
 } from "./dynamic-primeng-form.const";
-
+import { SignaturePad } from "angular2-signaturepad/signature-pad";
 export type PrimeNGFormControlComponent = AutoComplete | Calendar | Checkbox | Chips | Dropdown | Editor | InputMask |
     InputSwitch | MultiSelect | Rating | Slider | Spinner;
 
@@ -69,7 +71,7 @@ export type PrimeNGFormControlComponent = AutoComplete | Calendar | Checkbox | C
     selector: "dynamic-primeng-form-control,dynamic-form-primeng-control",
     templateUrl: "./dynamic-primeng-form-control.component.html"
 })
-export class DynamicPrimeNGFormControlComponent extends DynamicFormControlComponent implements OnChanges {
+export class DynamicPrimeNGFormControlComponent extends DynamicFormControlComponent implements OnChanges, AfterViewInit {
 
     @ContentChildren(DynamicTemplateDirective) contentTemplates: QueryList<DynamicTemplateDirective>;
     @Input("templates") inputTemplates: QueryList<DynamicTemplateDirective>;
@@ -93,6 +95,51 @@ export class DynamicPrimeNGFormControlComponent extends DynamicFormControlCompon
     suggestions: string[];
 
     type: PrimeNGFormControlType | null;
+
+	
+	
+	  @ViewChild(SignaturePad) signaturePad: SignaturePad;
+
+  public signaturePadOptions: Object = { // passed through to szimek/signature_pad constructor
+    "minWidth": 1,
+    "canvasWidth": 200,
+    "canvasHeight": 100
+  };
+  
+  ngAfterViewInit() {
+	if (this.signaturePad) {
+		this.signaturePad.set("minWidth", 1);
+		this.signaturePad.set("maxWidth", 1);
+		this.signaturePad.clear();
+		if ((this.model as DynamicFormValueControlModel<string>).value) {
+			this.signaturePad.fromDataURL((this.model as DynamicFormValueControlModel<string>).value, this.signaturePadOptions);
+		}
+	}
+	this.setTemplates();
+	this.changeDetectorRef.detectChanges();
+  }
+
+  drawComplete() {
+    // will be notified of szimek/signature_pad's onEnd event
+	//console.log("finished sign", this.signaturePad);
+    //console.log("dataUrl", this.signaturePad.toDataURL());
+	//(this.model as DynamicFormValueControlModel<string>).setValue(this.signaturePad.toDataURL());
+	this.control.setValue(this.signaturePad.toDataURL());
+  }
+
+  onResetSignature() {
+	  if (this.signaturePad) {
+		  this.signaturePad.clear();
+		  this.control.setValue(null);
+		  //(this.model as DynamicFormValueControlModel<string>).value = null;
+	  }
+  }
+  
+  // drawStart() {
+    // // will be notified of szimek/signature_pad's onBegin event
+    // console.log("begin drawing");
+  // }
+	
 
     constructor(protected changeDetectorRef: ChangeDetectorRef,
                 protected validationService: DynamicFormValidationService) {
@@ -202,6 +249,9 @@ export class DynamicPrimeNGFormControlComponent extends DynamicFormControlCompon
 				
             case DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER:
                 return PrimeNGFormControlType.Disclaimer;
+				
+			case DYNAMIC_FORM_CONTROL_TYPE_SIGNATURE:
+                return PrimeNGFormControlType.Signature;
 
             default:
                 return null;
