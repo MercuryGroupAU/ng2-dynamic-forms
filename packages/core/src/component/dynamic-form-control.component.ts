@@ -87,7 +87,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     
     onDownloadFile($event: Event | CustomEvent | DynamicFormControlEvent | any) {
 		if (this.model.constructor.name === "DynamicInputModel") {
-			this.downloadFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId, parentId: this.model.parent.id });
+			this.downloadFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId, parentId: null });
 		} else {
 			this.downloadFile.emit({ modelId: ($event as any).modelId, documentId: ($event as any).documentId, parentId: ($event as any).parentId });
 		}
@@ -95,7 +95,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     
     onDeleteFile($event: Event | CustomEvent | DynamicFormControlEvent | any) {
 		if (this.model.constructor.name === "DynamicInputModel") {
-			this.deleteFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId, parentId: this.model.parent.id });
+			this.deleteFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId, parentId: null });
 		} else {
 			this.deleteFile.emit({ modelId: ($event as any).modelId, documentId: ($event as any).documentId, parentId: ($event as any).parentId });
 		}
