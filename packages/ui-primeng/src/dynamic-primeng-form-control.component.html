@@ -39,7 +39,9 @@
 										  [ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
 										  (blur)="onFocusChange($event)"
 										  (change)="onValueChange($event)"
-										  (focus)="onFocusChange($event)">
+										  (focus)="onFocusChange($event)"
+										  (downloadFile)="onDownloadFile($event)"
+										  (deleteFile)="onDeleteFile($event)">
 			</dynamic-primeng-form-control>
 		</div>
 		<br />
@@ -196,8 +198,8 @@
 					   (blur)="onFocusChange($event)"
 					   (change)="onValueChange($event)"
 					   (focus)="onFocusChange($event)"/>
-				<div *ngIf="model.inputType === 'file' && model.documentId !== null">
-					<a href="#" (click)="onDownloadFile($event); false">{{model.documentName}}</a>
+				<div *ngIf="model.inputType === 'file' && model.documentId !== null && !dragMode">
+					<a href="#" (click)="onDownloadFile($event); false">{{model.documentName}} - {{model.documentId}}</a>
 					<button (click)="onDeleteFile($event)">remove</button>
 				</div>
 				<datalist *ngIf="model.list" [id]="model.listId">

@@ -37,6 +37,7 @@ export interface DynamicFormControlEvent {
 export interface DocumentEvent {
     modelId: string;
     documentId: number;
+	parentId: string;
 }
 
 export interface DropEvent {
@@ -85,13 +86,19 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
     
     onDownloadFile($event: Event | CustomEvent | DynamicFormControlEvent | any) {
-		console.log("event", $event);
-        this.downloadFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId });
+		if (this.model.constructor.name === "DynamicInputModel") {
+			this.downloadFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId, parentId: this.model.parent.id });
+		} else {
+			this.downloadFile.emit({ modelId: ($event as any).modelId, documentId: ($event as any).documentId, parentId: ($event as any).parentId });
+		}
     }
     
     onDeleteFile($event: Event | CustomEvent | DynamicFormControlEvent | any) {
-		console.log("event", $event);
-        this.deleteFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId });
+		if (this.model.constructor.name === "DynamicInputModel") {
+			this.deleteFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId, parentId: this.model.parent.id });
+		} else {
+			this.deleteFile.emit({ modelId: ($event as any).modelId, documentId: ($event as any).documentId, parentId: ($event as any).parentId });
+		}
     }
     
     constructor(protected changeDetectorRef: ChangeDetectorRef,
