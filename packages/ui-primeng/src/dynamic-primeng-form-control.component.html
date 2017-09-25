@@ -1,6 +1,6 @@
 <div [formGroup]="group" [ngClass]="[model.cls.element.container, model.cls.grid.container]">
 
-    <div *ngIf="type !== 4 && type !== 18 && (model.label || model.legend)" [ngClass]="model.cls.grid.label">
+    <div *ngIf="type !== 4 && (model.label || model.legend)" [ngClass]="model.cls.grid.label">
         <label *ngIf="type !== 8 || model.type === 'CHECKBOX_GROUP'" [attr.for]="model.id" [innerHTML]="model.label" [ngClass]="model.cls.element.label"></label>
 		<legend *ngIf="type === 8 && model.type !== 'CHECKBOX_GROUP'" [attr.for]="model.id" [innerHTML]="model.legend" [ngClass]="model.cls.element.label"></legend>
     </div>
@@ -295,9 +295,8 @@
                       (change)="onValueChange($event)"
                       (focus)="onFocusChange($event)"></textarea>
 			
-			<p-fieldset *ngSwitchCase="18" #pDisclaimer legend="{{model.label}}" [toggleable]="true" [ngClass]="model.cls.element.control">
-				{{model.content}}
-			</p-fieldset>		  
+			<div [innerHTML]="model.content" *ngSwitchCase="18" [ngClass]="model.cls.element.control" style="border:1px solid black">
+			</div> 
 			
 		    <div *ngSwitchCase="19" [ngClass]="model.cls.element.control">
 				<div *ngIf="!dragMode">
