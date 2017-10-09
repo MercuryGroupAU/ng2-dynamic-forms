@@ -6,16 +6,19 @@ export const DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER = "DISCLAIMER";
 
 export interface DynamicDisclaimerModelConfig extends DynamicFormControlModelConfig {
     content?: string;
+	style?: any;
 }
 
 export class DynamicDisclaimerModel extends DynamicFormControlModel {
 
     @serializable() content: string;
+	@serializable() style: any;
     @serializable() readonly type: string = DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER;
 
     constructor(config: DynamicDisclaimerModelConfig, cls?: ClsConfig) {
 
         super(config, cls);
         this.content = config.content;
+		this.style = config.style;
     }
 }

@@ -135,10 +135,11 @@ export class DynamicPrimeNGFormControlComponent extends DynamicFormControlCompon
 	  }
   }
   
-  // drawStart() {
-    // // will be notified of szimek/signature_pad's onBegin event
-    // console.log("begin drawing");
-  // }
+  getStyle() {
+	if (!this.dragMode) {
+		return [this.model.cls.element.container, this.model.cls.grid.container];
+	} else { return [];}
+  }
 	
 
     constructor(protected changeDetectorRef: ChangeDetectorRef,

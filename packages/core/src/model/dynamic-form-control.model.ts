@@ -58,6 +58,7 @@ export interface DynamicFormControlModelConfig {
     label?: string;
     relation?: DynamicFormControlRelationGroup[];
 	step?: number;
+	showLabel?: boolean;
 }
 
 export abstract class DynamicFormControlModel implements DynamicPathable {
@@ -73,6 +74,7 @@ export abstract class DynamicFormControlModel implements DynamicPathable {
     parent: DynamicPathable | null = null;
     @serializable() relation: DynamicFormControlRelationGroup[];
     @serializable() step: number | null;
+	@serializable() showLabel: boolean;
 
     abstract readonly type: string;
 
@@ -103,7 +105,7 @@ export abstract class DynamicFormControlModel implements DynamicPathable {
         });
 
         this.step = Utils.isNumber(config.step) ? config.step : null;
-
+		this.showLabel = typeof config.showLabel === "boolean" ? config.showLabel : true;
     }
 
     get disabled(): boolean {

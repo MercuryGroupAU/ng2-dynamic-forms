@@ -1,4 +1,4 @@
-import { FormGroup, FormControl } from "@angular/forms";
+import { FormGroup, FormControl, AbstractControl } from "@angular/forms";
 import { DynamicFormControlModel } from "../model/dynamic-form-control.model";
 import {
     DynamicFormControlRelation,
@@ -32,15 +32,29 @@ export class RelationUtils {
     static getRelatedFormControls(model: DynamicFormControlModel, controlGroup: FormGroup): FormControl[] {
 
         let controls: FormControl[] = [];
-
         model.relation.forEach(relGroup => relGroup.when.forEach(rel => {
 
             if (model.id === rel.id) {
                 throw new Error(`FormControl ${model.id} cannot depend on itself`);
             }
-
             let control = controlGroup.get(rel.id) as FormControl;
-
+			//Added this check for CheckBoxGroups, so we can handle events of each checkbox within the array
+			if (!control) {
+				let subgroups: AbstractControl[] = [];
+				
+				Object.keys(controlGroup.controls).forEach(c => {
+					let ac = controlGroup.get(c);
+					if (ac.constructor.name === "FormGroup") {
+						 subgroups.push(ac);
+					}
+				});
+				
+				subgroups.forEach((sg:FormGroup) => {
+					if (sg.controls[rel.id]) {
+						control = sg.get(rel.id) as FormControl;
+					}
+				});
+			}
             if (control && !controls.some(controlElement => controlElement === control)) {
                 controls.push(control);
             }
@@ -50,11 +64,25 @@ export class RelationUtils {
     }
 
     static isFormControlToBeDisabled(relGroup: DynamicFormControlRelationGroup, formGroup: FormGroup): boolean {
-
+	
         return relGroup.when.reduce((toBeDisabled: boolean, rel: DynamicFormControlRelation, index: number) => {
-
             let control = formGroup.get(rel.id);
-
+			
+			if (!control) {
+				let subgroups: AbstractControl[] = [];				
+				Object.keys(formGroup.controls).forEach(c => {
+					let ac = formGroup.get(c);
+					if (ac.constructor.name === "FormGroup") {
+						 subgroups.push(ac);
+					}
+				});
+				subgroups.forEach((sg:FormGroup) => {
+					if (sg.controls[rel.id]) {
+						control = sg.get(rel.id) as FormControl;
+					}
+				});
+			}
+			
             if (control && relGroup.action === DYNAMIC_FORM_CONTROL_ACTION_DISABLE) {
 
                 if (index > 0 && relGroup.connective === DYNAMIC_FORM_CONTROL_CONNECTIVE_AND && !toBeDisabled) {
@@ -66,6 +94,7 @@ export class RelationUtils {
                 }
 
                 if (control.value === null) { return false; }
+								
                 return (rel.value !== undefined ? rel.value.toString() : rel.value) === (control.value !== undefined ? control.value.toString() : control.value)
                     || (rel.status !== undefined ? rel.status.toString() : rel.status) === (control.status !== undefined ? control.status.toString() : control.status);
 
@@ -80,7 +109,7 @@ export class RelationUtils {
                 if (index > 0 && relGroup.connective === DYNAMIC_FORM_CONTROL_CONNECTIVE_OR && !toBeDisabled) {
                     return false;
                 }
-
+				
                 if (control.value === null) { return false; }
                 return !((rel.value !== undefined ? rel.value.toString() : rel.value) === (control.value !== undefined ? control.value.toString() : control.value)
                     || (rel.status !== undefined ? rel.status.toString() : rel.status) === (control.status !== undefined ? control.status.toString() : control.status));
@@ -92,9 +121,24 @@ export class RelationUtils {
         }, false);
     }
 	
-	    static isFormControlToBeHidden(relGroup: DynamicFormControlRelationGroup, formGroup: FormGroup): boolean {
+	static isFormControlToBeHidden(relGroup: DynamicFormControlRelationGroup, formGroup: FormGroup): boolean {
         return relGroup.when.reduce(function (toBeHidden, rel, index) {
             var control = formGroup.get(rel.id);
+			
+			if (!control) {
+				let subgroups: AbstractControl[] = [];				
+				Object.keys(formGroup.controls).forEach(c => {
+					let ac = formGroup.get(c);
+					if (ac.constructor.name === "FormGroup") {
+						 subgroups.push(ac);
+					}
+				});
+				subgroups.forEach((sg:FormGroup) => {
+					if (sg.controls[rel.id]) {
+						control = sg.get(rel.id) as FormControl;
+					}
+				});
+			}
             if (control && relGroup.action === DYNAMIC_FORM_CONTROL_ACTION_HIDE) {
                 if (index > 0 && relGroup.connective === DYNAMIC_FORM_CONTROL_CONNECTIVE_AND && !toBeHidden) {
                     return false;
@@ -102,7 +146,7 @@ export class RelationUtils {
                 if (index > 0 && relGroup.connective === DYNAMIC_FORM_CONTROL_CONNECTIVE_OR && toBeHidden) {
                     return true;
                 }
-                if (control.value === null) { return false; }
+                if (control.value === null) { return false; }			
                 return (rel.value !== undefined ? rel.value.toString() : rel.value) === (control.value !== undefined ? control.value.toString() : control.value)
                     || (rel.status !== undefined ? rel.status.toString() : rel.status) === (control.status !== undefined ? control.status.toString() : control.status);
             }
@@ -113,7 +157,7 @@ export class RelationUtils {
                 if (index > 0 && relGroup.connective === DYNAMIC_FORM_CONTROL_CONNECTIVE_OR && !toBeHidden) {
                     return false;
                 }
-                if (control.value === null) { return false; }
+                if (control.value === null) { return true; }
                 return !((rel.value !== undefined ? rel.value.toString() : rel.value) === (control.value !== undefined ? control.value.toString() : control.value)
                     || (rel.status !== undefined ? rel.status.toString() : rel.status) === (control.status !== undefined ? control.status.toString() : control.status));
             }

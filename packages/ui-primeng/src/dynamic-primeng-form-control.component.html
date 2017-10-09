@@ -1,6 +1,8 @@
-<div [formGroup]="group" [ngClass]="[model.cls.element.container, model.cls.grid.container]">
+<!-- <div [formGroup]="group" [ngClass]="[model.cls.element.container, model.cls.grid.container]"> -->
+<div [formGroup]="group" [ngClass]="getStyle()">
 
-    <div *ngIf="type !== 4 && (model.label || model.legend)" [ngClass]="model.cls.grid.label">
+    <div *ngIf="type !== 4 && (model.label || model.legend) && model.showLabel" [ngClass]="model.cls.grid.label">
+		<i *ngIf="model.required" class="fa fa-asterisk fa-1" style="color:red" aria-hidden="true"></i>
         <label *ngIf="type !== 8 || model.type === 'CHECKBOX_GROUP'" [attr.for]="model.id" [innerHTML]="model.label" [ngClass]="model.cls.element.label"></label>
 		<legend *ngIf="type === 8 && model.type !== 'CHECKBOX_GROUP'" [attr.for]="model.id" [innerHTML]="model.legend" [ngClass]="model.cls.element.label"></legend>
     </div>
@@ -132,17 +134,21 @@
                         (onBlur)="onFocusChange($event)"
                         (onFocus)="onFocusChange($event)"></p-calendar>
 
-
-            <p-checkbox *ngSwitchCase="4" #pCheckbox
+			<div *ngSwitchCase="4">
+				<p-checkbox #pCheckbox
                         binary="true"
                         [dynamicId]="bindId && model.id"
                         [formControlName]="model.id"
                         [label]="model.label"
                         [name]="model.name"
+						[required]="model.required"
                         [ngClass]="model.cls.element.control"
                         [tabindex]="model.tabIndex"
                         [value]="model.value"
                         (onChange)="onValueChange($event)"></p-checkbox>
+				<i *ngIf="model.required" class="fa fa-asterisk fa-1" style="color:red" aria-hidden="true"></i>						
+			</div>
+						
 
 
             <p-chips *ngSwitchCase="5" #pChips
@@ -295,7 +301,7 @@
                       (change)="onValueChange($event)"
                       (focus)="onFocusChange($event)"></textarea>
 			
-			<div [innerHTML]="model.content" *ngSwitchCase="18" [ngClass]="model.cls.element.control" style="border:1px solid black">
+			<div [innerHTML]="model.content" *ngSwitchCase="18" [ngClass]="model.cls.element.control" [ngStyle]="model.style">
 			</div> 
 			
 		    <div *ngSwitchCase="19" [ngClass]="model.cls.element.control">
@@ -311,7 +317,6 @@
 
     </ng-container>
 
-    
     <ul *ngIf="showErrorMessages" [ngClass]="[model.cls.element.errors, model.cls.grid.errors]">
         <li *ngFor="let message of errorMessages" class="ui-message ui-messages-error ui-corner-all">{{ message }}</li>
     </ul>
