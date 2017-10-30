@@ -205,7 +205,7 @@
 					   (change)="onValueChange($event)"
 					   (focus)="onFocusChange($event)"/>
 				<div *ngIf="model.inputType === 'file' && model.documentId !== null && !dragMode">
-					<a href="#" (click)="onDownloadFile($event); false">{{model.documentName}} - {{model.documentId}}</a>
+					<a href="#" (click)="onDownloadFile($event); false">{{model.documentName}}</a>
 					<button (click)="onDeleteFile($event)">remove</button>
 				</div>
 				<datalist *ngIf="model.list" [id]="model.listId">

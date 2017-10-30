@@ -96,9 +96,7 @@ export class DynamicPrimeNGFormControlComponent extends DynamicFormControlCompon
 
     type: PrimeNGFormControlType | null;
 
-	
-	
-	  @ViewChild(SignaturePad) signaturePad: SignaturePad;
+	@ViewChild(SignaturePad) signaturePad: SignaturePad;
 
   public signaturePadOptions: Object = { // passed through to szimek/signature_pad constructor
     "minWidth": 1,
