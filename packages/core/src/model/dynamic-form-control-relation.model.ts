@@ -21,3 +21,13 @@ export interface DynamicFormControlRelationGroup {
     connective?: string;
     when: DynamicFormControlRelation[];
 }
+
+export interface DynamicFormControlWorkflowStateRelation {
+    action: string;
+    workflowState: any;
+}
+
+export interface DynamicFormControlUserRoleRelation {
+    action: string;
+    userRole: any;
+}

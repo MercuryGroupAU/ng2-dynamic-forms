@@ -3,6 +3,8 @@ import { DynamicFormControlModel } from "../model/dynamic-form-control.model";
 import {
     DynamicFormControlRelation,
     DynamicFormControlRelationGroup,
+	DynamicFormControlWorkflowStateRelation, 
+	DynamicFormControlUserRoleRelation,
     DYNAMIC_FORM_CONTROL_ACTION_DISABLE,
     DYNAMIC_FORM_CONTROL_ACTION_ENABLE,
     DYNAMIC_FORM_CONTROL_CONNECTIVE_AND,
@@ -12,7 +14,36 @@ import {
 
 } from "../model/dynamic-form-control-relation.model";
 
+
 export class RelationUtils {
+
+	static isFormControlToBeDisabledByUserRole(userRoleRelation: DynamicFormControlUserRoleRelation): boolean {
+		if (userRoleRelation.action === DYNAMIC_FORM_CONTROL_ACTION_DISABLE)
+			return true;
+		else
+			return false;
+	}
+	
+	static isFormControlToBeDisabledByWorkflowState(workflowStateRelation: DynamicFormControlWorkflowStateRelation): boolean  {
+		if (workflowStateRelation.action === DYNAMIC_FORM_CONTROL_ACTION_DISABLE)
+			return true;
+		else
+			return false;
+	}
+	
+	static isFormControlToBeHiddenByUserRole(userRoleRelation: DynamicFormControlUserRoleRelation): boolean  {
+	if (userRoleRelation.action === DYNAMIC_FORM_CONTROL_ACTION_HIDE)
+			return true;
+		else
+			return false;
+	}
+	
+	static isFormControlToBeHiddenByWorkflowState(workflowStateRelation: DynamicFormControlWorkflowStateRelation): boolean  {
+	if (workflowStateRelation.action === DYNAMIC_FORM_CONTROL_ACTION_HIDE)
+			return true;
+		else
+			return false;
+	}
 
     static findActivationRelation(relGroups: DynamicFormControlRelationGroup[]): DynamicFormControlRelationGroup | null {
 

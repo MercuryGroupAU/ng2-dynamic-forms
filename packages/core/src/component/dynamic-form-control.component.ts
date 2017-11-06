@@ -76,6 +76,8 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     deleteFile: EventEmitter<DocumentEvent>;
     drop: EventEmitter<DropEvent>;
     dragMode: boolean = false;
+	userRole: any;
+	workflowState: any;
 
     private subscriptions: Subscription[] = [];
 
@@ -147,7 +149,24 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 		if (this.model.relation.length > 0) {
             this.setControlRelations();
         }
-
+		//check role
+		if (this.model.userRoleRelation.length > 0 && this.userRole) {
+			let urr = this.model.userRoleRelation.filter(c => c.userRole.id === this.userRole.id);
+			console.log("found role relation", urr);
+			if (urr && urr.length > 0) {
+				this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByUserRole(urr[0]));
+				this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByUserRole(urr[0]));
+			}
+		}
+		//check workflow state
+		if (this.model.workflowStateRelation.length > 0 && this.workflowState) {
+			let wsr = this.model.workflowStateRelation.filter(c => c.workflowState.id === this.workflowState.id);
+			console.log("found workflow relation", wsr);
+			if (wsr && wsr.length > 0) {
+				this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflowState(wsr[0]));
+				this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflowState(wsr[0]));
+			}
+		}
     }
 
     ngAfterViewInit(): void {
@@ -279,7 +298,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
 	
 	onModelHiddenUpdates(value: boolean): void {
-        value ? this.model.cls.grid.container = "hidden" : this.model.cls.grid.container = "ui-grid-row";
+		value ? this.model.cls.grid.container = "hidden" : this.model.cls.grid.container = "ui-grid-row";
     }
 
 

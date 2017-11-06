@@ -18,7 +18,9 @@ export class DynamicBootstrapFormComponent extends DynamicFormComponent {
 
     @Input() group: FormGroup;
     @Input() model: DynamicFormControlModel[];
-	@Input() dragMode:boolean = false;
+	@Input() dragMode: boolean = false;
+	@Input() userRole: any;
+	@Input() workflowState: any;
 
     @Output() blur: EventEmitter<DynamicFormControlEvent> = new EventEmitter<DynamicFormControlEvent>();
     @Output() change: EventEmitter<DynamicFormControlEvent> = new EventEmitter<DynamicFormControlEvent>();
