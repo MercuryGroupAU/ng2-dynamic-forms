@@ -99,23 +99,24 @@
                                                 (change)="onValueChange($event)"
                                                 (focus)="onFocusChange($event)"></dynamic-bootstrap-form-control> -->
 
-				<ngx-dnd-container [model]="model.group" *ngIf="dragMode && model.type != 'CHECKBOX_GROUP'" (drop)="onDrop($event)" dropZone="internal-target">
-					<ng-template let-controlModel="model">
-						<dynamic-bootstrap-form-control
-											  [asBootstrapFormGroup]="false"
-											  [group]="control"
-											  [hasErrorMessaging]="controlModel.hasErrorMessages"
-											  [model]="controlModel"
-											  [templates]="templates"
-											  [dragMode]="true"
-											  [ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
-											  (blur)="onFocusChange($event)"
-											  (change)="onValueChange($event)"
-											  (focus)="onFocusChange($event)">
-						</dynamic-bootstrap-form-control>
-					</ng-template>
-				</ngx-dnd-container>
-				<div *ngIf="!dragMode || model.type === 'CHECKBOX_GROUP'">
+				<!-- <bs-sortable *ngIf="dragMode && model.type != 'CHECKBOX_GROUP'" [(ngModel)]="model.group" [itemTemplate]="checkboxGroupItemTemplate"></bs-sortable> -->
+				
+				<!-- <ng-template #checkboxGroupItemTemplate let-item="item"> -->
+					<!-- <dynamic-bootstrap-form-control -->
+										  <!-- [asBootstrapFormGroup]="false" -->
+										  <!-- [group]="control" -->
+										  <!-- [hasErrorMessaging]="item.value.hasErrorMessages" -->
+										  <!-- [model]="item.value" -->
+										  <!-- [templates]="templates" -->
+										  <!-- [dragMode]="true" -->
+										  <!-- [ngClass]="[item.value.cls.element.host, item.value.cls.grid.host]" -->
+										  <!-- (blur)="onFocusChange($event)" -->
+										  <!-- (change)="onValueChange($event)" -->
+										  <!-- (focus)="onFocusChange($event)"> -->
+					<!-- </dynamic-bootstrap-form-control> -->
+				<!-- </ng-template> -->
+				
+				<div *ngIf="model.type === 'CHECKBOX_GROUP'">
 					<dynamic-bootstrap-form-control *ngFor="let controlModel of model.group"
 											  [asBootstrapFormGroup]="false"
 											  [group]="control"

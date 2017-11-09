@@ -34,6 +34,7 @@ import {
 	DynamicFormValueControlModel
 } from "@ng-dynamic-forms/core";
 import { SignaturePad } from "angular2-signaturepad/signature-pad";
+
 export const enum BootstrapFormControlType {
 
     Array = 1, //"ARRAY",

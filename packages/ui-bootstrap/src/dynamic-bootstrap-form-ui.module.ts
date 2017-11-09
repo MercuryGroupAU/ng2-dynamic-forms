@@ -5,8 +5,10 @@ import { TextMaskModule } from "angular2-text-mask";
 import { DynamicFormsCoreModule } from "@ng-dynamic-forms/core";
 import { DynamicBootstrapFormControlComponent } from "./dynamic-bootstrap-form-control.component";
 import { DynamicBootstrapFormComponent } from "./dynamic-bootstrap-form.component";
-import { NgxDnDModule } from "@swimlane/ngx-dnd";
 import { SignaturePadModule } from "angular2-signaturepad";
+import { AlertModule } from "ngx-bootstrap/alert";
+import { TabsModule } from "ngx-bootstrap/tabs";
+import { SortableModule } from "ngx-bootstrap/sortable";
 
 @NgModule({
 
@@ -15,8 +17,10 @@ import { SignaturePadModule } from "angular2-signaturepad";
         ReactiveFormsModule,
         TextMaskModule,
         DynamicFormsCoreModule,
-		NgxDnDModule,
-		SignaturePadModule
+        SignaturePadModule,
+        AlertModule.forRoot(),
+        TabsModule.forRoot(),
+        SortableModule.forRoot()
     ],
     declarations: [
         DynamicBootstrapFormControlComponent,
@@ -25,7 +29,10 @@ import { SignaturePadModule } from "angular2-signaturepad";
     exports: [
         DynamicFormsCoreModule,
         DynamicBootstrapFormControlComponent,
-        DynamicBootstrapFormComponent
+        DynamicBootstrapFormComponent,
+        AlertModule,
+        TabsModule,
+        SortableModule
     ]
 })
 

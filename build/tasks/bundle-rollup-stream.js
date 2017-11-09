@@ -42,8 +42,13 @@ module.exports = function (entryRootPath, moduleName, globalsName, pkg, dest) {
         "@progress/kendo-angular-dropdowns": "progress/kendo-angular-dropdowns", // TODO
         "@progress/kendo-angular-inputs": "progress/kendo-angular-inputs", // TODO
         "@progress/kendo-angular-upload": "progress/kendo-angular-upload", // TODO
+        "angular2-signaturepad": "angular2-signaturepad",
+        "angular2-signaturepad/signature-pad": "angular2-signaturepad/signature-pad",
         "angular2-text-mask": "angular2-text-mask", // TODO
         "ionic-angular": "ionic-angular", // TODO
+        "ngx-bootstrap/alert": "ngx-bootstrap/alert",
+        "ngx-bootstrap/tabs": "ngx-bootstrap/tabs",
+        "ngx-bootstrap/sortable": "ngx-bootstrap/sortable",
         "primeng/primeng": "primeng/primeng",
         "rxjs/Observable": "Rx.Observable",
         "rxjs/Subject": "Rx.Subject",

@@ -86,40 +86,36 @@ export class DynamicFormService {
         let formGroup: { [id: string]: AbstractControl; } = {};
 
         groupModel.forEach(model => {
-
-            model.parent = parent;
-
-            if (model.type === DYNAMIC_FORM_CONTROL_TYPE_ARRAY) {
-
-                let formArrayModel = model as DynamicFormArrayModel;
-
-                formGroup[model.id] = this.createFormArray(formArrayModel);
-
-            } else if (model.type === DYNAMIC_FORM_CONTROL_TYPE_GROUP || model.type === DYNAMIC_FORM_CONTROL_TYPE_CHECKBOX_GROUP) {
-
-                let formGroupModel = model as DynamicFormGroupModel,
-                    extra = this.createExtra(formGroupModel.validator, formGroupModel.asyncValidator);
-
-                formGroup[model.id] = this.createFormGroup(formGroupModel.group, extra, formGroupModel);
-
-            } else {
-
-                let formControlModel = model as DynamicFormValueControlModel<DynamicFormControlValue>;
-
-                formGroup[formControlModel.id] = new FormControl(
-                    {
-                        value: formControlModel.value,
-                        disabled: formControlModel.disabled
-                    },
-                    Validators.compose(this.validationService.getValidators(formControlModel.validators || {})),
-                    Validators.composeAsync(this.validationService.getAsyncValidators(formControlModel.asyncValidators || {}))
-                );
-            }
+            formGroup[model.id] = this.createControl(model, parent);
         });
 
         return this.formBuilder.group(formGroup, extra);
     }
 
+    createControl(model: DynamicFormControlModel,
+        parent: DynamicPathable | null = null) : AbstractControl {
+        model.parent = parent;
+
+        if (model.type === DYNAMIC_FORM_CONTROL_TYPE_ARRAY)
+            return this.createFormArray(model as DynamicFormArrayModel);
+
+        if (model.type === DYNAMIC_FORM_CONTROL_TYPE_GROUP || model.type === DYNAMIC_FORM_CONTROL_TYPE_CHECKBOX_GROUP) {
+            let formGroupModel = model as DynamicFormGroupModel;
+            return this.createFormGroup(formGroupModel.group, this.createExtra(formGroupModel.validator, formGroupModel.asyncValidator), formGroupModel);
+        }
+
+        let formControlModel = model as DynamicFormValueControlModel<DynamicFormControlValue>;
+
+        return new FormControl(
+            {
+                value: formControlModel.value,
+                disabled: formControlModel.disabled
+            },
+            Validators.compose(this.validationService.getValidators(formControlModel.validators || {})),
+            Validators.composeAsync(this.validationService.getAsyncValidators(formControlModel.asyncValidators || {}))
+        );
+    }
+    
 
     getPathSegment(model: DynamicPathable): string {
 
@@ -393,14 +389,14 @@ export class DynamicFormService {
                 case DYNAMIC_FORM_CONTROL_TYPE_TIMEPICKER:
                     group.push(new DynamicTimePickerModel(model, model.cls));
                     break;
-					
-				case DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER:
-					group.push(new DynamicDisclaimerModel(model, model.cls));
-					break;
-				
-				case DYNAMIC_FORM_CONTROL_TYPE_SIGNATURE:
-					group.push(new DynamicSignatureModel(model, model.cls));
-					break;
+                    
+                case DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER:
+                    group.push(new DynamicDisclaimerModel(model, model.cls));
+                    break;
+                
+                case DYNAMIC_FORM_CONTROL_TYPE_SIGNATURE:
+                    group.push(new DynamicSignatureModel(model, model.cls));
+                    break;
 
                 default:
                     throw new Error(`unknown form control model type defined on JSON object with id "${model.id}"`);

@@ -42,10 +42,13 @@ export default {
         }),
 
         commonjs({
+			
+			external: [ 'angular2-signaturepad', 'ngx-bootstrap' ],
 
             include: [
+                "node_modules/angular2-signaturepad/**/*",
                 "node_modules/angular2-text-mask/**/*",
-                "node_modules/primeng/**/*",
+                "node_modules/ngx-bootstrap/**/*",
                 "node_modules/rxjs/**",
                 "node_modules/text-mask-core/**/*"
             ],

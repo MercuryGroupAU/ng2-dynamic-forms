@@ -21,7 +21,6 @@ import {
     SpinnerModule
 } from "primeng/primeng";
 import { DynamicPrimeNGFormComponent } from "./dynamic-primeng-form.component";
-import { NgxDnDModule } from "@swimlane/ngx-dnd";
 import { SignaturePadModule } from "angular2-signaturepad";
 
 @NgModule({
@@ -45,7 +44,6 @@ import { SignaturePadModule } from "angular2-signaturepad";
         RatingModule,
         SliderModule,
         SpinnerModule,
-		NgxDnDModule,
 		SignaturePadModule
     ],
     declarations: [
