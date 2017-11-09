@@ -83,13 +83,17 @@ export class DynamicFormService {
                     extra: { [key: string]: any } | null = null,
                     parent: DynamicPathable | null = null): FormGroup {
 
-        let formGroup: { [id: string]: AbstractControl; } = {};
+        let groupFields: { [id: string]: AbstractControl; } = {};
 
         groupModel.forEach(model => {
-            formGroup[model.id] = this.createControl(model, parent);
+            groupFields[model.id] = this.createControl(model, parent);
         });
 
-        return this.formBuilder.group(formGroup, extra);
+        var formGroup = this.formBuilder.group(groupFields, extra);
+        groupModel.forEach((model: any) => {
+            model["formGroup"] = formGroup;
+        });
+        return formGroup;
     }
 
     createControl(model: DynamicFormControlModel,

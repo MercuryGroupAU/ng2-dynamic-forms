@@ -116,7 +116,7 @@
 					<!-- </dynamic-bootstrap-form-control> -->
 				<!-- </ng-template> -->
 				
-				<div *ngIf="model.type === 'CHECKBOX_GROUP'">
+				<div *ngIf="model.type !== 'CHECKBOX_GROUP' || !dragMode">
 					<dynamic-bootstrap-form-control *ngFor="let controlModel of model.group"
 											  [asBootstrapFormGroup]="false"
 											  [group]="control"
