@@ -80,58 +80,53 @@
             </div>
 
 
-            <fieldset *ngSwitchCase="3"
-                      [dynamicId]="bindId && model.id"
-                      [formGroupName]="model.id"
-                      [name]="model.name"
-                      [ngClass]="model.cls.element.control">
+			<div *ngSwitchCase="3">
+				<fieldset 
+						  [dynamicId]="bindId && model.id"
+						  [formGroupName]="model.id"
+						  [name]="model.name"
+						  [ngClass]="model.cls.element.control">
 
-                <!-- <legend *ngIf="model.legend" [innerHTML]="model.legend"></legend> -->
-
-                <!-- <dynamic-bootstrap-form-control *ngFor="let controlModel of model.group"
-                                                [asBootstrapFormGroup]="false"
-                                                [group]="control"
-                                                [hasErrorMessaging]="controlModel.hasErrorMessages"
-                                                [model]="controlModel"
-                                                [templates]="templates"
-                                                [ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
-                                                (blur)="onFocusChange($event)"
-                                                (change)="onValueChange($event)"
-                                                (focus)="onFocusChange($event)"></dynamic-bootstrap-form-control> -->
-
-				<!-- <bs-sortable *ngIf="dragMode && model.type != 'CHECKBOX_GROUP'" [(ngModel)]="model.group" [itemTemplate]="checkboxGroupItemTemplate"></bs-sortable> -->
-				
-				<!-- <ng-template #checkboxGroupItemTemplate let-item="item"> -->
-					<!-- <dynamic-bootstrap-form-control -->
-										  <!-- [asBootstrapFormGroup]="false" -->
-										  <!-- [group]="control" -->
-										  <!-- [hasErrorMessaging]="item.value.hasErrorMessages" -->
-										  <!-- [model]="item.value" -->
-										  <!-- [templates]="templates" -->
-										  <!-- [dragMode]="true" -->
-										  <!-- [ngClass]="[item.value.cls.element.host, item.value.cls.grid.host]" -->
-										  <!-- (blur)="onFocusChange($event)" -->
-										  <!-- (change)="onValueChange($event)" -->
-										  <!-- (focus)="onFocusChange($event)"> -->
-					<!-- </dynamic-bootstrap-form-control> -->
-				<!-- </ng-template> -->
-				
-				<div *ngIf="model.type !== 'CHECKBOX_GROUP' || !dragMode">
-					<dynamic-bootstrap-form-control *ngFor="let controlModel of model.group"
+					<!-- <legend *ngIf="model.legend" [innerHTML]="model.legend"></legend> -->
+			
+					<div *ngIf="dragMode && model.type !== 'CHECKBOX_GROUP';else formGroupStandardTemplate">
+						<bs-sortable [(ngModel)]="model.group" [itemTemplate]="formGroupItemTemplate" [ngModelOptions]="{standalone: true}"></bs-sortable>
+					</div>
+					
+					<ng-template #formGroupItemTemplate let-item="item">
+						<dynamic-bootstrap-form-control
 											  [asBootstrapFormGroup]="false"
-											  [group]="control"
-											  [hasErrorMessaging]="controlModel.hasErrorMessages"
-											  [model]="controlModel"
+											  [group]="item.value.formGroup"
+											  [hasErrorMessaging]="item.value.hasErrorMessages"
+											  [model]="item.value"
 											  [templates]="templates"
-											  [ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
+											  [dragMode]="true"
+											  [ngClass]="[item.value.cls.element.host, item.value.cls.grid.host]"
 											  (blur)="onFocusChange($event)"
 											  (change)="onValueChange($event)"
 											  (focus)="onFocusChange($event)"
 											  (downloadFile)="onDownloadFile($event)"
 											  (deleteFile)="onDeleteFile($event)">
-					</dynamic-bootstrap-form-control>
-				</div>
-			</fieldset>
+						</dynamic-bootstrap-form-control>
+					</ng-template>
+				
+					<ng-template #formGroupStandardTemplate>
+						<dynamic-bootstrap-form-control *ngFor="let controlModel of model.group"
+												  [asBootstrapFormGroup]="false"
+												  [group]="controlModel.formGroup"
+												  [hasErrorMessaging]="controlModel.hasErrorMessages"
+												  [model]="controlModel"
+												  [templates]="templates"
+												  [ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
+												  (blur)="onFocusChange($event)"
+												  (change)="onValueChange($event)"
+												  (focus)="onFocusChange($event)"
+												  (downloadFile)="onDownloadFile($event)"
+												  (deleteFile)="onDeleteFile($event)">
+						</dynamic-bootstrap-form-control>
+					</ng-template>
+				</fieldset>
+			</div>
 
 
             <div *ngSwitchCase="4" [class.input-group]="model.prefix || model.suffix">
@@ -247,7 +242,7 @@
 					<div style="border:1px solid black;width:200px">
 						<signature-pad [options]="signaturePadOptions" (onEndEvent)="drawComplete()"></signature-pad>
 					</div>
-					<button(click)="onResetSignature()">Reset</button>
+					<button (click)="onResetSignature()">Reset</button>
 				</div>
 			</div>
 					  
