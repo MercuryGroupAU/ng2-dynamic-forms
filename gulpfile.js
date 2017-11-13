@@ -31,8 +31,12 @@ const NPM_SCOPE      = "@ng-dynamic-forms",
           // "ui-material",
           // "ui-ng-bootstrap",
           //"ui-primeng"
-      ];
-
+      ],
+	  INCLUDE_TYPESCRIPT = [
+	      "core",
+	      "ui-bootstrap"
+	  ];
+	  
 PACKAGES.forEach(packageName => {
 
     let taskName = `bundle:${packageName}`;
@@ -88,7 +92,7 @@ gulp.task("remove:moduleId:dist",
 
 
 gulp.task("transpile:packages:dist",
-    TASK_TRANSPILE_TYPESCRIPT([`${DIST_PATH}/**/*.ts`], DIST_PATH, "./tsconfig.packages.json", "es2015"));
+    TASK_TRANSPILE_TYPESCRIPT([`${DIST_PATH}/**/*.ts`], DIST_PATH, "./tsconfig.packages.json", "es6"));
 
 gulp.task("transpile:packages:debug",
     TASK_TRANSPILE_TYPESCRIPT([`${DIST_PATH}/**/*.ts`], DIST_PATH, "./tsconfig.packages.json", "commonjs"));

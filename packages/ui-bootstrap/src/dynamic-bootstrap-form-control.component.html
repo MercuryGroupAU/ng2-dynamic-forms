@@ -90,7 +90,13 @@
 					<!-- <legend *ngIf="model.legend" [innerHTML]="model.legend"></legend> -->
 			
 					<div *ngIf="dragMode && model.type !== 'CHECKBOX_GROUP';else formGroupStandardTemplate">
-						<bs-sortable [(ngModel)]="model.group" [itemTemplate]="formGroupItemTemplate" [ngModelOptions]="{standalone: true}"></bs-sortable>
+						<bs-sortable
+								[(ngModel)]="model.group"
+								[itemTemplate]="formGroupItemTemplate"
+								[ngModelOptions]="{standalone: true}"
+								itemClass="sortable-item"
+								itemActiveClass="sortable-item-active">
+						</bs-sortable>
 					</div>
 					
 					<ng-template #formGroupItemTemplate let-item="item">

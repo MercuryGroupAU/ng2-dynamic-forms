@@ -3,7 +3,7 @@ const gulp       = require("gulp"),
       ts         = require("gulp-typescript"),
       util       = require("gulp-util");
 
-module.exports = function (src, dest, configPath, moduleFormat) {
+module.exports = function (src, dest, configPath, moduleFormat, base) {
 
     return function () {
 
@@ -11,7 +11,11 @@ module.exports = function (src, dest, configPath, moduleFormat) {
 
         util.log(`Using TypeScript ${util.colors.magenta(tsProject.typescript.version)}`);
 
-        return gulp.src(src)
+		var sourceConfig = {};
+		if (base)
+			sourceConfig.base = base;
+		
+        return gulp.src(src, sourceConfig)
                    .pipe(sourceMaps.init())
                    .pipe(tsProject(ts.reporter.defaultReporter()))
                    .pipe(sourceMaps.write("."))
