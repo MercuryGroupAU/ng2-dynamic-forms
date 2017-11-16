@@ -9,6 +9,7 @@ import { SignaturePadModule } from "angular2-signaturepad";
 import { AlertModule } from "ngx-bootstrap/alert";
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { SortableModule } from "ngx-bootstrap/sortable";
+import { FormSortableComponent } from "./formsortable.component";
 
 @NgModule({
 
@@ -25,12 +26,14 @@ import { SortableModule } from "ngx-bootstrap/sortable";
     ],
     declarations: [
         DynamicBootstrapFormControlComponent,
-        DynamicBootstrapFormComponent
+        DynamicBootstrapFormComponent,
+        FormSortableComponent
     ],
     exports: [
         DynamicFormsCoreModule,
         DynamicBootstrapFormControlComponent,
         DynamicBootstrapFormComponent,
+        FormSortableComponent,
         AlertModule,
         TabsModule,
         SortableModule
