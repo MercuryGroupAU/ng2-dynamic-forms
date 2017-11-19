@@ -3,8 +3,7 @@ import { DynamicFormControlModel } from "../model/dynamic-form-control.model";
 import {
     DynamicFormControlRelation,
     DynamicFormControlRelationGroup,
-	DynamicFormControlWorkflowStateRelation, 
-	DynamicFormControlUserRoleRelation,
+	DynamicFormControlWorkflowRelation, 
     DYNAMIC_FORM_CONTROL_ACTION_DISABLE,
     DYNAMIC_FORM_CONTROL_ACTION_ENABLE,
     DYNAMIC_FORM_CONTROL_CONNECTIVE_AND,
@@ -17,32 +16,50 @@ import {
 
 export class RelationUtils {
 
-	static isFormControlToBeDisabledByUserRole(userRoleRelation: DynamicFormControlUserRoleRelation): boolean {
-		if (userRoleRelation.action === DYNAMIC_FORM_CONTROL_ACTION_DISABLE)
-			return true;
-		else
-			return false;
+	static isFormControlToBeDisabledByWorkflow(workflowRelation: DynamicFormControlWorkflowRelation, workflowActions: any[]): boolean | null  {
+		if ((!workflowActions || workflowActions.length === 0) || !workflowRelation.workflowResponsible) {
+			if (workflowRelation.action === DYNAMIC_FORM_CONTROL_ACTION_DISABLE)
+				return true;
+			else if (workflowRelation.action === DYNAMIC_FORM_CONTROL_ACTION_ENABLE)
+				return false;
+			else
+				return null;
+		}
+		else {
+			let actions = workflowActions.filter(action => workflowRelation.workflowResponsible.name === action.responsible && workflowRelation.workflowAction === action.name);
+			if (actions) {
+				if (workflowRelation.action === DYNAMIC_FORM_CONTROL_ACTION_DISABLE)
+					return true;
+				else if (workflowRelation.action === DYNAMIC_FORM_CONTROL_ACTION_ENABLE)
+					return false;
+				else
+					return null;
+			}
+		}
+		return null;
 	}
-	
-	static isFormControlToBeDisabledByWorkflowState(workflowStateRelation: DynamicFormControlWorkflowStateRelation): boolean  {
-		if (workflowStateRelation.action === DYNAMIC_FORM_CONTROL_ACTION_DISABLE)
-			return true;
-		else
-			return false;
-	}
-	
-	static isFormControlToBeHiddenByUserRole(userRoleRelation: DynamicFormControlUserRoleRelation): boolean  {
-	if (userRoleRelation.action === DYNAMIC_FORM_CONTROL_ACTION_HIDE)
-			return true;
-		else
-			return false;
-	}
-	
-	static isFormControlToBeHiddenByWorkflowState(workflowStateRelation: DynamicFormControlWorkflowStateRelation): boolean  {
-	if (workflowStateRelation.action === DYNAMIC_FORM_CONTROL_ACTION_HIDE)
-			return true;
-		else
-			return false;
+		
+	static isFormControlToBeHiddenByWorkflow(workflowRelation: DynamicFormControlWorkflowRelation, workflowActions: any[]): boolean | null {
+		if ((!workflowActions || workflowActions.length === 0) || !workflowRelation.workflowResponsible) {
+			if (workflowRelation.action === DYNAMIC_FORM_CONTROL_ACTION_HIDE)
+				return true;
+			else if (workflowRelation.action === DYNAMIC_FORM_CONTROL_ACTION_SHOW)
+				return false;
+			else
+				return null;
+		}
+		else {
+			let actions = workflowActions.filter(action => workflowRelation.workflowResponsible.name === action.responsible && workflowRelation.workflowAction === action.name);
+			if (actions) {
+				if (workflowRelation.action === DYNAMIC_FORM_CONTROL_ACTION_HIDE)
+					return true;
+				else if (workflowRelation.action === DYNAMIC_FORM_CONTROL_ACTION_SHOW)
+					return false;
+				else
+					return null;
+			}
+		}
+		return null;
 	}
 
     static findActivationRelation(relGroups: DynamicFormControlRelationGroup[]): DynamicFormControlRelationGroup | null {

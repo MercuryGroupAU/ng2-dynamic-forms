@@ -22,12 +22,9 @@ export interface DynamicFormControlRelationGroup {
     when: DynamicFormControlRelation[];
 }
 
-export interface DynamicFormControlWorkflowStateRelation {
+export interface DynamicFormControlWorkflowRelation {
     action: string;
-    workflowState: any;
-}
-
-export interface DynamicFormControlUserRoleRelation {
-    action: string;
-    userRole: any;
+	group?: any;
+    workflowAction?: any;
+	workflowResponsible?: any;
 }
