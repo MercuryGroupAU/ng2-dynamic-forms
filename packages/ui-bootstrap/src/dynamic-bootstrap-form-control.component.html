@@ -90,36 +90,39 @@
 					<!-- <legend *ngIf="model.legend" [innerHTML]="model.legend"></legend> -->
 			
 					<div *ngIf="dragMode && model.type !== 'CHECKBOX_GROUP';else formGroupStandardTemplate">
-						<bs-sortable
+						<form-sortable
 								[(ngModel)]="model.group"
-								[itemTemplate]="formGroupItemTemplate"
+								[group]="group.get(model.id)"
 								[ngModelOptions]="{standalone: true}"
-								itemClass="sortable-item"
-								itemActiveClass="sortable-item-active">
-						</bs-sortable>
+								placeholderItem="Drag here"
+								itemClass="sortable-item clearfix"
+								itemActiveClass="sortable-item-active"
+								[parent]="parent"
+								(onItemAdded)="onItemAdded($event)">
+							<ng-template #itemTemplate let-item="item" let-group="group" let-parent="parent">
+								<dynamic-bootstrap-form-control
+													  [asBootstrapFormGroup]="false"
+													  [model]="item.value"
+													  [group]="group"
+													  [parent]="parent"
+													  [hasErrorMessaging]="item.value.hasErrorMessages"
+													  [templates]="templates"
+													  [dragMode]="true"
+													  [ngClass]="[item.value.cls.element.host, item.value.cls.grid.host]"
+													  (blur)="onFocusChange($event)"
+													  (change)="onValueChange($event)"
+													  (focus)="onFocusChange($event)"
+													  (downloadFile)="onDownloadFile($event)"
+													  (deleteFile)="onDeleteFile($event)">
+								</dynamic-bootstrap-form-control>
+							</ng-template>
+						</form-sortable>
 					</div>
-					
-					<ng-template #formGroupItemTemplate let-item="item">
-						<dynamic-bootstrap-form-control
-											  [asBootstrapFormGroup]="false"
-											  [group]="item.value.formGroup"
-											  [hasErrorMessaging]="item.value.hasErrorMessages"
-											  [model]="item.value"
-											  [templates]="templates"
-											  [dragMode]="true"
-											  [ngClass]="[item.value.cls.element.host, item.value.cls.grid.host]"
-											  (blur)="onFocusChange($event)"
-											  (change)="onValueChange($event)"
-											  (focus)="onFocusChange($event)"
-											  (downloadFile)="onDownloadFile($event)"
-											  (deleteFile)="onDeleteFile($event)">
-						</dynamic-bootstrap-form-control>
-					</ng-template>
 				
 					<ng-template #formGroupStandardTemplate>
 						<dynamic-bootstrap-form-control *ngFor="let controlModel of model.group"
 												  [asBootstrapFormGroup]="false"
-												  [group]="controlModel.formGroup"
+												  [group]="group.get(model.id)"
 												  [hasErrorMessaging]="controlModel.hasErrorMessages"
 												  [model]="controlModel"
 												  [templates]="templates"
