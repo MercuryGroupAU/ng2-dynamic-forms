@@ -6,14 +6,20 @@
            [attr.for]="model.id"
            [innerHTML]="model.label"
            [ngClass]="[model.cls.element.label, model.cls.grid.label]"></label> -->
-	<div *ngIf="(model.label || model.legend) && model.showLabel">
+	<div *ngIf="(model.label || model.legend) && (model.showLabel || dragMode)">
         <label *ngIf="type !== 3 || model.type === 'CHECKBOX_GROUP'" [attr.for]="model.id" [ngClass]="model.cls.element.label">
 			<i *ngIf="model.required" class="fa fa-asterisk fa-1" style="color:red" aria-hidden="true"></i>
 			{{model.label}}
+			<ng-container *ngIf="type !== 1 && template?.align === 'LABEL'">
+				<ng-container *ngTemplateOutlet="template?.templateRef; context: model"></ng-container>
+			</ng-container>
 		</label>
 		<legend *ngIf="type === 3 && model.type !== 'CHECKBOX_GROUP'" [attr.for]="model.id" [ngClass]="model.cls.element.label">
 			<i *ngIf="model.required" class="fa fa-asterisk fa-1" style="color:red" aria-hidden="true"></i>
 			{{model.legend}}
+			<ng-container *ngIf="type !== 1 && template?.align === 'LABEL'">
+				<ng-container *ngTemplateOutlet="template?.templateRef; context: model"></ng-container>
+			</ng-container>
 		</legend>
     </div>
 

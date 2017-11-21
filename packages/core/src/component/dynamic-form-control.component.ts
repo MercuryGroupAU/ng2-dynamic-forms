@@ -76,8 +76,8 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     deleteFile: EventEmitter<DocumentEvent>;
     drop: EventEmitter<DropEvent>;
     dragMode: boolean = false;
-	userRole: any;
-	workflowState: any;
+	userGroups: any[];
+	workflowActions: any[];
 
     private subscriptions: Subscription[] = [];
 
@@ -149,22 +149,31 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 		if (this.model.relation.length > 0) {
             this.setControlRelations();
         }
-		//check role
-		if (this.model.userRoleRelation.length > 0 && this.userRole) {
-			let urr = this.model.userRoleRelation.filter(c => c.userRole.id === this.userRole.id);
-			console.log("found role relation", urr);
-			if (urr && urr.length > 0) {
-				this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByUserRole(urr[0]));
-				this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByUserRole(urr[0]));
-			}
-		}
-		//check workflow state
-		if (this.model.workflowStateRelation.length > 0 && this.workflowState) {
-			let wsr = this.model.workflowStateRelation.filter(c => c.workflowState.id === this.workflowState.id);
-			console.log("found workflow relation", wsr);
-			if (wsr && wsr.length > 0) {
-				this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflowState(wsr[0]));
-				this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflowState(wsr[0]));
+		
+		if (!this.dragMode) {
+			// console.log("displaying control model", this.model);
+			// console.log("workflow relations for this control", this.model.workflowRelation);
+			if (this.model.workflowRelation && this.model.workflowRelation.length > 0) {
+				let everyoneRelations = this.model.workflowRelation.filter(c => c.group.id === 0);
+				everyoneRelations.forEach(eRelation => {
+					//console.log("found relations for EVERYONE", eRelation);
+					this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(eRelation, this.workflowActions));
+					this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(eRelation, this.workflowActions));
+				});
+				//console.log("userGroups", this.userGroups);
+				if (this.userGroups && this.userGroups.length > 0) {
+					this.userGroups.forEach(group => {
+						let groupRelations = this.model.workflowRelation.filter(c => c.group.id === group.id);
+						//console.log("groupRelations:", groupRelations);
+						if (groupRelations) {
+							groupRelations.forEach(gRelation => {
+								//console.log("found relations for group", gRelation);
+								this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(gRelation, this.workflowActions));
+								this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(gRelation, this.workflowActions));
+							});
+						}
+					});
+				}
 			}
 		}
     }
@@ -293,14 +302,17 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
         }
     }
 
-    onModelDisabledUpdates(value: boolean): void {
-        value ? this.control.disable() : this.control.enable();
+    onModelDisabledUpdates(value?: boolean): void {
+		if (value !== null) {
+			value ? this.control.disable() : this.control.enable();
+		}
     }
 	
-	onModelHiddenUpdates(value: boolean): void {
-		value ? this.model.cls.grid.container = "hidden" : this.model.cls.grid.container = "ui-grid-row";
+	onModelHiddenUpdates(value?: boolean): void {
+		if (value !== null) {
+			value ? this.model.cls.grid.container = "hidden" : this.model.cls.grid.container = "ui-grid-row";
+		}
     }
-
 
     onValueChange($event: Event | DynamicFormControlEvent | any): void {
 

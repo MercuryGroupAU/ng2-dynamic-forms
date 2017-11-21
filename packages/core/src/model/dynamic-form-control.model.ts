@@ -1,6 +1,5 @@
 import { DynamicFormControlRelationGroup, 
-		 DynamicFormControlWorkflowStateRelation, 
-		 DynamicFormControlUserRoleRelation } from "./dynamic-form-control-relation.model";
+		 DynamicFormControlWorkflowRelation } from "./dynamic-form-control-relation.model";
 import { Subject } from "rxjs/Subject";
 import { serializable, serialize } from "../decorator/serializable.decorator";
 import { Utils } from "../utils/core.utils";
@@ -59,8 +58,7 @@ export interface DynamicFormControlModelConfig {
     id?: string;
     label?: string;
     relation?: DynamicFormControlRelationGroup[];
-	userRoleRelation?: DynamicFormControlUserRoleRelation[];
-	workflowStateRelation?: DynamicFormControlWorkflowStateRelation[];
+	workflowRelation?: DynamicFormControlWorkflowRelation[];
 	step?: number;
 	showLabel?: boolean;
 }
@@ -77,8 +75,7 @@ export abstract class DynamicFormControlModel implements DynamicPathable {
     @serializable() name: string;
     parent: DynamicPathable | null = null;
     @serializable() relation: DynamicFormControlRelationGroup[];
-	@serializable() userRoleRelation: DynamicFormControlUserRoleRelation[];
-	@serializable() workflowStateRelation: DynamicFormControlWorkflowStateRelation[];
+	@serializable() workflowRelation: DynamicFormControlWorkflowRelation[];
     @serializable() step: number | null;
 	@serializable() showLabel: boolean;
 
@@ -100,8 +97,7 @@ export abstract class DynamicFormControlModel implements DynamicPathable {
         this.label = config.label || null;
         this.name = this.id;
         this.relation = Array.isArray(config.relation) ? config.relation : [];
-		this.userRoleRelation = Array.isArray(config.userRoleRelation) ? config.userRoleRelation : [];
-		this.workflowStateRelation = Array.isArray(config.workflowStateRelation) ? config.workflowStateRelation : [];
+		this.workflowRelation = Array.isArray(config.workflowRelation) ? config.workflowRelation : [];
 
         this.disabledUpdates = new Subject<boolean>();
         this.disabledUpdates.subscribe((value: boolean) => this.disabled = value);
