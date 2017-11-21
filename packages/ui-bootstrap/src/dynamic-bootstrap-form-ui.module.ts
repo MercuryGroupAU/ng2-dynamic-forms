@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule, ModuleWithProviders } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { TextMaskModule } from "angular2-text-mask";
@@ -10,6 +10,7 @@ import { AlertModule } from "ngx-bootstrap/alert";
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { SortableModule } from "ngx-bootstrap/sortable";
 import { FormSortableComponent } from "./formsortable.component";
+import { FormDraggableItemService } from "./form-draggable-item.service";
 
 @NgModule({
 
@@ -41,4 +42,15 @@ import { FormSortableComponent } from "./formsortable.component";
 })
 
 export class DynamicFormsBootstrapUIModule {
+    static forRoot(): ModuleWithProviders {
+
+        return {
+
+            ngModule: DynamicFormsBootstrapUIModule,
+
+            providers: [
+                FormDraggableItemService
+            ]
+        };
+    }
 }
