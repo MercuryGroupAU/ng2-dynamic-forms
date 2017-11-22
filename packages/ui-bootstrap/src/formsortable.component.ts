@@ -1,5 +1,6 @@
 import { Component, Input, Output, TemplateRef, ContentChild, EventEmitter, forwardRef } from "@angular/core";
-import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormGroup } from "@angular/forms";
+import { NG_VALUE_ACCESSOR, ControlValueAccessor, FormGroup, AbstractControl } from "@angular/forms";
+import { DynamicFormControlModel } from "@ng-dynamic-forms/core";
 import { FormDraggableItemService } from "./form-draggable-item.service";
 import { FormDraggableItem } from "./form-draggable-item";
 import { FormSortableItem } from "./form-sortable-item";
@@ -76,13 +77,11 @@ export class FormSortableComponent implements ControlValueAccessor {
     @Input()
     sourceOnly: boolean;
     @Input()
-    createDragItem: (itemData: any) => any;
+    createControlModel: (itemData: any) => DynamicFormControlModel;
     @Input()
-    addToForm: (itemData: any, formGroup: FormGroup) => void;
+    createFormControl: (formControlModel: DynamicFormControlModel) => AbstractControl;
     @Input()
-    removeFromForm: (itemData: any, formGroup: FormGroup) => void;
-    @Input()
-    processAdded: (itemData: any, formGroup: FormGroup) => void;
+    processAdded: (formControlModel: DynamicFormControlModel) => void;
 
     @ContentChild("itemTemplate")
     itemTemplate: TemplateRef<any>;
@@ -102,10 +101,38 @@ export class FormSortableComponent implements ControlValueAccessor {
     }
 
     set items(value: FormSortableItem[]) {
-        this.itemsList = value;
+        // Add new controls to the form group before updating the list so it doesn't break
+        if (this.group && value) {
+            value.forEach(item => {
+                if (!this.group.get(item.initData.id))
+                    this.addItemToForm(item.initData, this.group);
+            });
+        }
+
+        console.log("updating items");
+        console.log(value);
+        this.itemsList = value || [];
         const out = this.items.map((x: FormSortableItem) => x.initData);
         this.onChanged(out);
         this.onChange.emit(out);
+
+        // Remove old controls from the form group after updating the list so it doesn't break
+        if (this.group) {
+            for (let ctrlId in this.group.controls) {
+                if (this.group.controls.hasOwnProperty(ctrlId) && !this.itemsList.some(item => item.initData.id === ctrlId)) {
+                    console.log("removing item " + ctrlId);
+                    this.group.removeControl(ctrlId);
+                }
+            }
+        }
+    }
+
+    private addItemToForm(formControlModel: DynamicFormControlModel, formGroup: FormGroup): void {
+        console.log("adding item " + formControlModel.id);
+        if (this.createFormControl)
+            formGroup.addControl(formControlModel.id, this.createFormControl(formControlModel));
+        else if (this.parent)
+            this.parent.addItemToForm(formControlModel, formGroup);
     }
 
     onTouched: any = Function.prototype;
@@ -131,11 +158,11 @@ export class FormSortableComponent implements ControlValueAccessor {
         this.initDragstartEvent(event);
         this.onTouched();
 
-        if (this.createDragItem)
+        if (this.createControlModel)
             item = <FormSortableItem> {
                 id: item.id,
                 value: item.value,
-                initData: this.createDragItem(item.initData),
+                initData: this.createControlModel(item.initData),
                 active: true
             };
         else
@@ -175,10 +202,6 @@ export class FormSortableComponent implements ControlValueAccessor {
 
         this.pendingItem = item;
         
-        // Don't add the item if it's already in this list
-        if (this.group)
-            this.addItemToForm(item.item.initData, this.group);
-
         if (!this.itemsBeforeItemAdded)
             this.itemsBeforeItemAdded = this.itemsList;
 
@@ -208,7 +231,6 @@ export class FormSortableComponent implements ControlValueAccessor {
                 ...this.itemsList.slice(item.initialIndex + 1)
             ];
             this.updatePlaceholderState();
-            this.removeFromForm(item.item.initData, this.group);
         }
     }
 
@@ -251,25 +273,11 @@ export class FormSortableComponent implements ControlValueAccessor {
         event.stopPropagation();
         this.cancelEvent(event);
         const dragItem = this.draggableItemService.getItem();
-        if (dragItem.currentZoneIndex === -1)
-            this.restoreItemsBeforeDrag();
+        if (dragItem.currentZoneIndex === -1 && this.itemsBeforeItemDragged)
+            this.items = this.itemsBeforeItemDragged;
         this.itemsBeforeItemDragged = null;
         dragItem.item.active = false;
         this.draggableItemService.dragStart(null);
-    }
-
-    restoreItemsBeforeDrag() {
-        if (this.itemsBeforeItemDragged) {
-            this.itemsBeforeItemDragged.forEach(item => this.addItemToForm(item, this.group));
-            this.items = this.itemsBeforeItemDragged;
-        }
-    }
-
-    addItemToForm(item: any, formGroup: FormGroup): void {
-        if (this.addToForm)
-            this.addToForm(item, formGroup);
-        else if (this.parent)
-            this.parent.addItemToForm(item, formGroup);
     }
 
     onItemDragenter(event: DragEvent): void {
@@ -308,15 +316,7 @@ export class FormSortableComponent implements ControlValueAccessor {
             this.updatePlaceholderState();
             item.currentZoneIndex = -1;
             item.currentIndex = this.items.length;
-            this.removeItemFromForm(item.item.initData, this.group);
         }
-    }
-
-    removeItemFromForm(item: any, formGroup: FormGroup): void {
-        if (this.removeFromForm)
-            this.removeFromForm(item, formGroup);
-        else if (this.parent)
-            this.parent.removeItemFromForm(item, formGroup);
     }
 
     onItemDrop(event: DragEvent): void {
@@ -325,15 +325,15 @@ export class FormSortableComponent implements ControlValueAccessor {
         this.cancelEvent(event);
         this.itemsBeforeItemAdded = null;
         if (this.pendingItem) {
-            this.processAddedItem(this.pendingItem.item.initData, this.group);
+            this.processAddedItem(this.pendingItem.item.initData);
             this.pendingItem = null;
         }
     }
 
-    processAddedItem(itemData: any, formGroup: FormGroup) {
+    processAddedItem(formControlModel: DynamicFormControlModel) {
         if (this.processAdded)
-            this.processAdded(itemData, formGroup);
+            this.processAdded(formControlModel);
         else if (this.parent)
-            this.parent.processAddedItem(itemData, formGroup);
+            this.parent.processAddedItem(formControlModel);
     }
 }

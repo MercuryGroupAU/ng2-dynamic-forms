@@ -86,7 +86,9 @@ export class DynamicFormService {
         let groupFields: { [id: string]: AbstractControl; } = {};
 
         groupModel.forEach(model => {
-            groupFields[model.id] = this.createControl(model, parent);
+			model.parent = parent;
+            let control = this.createControl(model);
+			groupFields[model.id] = control;
         });
 
         var formGroup = this.formBuilder.group(groupFields, extra);
@@ -96,9 +98,7 @@ export class DynamicFormService {
         return formGroup;
     }
 
-    createControl(model: DynamicFormControlModel,
-        parent: DynamicPathable | null = null) : AbstractControl {
-        model.parent = parent;
+    createControl(model: DynamicFormControlModel) : AbstractControl {
 
         if (model.type === DYNAMIC_FORM_CONTROL_TYPE_ARRAY)
             return this.createFormArray(model as DynamicFormArrayModel);

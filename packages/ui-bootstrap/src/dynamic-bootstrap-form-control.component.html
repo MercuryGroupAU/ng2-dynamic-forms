@@ -1,6 +1,7 @@
 <div [class.form-group]="asBootstrapFormGroup || model.cls.element.container.includes('form-group')"
      [formGroup]="group"
-     [ngClass]="getStyle()">
+     [ngClass]="getStyle()"
+	 (dragover)="onDragover($event)">
 
     <!-- <label *ngIf="type !== 2 && model.label"
            [attr.for]="model.id"
@@ -103,8 +104,7 @@
 								placeholderItem="Drag here"
 								itemClass="sortable-item clearfix"
 								itemActiveClass="sortable-item-active"
-								[parent]="parent"
-								(onItemAdded)="onItemAdded($event)">
+								[parent]="parent">
 							<ng-template #itemTemplate let-item="item" let-group="group" let-parent="parent">
 								<dynamic-bootstrap-form-control
 													  [asBootstrapFormGroup]="false"

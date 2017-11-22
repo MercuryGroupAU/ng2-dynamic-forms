@@ -102,6 +102,11 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
 		this.control.setValue(this.signaturePad.toDataURL());
 	}
 
+    onDragover(event: DragEvent): void {
+		if (this.model.type === DYNAMIC_FORM_CONTROL_TYPE_GROUP)
+			event.stopPropagation();
+    }
+	
 	onResetSignature() {
 		if (this.signaturePad) {
 			this.signaturePad.clear();
