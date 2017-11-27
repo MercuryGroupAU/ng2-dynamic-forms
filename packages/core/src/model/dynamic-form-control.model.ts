@@ -1,5 +1,7 @@
 import { DynamicFormControlRelationGroup, 
-		 DynamicFormControlWorkflowRelation } from "./dynamic-form-control-relation.model";
+		 DynamicFormControlWorkflowRelation,
+		 DynamicFormControlCalculatedRelation
+		} from "./dynamic-form-control-relation.model";
 import { Subject } from "rxjs/Subject";
 import { serializable, serialize } from "../decorator/serializable.decorator";
 import { Utils } from "../utils/core.utils";
@@ -59,6 +61,7 @@ export interface DynamicFormControlModelConfig {
     label?: string;
     relation?: DynamicFormControlRelationGroup[];
 	workflowRelation?: DynamicFormControlWorkflowRelation[];
+	calculatedRelation?: DynamicFormControlCalculatedRelation;
 	step?: number;
 	showLabel?: boolean;
 }
@@ -76,6 +79,7 @@ export abstract class DynamicFormControlModel implements DynamicPathable {
     parent: DynamicPathable | null = null;
     @serializable() relation: DynamicFormControlRelationGroup[];
 	@serializable() workflowRelation: DynamicFormControlWorkflowRelation[];
+	@serializable() calculatedRelation: DynamicFormControlCalculatedRelation;
     @serializable() step: number | null;
 	@serializable() showLabel: boolean;
 
@@ -98,6 +102,7 @@ export abstract class DynamicFormControlModel implements DynamicPathable {
         this.name = this.id;
         this.relation = Array.isArray(config.relation) ? config.relation : [];
 		this.workflowRelation = Array.isArray(config.workflowRelation) ? config.workflowRelation : [];
+		this.calculatedRelation = config.calculatedRelation ? config.calculatedRelation : null;
 
         this.disabledUpdates = new Subject<boolean>();
         this.disabledUpdates.subscribe((value: boolean) => this.disabled = value);

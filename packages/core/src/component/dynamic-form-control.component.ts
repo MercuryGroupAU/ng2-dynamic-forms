@@ -150,6 +150,10 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
             this.setControlRelations();
         }
 		
+		if (this.model.calculatedRelation) {
+			this.setControlCalculatedRelations();
+		}
+		
 		if (!this.dragMode) {
 			// console.log("displaying control model", this.model);
 			// console.log("workflow relations for this control", this.model.workflowRelation);
@@ -263,9 +267,30 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
                 this.subscriptions.push(control.statusChanges.subscribe(() => this.updateModelHidden(relActivationHidden)));
             });
         }
-
     }
 
+	protected setControlCalculatedRelations(): void {
+		//check if calculated relations
+		console.log("CHECKING MODEL", this.model);
+		if (this.model.calculatedRelation.initialControlId) {
+			console.log("model has calculated relations", this.model.calculatedRelation);
+			RelationUtils.getRelatedFormControlsForCalculation(this.model, this.group).forEach(control => {
+				this.subscriptions.push(control.valueChanges.subscribe(() => this.updateModelCalculatedValue()));
+			});
+		}
+	}
+	
+	updateModelCalculatedValue(): void {
+
+		let newValue = RelationUtils.getCalculatedFormControlValue(this.model, this.group);
+		console.log("SETTING NEW VALUE", newValue);
+		if (newValue) {
+			if (this.control.value !== newValue) {
+				this.control.setValue(newValue);
+			}
+		}
+    }
+	
     updateModelDisabled(relation: DynamicFormControlRelationGroup): void {
 
         this.model.disabledUpdates.next(RelationUtils.isFormControlToBeDisabled(relation, this.group));

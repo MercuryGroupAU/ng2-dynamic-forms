@@ -8,6 +8,11 @@ export const DYNAMIC_FORM_CONTROL_ACTION_SHOW = "SHOW";
 export const DYNAMIC_FORM_CONTROL_CONNECTIVE_AND = "AND";
 export const DYNAMIC_FORM_CONTROL_CONNECTIVE_OR = "OR";
 
+export const DYNAMIC_FORM_CONTROL_OPERATOR_ADD = "+";
+export const DYNAMIC_FORM_CONTROL_OPERATOR_SUBSTRACT = "-";
+export const DYNAMIC_FORM_CONTROL_OPERATOR_MULTIPLY = "*";
+export const DYNAMIC_FORM_CONTROL_OPERATOR_DIVIDE = "/";
+
 export interface DynamicFormControlRelation {
 
     id: string;
@@ -27,4 +32,14 @@ export interface DynamicFormControlWorkflowRelation {
 	group?: any;
     workflowAction?: any;
 	workflowResponsible?: any;
+}
+
+export interface DynamicFormControlCalculatedRelation {
+	initialControlId: string;
+	operations: DynamicFormControlCalculatedRelationOperations[];
+}
+
+export interface DynamicFormControlCalculatedRelationOperations {
+	operator: string;
+	controlId: string;
 }

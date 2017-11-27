@@ -16,6 +16,60 @@ import {
 
 export class RelationUtils {
 
+	static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGroup: FormGroup): number | null {
+		let value: number;
+		if (model.id === model.calculatedRelation.initialControlId) {
+			throw new Error(`FormControl ${model.id} cannot depend on itself for initial calculation`);
+		}
+		let initialControl = controlGroup.get(model.calculatedRelation.initialControlId) as FormControl;
+		value = Number(initialControl.value);
+		model.calculatedRelation.operations.forEach(op => {
+			console.log("processing calculated relation", op);
+			if (model.id === op.controlId) {
+                throw new Error(`FormControl ${model.id} cannot depend on itself for calculation`);
+            }
+
+            let operationControl = controlGroup.get(op.controlId) as FormControl;
+			console.log("using operation control", operationControl);
+			if (operationControl && operationControl.value) {
+				if (op.operator === "+")
+					value = value + Number(operationControl.value);
+				if (op.operator === "-")
+					value = value - Number(operationControl.value);
+				if (op.operator === "*")
+					value = value * Number(operationControl.value);
+				if (op.operator === "/")
+					value = value / Number(operationControl.value);
+			}
+			console.log("finishing operation, value is ", value);
+		});
+		console.log("returning final value ", value);
+		return value;
+	}
+
+	static getRelatedFormControlsForCalculation(model: DynamicFormControlModel, controlGroup: FormGroup): FormControl[] {
+		let controls: FormControl[] = [];
+		if (model.id === model.calculatedRelation.initialControlId) {
+			throw new Error(`FormControl ${model.id} cannot depend on itself for initial calculation`);
+		}
+		let initialControl = controlGroup.get(model.calculatedRelation.initialControlId) as FormControl;
+		controls.push(initialControl);
+		if (model.calculatedRelation.operations) {
+			model.calculatedRelation.operations.forEach(op => {
+
+				if (model.id === op.controlId) {
+					throw new Error(`FormControl ${model.id} cannot depend on itself for calculation`);
+				}
+				
+				let operationControl = controlGroup.get(op.controlId) as FormControl;
+				if (operationControl && !controls.some(controlElement => controlElement === operationControl)) {
+					controls.push(operationControl);
+				}
+			});
+		}
+		return controls;
+	}
+	
 	static isFormControlToBeDisabledByWorkflow(workflowRelation: DynamicFormControlWorkflowRelation, workflowActions: any[]): boolean | null  {
 		if ((!workflowActions || workflowActions.length === 0) || !workflowRelation.workflowResponsible) {
 			if (workflowRelation.action === DYNAMIC_FORM_CONTROL_ACTION_DISABLE)
