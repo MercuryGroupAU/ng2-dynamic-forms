@@ -22,28 +22,27 @@ export class RelationUtils {
 			throw new Error(`FormControl ${model.id} cannot depend on itself for initial calculation`);
 		}
 		let initialControl = controlGroup.get(model.calculatedRelation.initialControlId) as FormControl;
-		value = Number(initialControl.value);
-		model.calculatedRelation.operations.forEach(op => {
-			console.log("processing calculated relation", op);
-			if (model.id === op.controlId) {
-                throw new Error(`FormControl ${model.id} cannot depend on itself for calculation`);
-            }
+		value = null;
+		if (!isNaN(initialControl.value)) {
+			value = Number(initialControl.value);
+			model.calculatedRelation.operations.forEach(op => {
+				if (model.id === op.controlId) {
+					throw new Error(`FormControl ${model.id} cannot depend on itself for calculation`);
+				}
 
-            let operationControl = controlGroup.get(op.controlId) as FormControl;
-			console.log("using operation control", operationControl);
-			if (operationControl && operationControl.value) {
-				if (op.operator === "+")
-					value = value + Number(operationControl.value);
-				if (op.operator === "-")
-					value = value - Number(operationControl.value);
-				if (op.operator === "*")
-					value = value * Number(operationControl.value);
-				if (op.operator === "/")
-					value = value / Number(operationControl.value);
-			}
-			console.log("finishing operation, value is ", value);
-		});
-		console.log("returning final value ", value);
+				let operationControl = controlGroup.get(op.controlId) as FormControl;
+				if (operationControl && operationControl.value && !isNaN(operationControl.value)) {
+					if (op.operator === "+")
+						value = value + Number(operationControl.value);
+					if (op.operator === "-")
+						value = value - Number(operationControl.value);
+					if (op.operator === "*")
+						value = value * Number(operationControl.value);
+					if (op.operator === "/")
+						value = value / Number(operationControl.value);
+				}
+			});
+		}
 		return value;
 	}
 
