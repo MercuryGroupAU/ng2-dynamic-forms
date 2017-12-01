@@ -109,8 +109,8 @@ export class FormSortableComponent implements ControlValueAccessor {
             });
         }
 
-        console.log("updating items");
-        console.log(value);
+        //console.log("updating items");
+        //console.log(value);
         this.itemsList = value || [];
         const out = this.items.map((x: FormSortableItem) => x.initData);
         this.onChanged(out);
@@ -120,7 +120,7 @@ export class FormSortableComponent implements ControlValueAccessor {
         if (this.group) {
             for (let ctrlId in this.group.controls) {
                 if (this.group.controls.hasOwnProperty(ctrlId) && !this.itemsList.some(item => item.initData.id === ctrlId)) {
-                    console.log("removing item " + ctrlId);
+                    //console.log("removing item " + ctrlId);
                     this.group.removeControl(ctrlId);
                 }
             }
@@ -128,7 +128,7 @@ export class FormSortableComponent implements ControlValueAccessor {
     }
 
     private addItemToForm(formControlModel: DynamicFormControlModel, formGroup: FormGroup): void {
-        console.log("adding item " + formControlModel.id);
+        //console.log("adding item " + formControlModel.id);
         if (this.createFormControl)
             formGroup.addControl(formControlModel.id, this.createFormControl(formControlModel));
         else if (this.parent)
@@ -153,7 +153,7 @@ export class FormSortableComponent implements ControlValueAccessor {
     }
 
     onItemDragstart(event: DragEvent, item: FormSortableItem, i: number): void {
-        console.log("dragstart: zone " + this.currentZoneIndex);
+        //console.log("dragstart: zone " + this.currentZoneIndex);
         event.stopPropagation();
         this.initDragstartEvent(event);
         this.onTouched();
@@ -182,13 +182,13 @@ export class FormSortableComponent implements ControlValueAccessor {
     }
 
     onItemDragoverWrapper(event: DragEvent): void {
-        console.log("dragover wrapper: zone " + this.currentZoneIndex);
+        //console.log("dragover wrapper: zone " + this.currentZoneIndex);
         this.cancelEvent(event);
         event.stopPropagation();
     }
 
     onItemDragover(event: DragEvent, i: number): void {
-        console.log("dragover item: zone " + this.currentZoneIndex + " item " + i);
+        //console.log("dragover item: zone " + this.currentZoneIndex + " item " + i);
         var item = this.draggableItemService.getItem();
         if (this.sourceOnly || !item)
             return;
@@ -223,7 +223,7 @@ export class FormSortableComponent implements ControlValueAccessor {
     onItemCaptured(item: FormDraggableItem): void {
         // remove the item from the list if it has been dragged away from its original container
         if (!this.sourceOnly && item && item.initialZoneIndex === this.currentZoneIndex) {
-            console.log("item captured: zone " + this.currentZoneIndex + " item " + item.initialIndex);
+            //console.log("item captured: zone " + this.currentZoneIndex + " item " + item.initialIndex);
             // make sure this isn't triggered again
             item.initialZoneIndex = -1;
             this.items = [
@@ -269,7 +269,7 @@ export class FormSortableComponent implements ControlValueAccessor {
     }
 
     onItemDragend(event: DragEvent): void {
-        console.log("dragend: zone " + this.currentZoneIndex);
+        //console.log("dragend: zone " + this.currentZoneIndex);
         event.stopPropagation();
         this.cancelEvent(event);
         const dragItem = this.draggableItemService.getItem();
@@ -288,8 +288,8 @@ export class FormSortableComponent implements ControlValueAccessor {
             this.first = true;
         }
 
-        if (this.first && this.second)
-            console.log("dragenter: zone " + this.currentZoneIndex);
+        // if (this.first && this.second)
+            // console.log("dragenter: zone " + this.currentZoneIndex);
     }
 
     onItemDragleave(event: DragEvent): void {
@@ -301,14 +301,14 @@ export class FormSortableComponent implements ControlValueAccessor {
             this.first = false;
 
         if (!this.first && !this.second && !this.sourceOnly) {
-            console.log("dragleave: zone " + this.currentZoneIndex);
+            //console.log("dragleave: zone " + this.currentZoneIndex);
             this.removePendingItem();
         }
     }
 
     removePendingItem(): void {
         if (this.pendingItem) {
-            console.log("removing pending item");
+            //console.log("removing pending item");
             var item = this.pendingItem;
             this.pendingItem = null;
             this.items = this.itemsBeforeItemAdded;
@@ -320,7 +320,7 @@ export class FormSortableComponent implements ControlValueAccessor {
     }
 
     onItemDrop(event: DragEvent): void {
-        console.log("drop: zone " + this.currentZoneIndex);
+        //console.log("drop: zone " + this.currentZoneIndex);
         event.stopPropagation();
         this.cancelEvent(event);
         this.itemsBeforeItemAdded = null;

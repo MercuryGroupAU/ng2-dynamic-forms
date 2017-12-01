@@ -120,7 +120,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
                 if (this.group) {
 
                     this.control = this.group.get(this.model.id) as FormControl;
-                    this.subscriptions.push(this.control.valueChanges.subscribe(value => this.onControlValueChanges(value)));
+				    this.subscriptions.push(this.control.valueChanges.subscribe(value => this.onControlValueChanges(value)));
                 }
 
                 this.subscriptions.push(this.model.disabledUpdates.subscribe(value => this.onModelDisabledUpdates(value)));
@@ -130,7 +130,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
                 if (this.model instanceof DynamicFormValueControlModel) {
 
                     let model = this.model as DynamicFormValueControlModel<DynamicFormControlValue>;
-
+				
                     this.subscriptions.push(model.valueUpdates.subscribe(value => this.onModelValueUpdates(value)));
                 }
 
@@ -155,23 +155,17 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 		}
 		
 		if (!this.dragMode) {
-			// console.log("displaying control model", this.model);
-			// console.log("workflow relations for this control", this.model.workflowRelation);
 			if (this.model.workflowRelation && this.model.workflowRelation.length > 0) {
 				let everyoneRelations = this.model.workflowRelation.filter(c => c.group.id === 0);
 				everyoneRelations.forEach(eRelation => {
-					//console.log("found relations for EVERYONE", eRelation);
 					this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(eRelation, this.workflowActions));
 					this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(eRelation, this.workflowActions));
 				});
-				//console.log("userGroups", this.userGroups);
 				if (this.userGroups && this.userGroups.length > 0) {
 					this.userGroups.forEach(group => {
 						let groupRelations = this.model.workflowRelation.filter(c => c.group.id === group.id);
-						//console.log("groupRelations:", groupRelations);
 						if (groupRelations) {
 							groupRelations.forEach(gRelation => {
-								//console.log("found relations for group", gRelation);
 								this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(gRelation, this.workflowActions));
 								this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(gRelation, this.workflowActions));
 							});
@@ -250,7 +244,6 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
             this.updateModelDisabled(rel);
 
             RelationUtils.getRelatedFormControls(this.model, this.group).forEach(control => {
-
                 this.subscriptions.push(control.valueChanges.subscribe(() => this.updateModelDisabled(rel)));
                 this.subscriptions.push(control.statusChanges.subscribe(() => this.updateModelDisabled(rel)));
             });
@@ -262,7 +255,6 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
             this.updateModelHidden(relActivationHidden);
 
             RelationUtils.getRelatedFormControls(this.model, this.group).forEach(control => {
-
                 this.subscriptions.push(control.valueChanges.subscribe(() => this.updateModelHidden(relActivationHidden)));
                 this.subscriptions.push(control.statusChanges.subscribe(() => this.updateModelHidden(relActivationHidden)));
             });
@@ -281,10 +273,8 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 	updateModelCalculatedValue(): void {
 
 		let newValue = RelationUtils.getCalculatedFormControlValue(this.model, this.group);
-		if (newValue) {
-			if (this.control.value !== newValue) {
-				this.control.setValue(newValue);
-			}
+		if (this.control.value !== newValue) {
+			this.control.setValue(newValue);
 		}
     }
 	
