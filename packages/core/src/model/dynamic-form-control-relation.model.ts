@@ -41,5 +41,6 @@ export interface DynamicFormControlCalculatedRelation {
 
 export interface DynamicFormControlCalculatedRelationOperations {
 	operator: string;
-	controlId: string;
+	controlId?: string;
+	value?: string;
 }

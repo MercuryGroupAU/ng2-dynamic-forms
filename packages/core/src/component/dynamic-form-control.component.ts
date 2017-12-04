@@ -263,7 +263,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 
 	protected setControlCalculatedRelations(): void {
 		//check if calculated relations
-		if (this.model.calculatedRelation.initialControlId) {
+		if (this.model.calculatedRelation && this.model.calculatedRelation.initialControlId) {
 			RelationUtils.getRelatedFormControlsForCalculation(this.model, this.group).forEach(control => {
 				this.subscriptions.push(control.valueChanges.subscribe(() => this.updateModelCalculatedValue()));
 			});
