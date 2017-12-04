@@ -62,7 +62,6 @@ export interface DynamicFormControlModelConfig {
     relation?: DynamicFormControlRelationGroup[];
 	workflowRelation?: DynamicFormControlWorkflowRelation[];
 	calculatedRelation?: DynamicFormControlCalculatedRelation;
-	step?: number;
 	showLabel?: boolean;
 }
 
@@ -80,7 +79,6 @@ export abstract class DynamicFormControlModel implements DynamicPathable {
     @serializable() relation: DynamicFormControlRelationGroup[];
 	@serializable() workflowRelation: DynamicFormControlWorkflowRelation[];
 	@serializable() calculatedRelation: DynamicFormControlCalculatedRelation;
-    @serializable() step: number | null;
 	@serializable() showLabel: boolean;
 
     abstract readonly type: string;
@@ -113,7 +111,6 @@ export abstract class DynamicFormControlModel implements DynamicPathable {
                 this.cls.grid.container = "ui-grid-row";
         });
 
-        this.step = Utils.isNumber(config.step) ? config.step : null;
 		this.showLabel = typeof config.showLabel === "boolean" ? config.showLabel : true;
     }
 

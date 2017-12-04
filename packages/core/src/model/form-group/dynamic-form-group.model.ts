@@ -23,7 +23,6 @@ export class DynamicFormGroupModel extends DynamicFormControlModel {
     @serializable() group: DynamicFormControlModel[] = [];
     @serializable() legend: string | null;
     @serializable() validator: DynamicValidatorsMap | null;
-    @serializable() step: number | null;
 
     @serializable() readonly type: string = DYNAMIC_FORM_CONTROL_TYPE_GROUP;
 
@@ -35,7 +34,6 @@ export class DynamicFormGroupModel extends DynamicFormControlModel {
         this.group = Array.isArray(config.group) ? config.group : [];
         this.legend = config.legend || null;
         this.validator = config.validator || null;
-		this.step = Utils.isNumber(config.step) ? config.step : null;
     }
 
     get(index: number): DynamicFormControlModel {
