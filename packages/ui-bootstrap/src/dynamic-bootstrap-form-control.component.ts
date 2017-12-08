@@ -65,6 +65,7 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
     @Input() hasErrorMessaging: boolean = false;
     @Input() model: DynamicFormControlModel;
 	@Input() dragMode:boolean = false;
+	@Input() readOnlyMode:boolean = false;
 	@Input() userGroups: any;
 	@Input() workflowActions: any;
 

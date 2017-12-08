@@ -76,6 +76,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     deleteFile: EventEmitter<DocumentEvent>;
     drop: EventEmitter<DropEvent>;
     dragMode: boolean = false;
+	readOnlyMode: boolean = false;
 	userGroups: any[];
 	workflowActions: any[];
 
@@ -156,20 +157,23 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 		
 		if (!this.dragMode) {
 			if (this.model.workflowRelation && this.model.workflowRelation.length > 0) {
-				let everyoneRelations = this.model.workflowRelation.filter(c => c.group.id === 0);
+				let everyoneRelations = this.model.workflowRelation.filter(c => c.group.id === "Everyone");
 				everyoneRelations.forEach(eRelation => {
 					this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(eRelation, this.workflowActions));
 					this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(eRelation, this.workflowActions));
 				});
+				let requestorRelations = this.model.workflowRelation.filter(c => c.group.id === "Requestor");
+				requestorRelations.forEach(rRelation => {
+					this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(rRelation, this.workflowActions));
+					this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(rRelation, this.workflowActions));
+				});
 				if (this.userGroups && this.userGroups.length > 0) {
 					this.userGroups.forEach(group => {
 						let groupRelations = this.model.workflowRelation.filter(c => c.group.id === group.id);
-						if (groupRelations) {
-							groupRelations.forEach(gRelation => {
-								this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(gRelation, this.workflowActions));
-								this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(gRelation, this.workflowActions));
-							});
-						}
+						groupRelations.forEach(gRelation => {
+							this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(gRelation, this.workflowActions));
+							this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(gRelation, this.workflowActions));
+						});
 					});
 				}
 			}

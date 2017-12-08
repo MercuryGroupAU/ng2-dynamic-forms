@@ -19,6 +19,7 @@ export class DynamicBootstrapFormComponent extends DynamicFormComponent {
     @Input() group: FormGroup;
     @Input() model: DynamicFormControlModel[];
 	@Input() dragMode: boolean = false;
+	@Input() readOnlyMode: boolean = false;
 	@Input() userGroups: any[];
 	@Input() workflowActions: any[];
 
