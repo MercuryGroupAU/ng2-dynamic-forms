@@ -143,7 +143,15 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
 
     ngOnInit(): void {
-
+		
+		if (this.model.constructor.name === "DynamicInputModel") {
+			let input = this.model as DynamicInputModel;
+			if (input.inputType === "date" && input.dateDefaultsToday && !input.value) {
+				let today = new Date().toISOString().substring(0, 10);
+				this.control.setValue(today);
+			}
+		}
+		
         if (!Utils.isDefined(this.model) || !Utils.isDefined(this.group)) {
             throw new Error(`no [model] or [group] input set for DynamicFormControlComponent`);
         }
