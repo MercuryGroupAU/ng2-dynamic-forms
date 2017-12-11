@@ -162,14 +162,22 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 					this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(eRelation, this.workflowActions));
 					this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(eRelation, this.workflowActions));
 				});
-				let requestorRelations = this.model.workflowRelation.filter(c => c.group.id === "Requestor");
-				requestorRelations.forEach(rRelation => {
-					this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(rRelation, this.workflowActions));
-					this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(rRelation, this.workflowActions));
-				});
+				// let requestorRelations = this.model.workflowRelation.filter(c => c.group.id === "Requestor");
+				// requestorRelations.forEach(rRelation => {
+					// this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(rRelation, this.workflowActions));
+					// this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(rRelation, this.workflowActions));
+				// });
 				if (this.userGroups && this.userGroups.length > 0) {
 					this.userGroups.forEach(group => {
-						let groupRelations = this.model.workflowRelation.filter(c => c.group.id === group.id);
+						let groupRelations = [];
+						if (group.name === "Requestor") {
+							console.log("ÇHECKING RELATIONS FOR REQUESTOR");
+							groupRelations = this.model.workflowRelation.filter(c => c.group.id === "Requestor");
+						} else {
+							console.log("ÇHECKING RELATIONS FOR ", group);
+							groupRelations = this.model.workflowRelation.filter(c => c.group.id === group.id);
+						}
+						
 						groupRelations.forEach(gRelation => {
 							this.onModelHiddenUpdates(RelationUtils.isFormControlToBeHiddenByWorkflow(gRelation, this.workflowActions));
 							this.onModelDisabledUpdates(RelationUtils.isFormControlToBeDisabledByWorkflow(gRelation, this.workflowActions));

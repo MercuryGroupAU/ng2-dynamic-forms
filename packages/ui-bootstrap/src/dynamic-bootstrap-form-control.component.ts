@@ -86,6 +86,16 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
 		"canvasHeight": 100
     };
   
+	isModelReadOnly() :boolean {
+		if (this.readOnlyMode) {
+			if (this.model.workflowRelation && this.model.workflowRelation.length > 0) {
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+  
 	ngAfterViewInit() {
 		if (this.signaturePad) {
 			this.signaturePad.set("minWidth", 1);

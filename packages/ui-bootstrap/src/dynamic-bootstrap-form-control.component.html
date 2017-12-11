@@ -1,3 +1,4 @@
+<fieldset [disabled]="isModelReadOnly()">
 <div [class.form-group]="asBootstrapFormGroup || model.cls.element.container.includes('form-group')"
      [formGroup]="group"
      [ngClass]="getStyle()"
@@ -277,3 +278,4 @@
         <ng-container *ngTemplateOutlet="template?.templateRef; context: model"></ng-container>
     </ng-container>
 </div>
+</fieldset>
