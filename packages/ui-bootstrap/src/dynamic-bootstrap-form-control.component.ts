@@ -81,9 +81,10 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
 	@ViewChild(SignaturePad) signaturePad: SignaturePad;
 	
 	public signaturePadOptions: Object = { // passed through to szimek/signature_pad constructor
-		"minWidth": 1,
-		"canvasWidth": 200,
-		"canvasHeight": 100
+        "minWidth": 1,
+        "penColor": "rgb(0, 38, 255)",
+        "canvasWidth": 390,
+        "canvasHeight": 100
     };
   
 	isModelReadOnly() :boolean {

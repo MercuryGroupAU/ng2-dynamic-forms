@@ -24,6 +24,7 @@ import { FormSortableItem } from "./form-sortable-item";
   <div
         *ngFor="let item of items; let i=index;"
         [ngClass]="[ itemClass, item.active ? itemActiveClass : '' ]"
+        [ngStyle]="{'cursor':'move'}"
         draggable="true"
         (dragstart)="onItemDragstart($event, item, i)"
         (dragend)="onItemDragend($event)"
