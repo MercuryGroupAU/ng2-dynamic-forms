@@ -14,6 +14,7 @@ import { FormGroup } from "@angular/forms";
 import { Checkbox, DateTime, TextInput, RadioGroup, Range, Select, Toggle } from "ionic-angular";
 import {
     DynamicFormValidationService,
+	DynamicFormService,
     DynamicFormControlComponent,
     DynamicFormControlModel,
     DynamicFormArrayGroupModel,
@@ -77,9 +78,10 @@ export class DynamicIonicFormControlComponent extends DynamicFormControlComponen
     type: IonicFormControlType | null;
 
     constructor(protected changeDetectorRef: ChangeDetectorRef,
-                protected validationService: DynamicFormValidationService) {
+                protected validationService: DynamicFormValidationService,
+				protected dynamicFormService: DynamicFormService) {
 
-        super(changeDetectorRef, validationService);
+        super(changeDetectorRef, validationService, dynamicFormService);
     }
 
     ngOnChanges(changes: SimpleChanges) {

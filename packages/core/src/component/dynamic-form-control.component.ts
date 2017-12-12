@@ -9,7 +9,7 @@ import {
     SimpleChange,
     SimpleChanges
 } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Subscription } from "rxjs/Subscription";
 import { DynamicFormControlModel } from "../model/dynamic-form-control.model";
 import { DynamicFormValueControlModel, DynamicFormControlValue } from "../model/dynamic-form-value-control.model";
@@ -24,6 +24,7 @@ import { DynamicTemplateDirective } from "../directive/dynamic-template.directiv
 import { Utils } from "../utils/core.utils";
 import { RelationUtils } from "../utils/relation.utils";
 import { DynamicFormValidationService } from "../service/dynamic-form-validation.service";
+import { DynamicFormService } from "../service/dynamic-form.service";
 
 export interface DynamicFormControlEvent {
 
@@ -105,7 +106,8 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
     
     constructor(protected changeDetectorRef: ChangeDetectorRef,
-                protected validationService: DynamicFormValidationService) { }
+                protected validationService: DynamicFormValidationService,
+				protected dynamicFormService: DynamicFormService) { }
 
     ngOnChanges(changes: SimpleChanges) {
 
@@ -143,7 +145,15 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
 
     ngOnInit(): void {
-
+		
+		if (this.model.constructor.name === "DynamicInputModel") {
+			let input = this.model as DynamicInputModel;
+			if (input.inputType === "date" && input.dateDefaultsToday && !input.value) {
+				let today = new Date().toISOString().substring(0, 10);
+				this.control.setValue(today);
+			}
+		}
+		
         if (!Utils.isDefined(this.model) || !Utils.isDefined(this.group)) {
             throw new Error(`no [model] or [group] input set for DynamicFormControlComponent`);
         }
@@ -326,8 +336,26 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
 	
 	onModelHiddenUpdates(value?: boolean): void {
+        let m = this.model as DynamicFormValueControlModel<DynamicFormControlValue>;
+        // saving and restoring validators when hiding/showing a control
 		if (value !== null) {
-			value ? this.model.cls.grid.container = "hidden" : this.model.cls.grid.container = "ui-grid-row";
+			if (value) {
+                if (m.validators) {
+                    m.hiddenValidators = m.validators;
+                    this.group.controls[m.id].setValidators([]);
+                    this.group.controls[m.id].updateValueAndValidity();
+                }
+				this.model.cls.grid.container = "hidden";
+			}
+			else {
+				if (m.hiddenValidators) {
+                    m.validators = m.hiddenValidators;
+                    this.group.controls[m.id].setValidators(Validators.compose(this.validationService.getValidators(m.validators || {})));
+                    this.group.controls[m.id].updateValueAndValidity();
+				}
+				this.model.cls.grid.container = "";
+			}
+			//value ? this.model.cls.grid.container = "hidden" : this.model.cls.grid.container = "ui-grid-row";
 		}
     }
 
