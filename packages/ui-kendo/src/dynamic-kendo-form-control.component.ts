@@ -27,6 +27,7 @@ import {
 import { UploadComponent } from "@progress/kendo-angular-upload";
 import {
     DynamicFormValidationService,
+	DynamicFormService,
     DynamicFormControlComponent,
     DynamicFormControlModel,
     DynamicFormArrayGroupModel,
@@ -89,9 +90,10 @@ export class DynamicKendoFormControlComponent extends DynamicFormControlComponen
     type: KendoFormControlType | null;
 
     constructor(protected changeDetectorRef: ChangeDetectorRef,
-                protected validationService: DynamicFormValidationService) {
+                protected validationService: DynamicFormValidationService,
+				protected dynamicFormService: DynamicFormService) {
 
-        super(changeDetectorRef, validationService);
+        super(changeDetectorRef, validationService, dynamicFormService);
     }
 
     ngOnChanges(changes: SimpleChanges) {

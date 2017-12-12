@@ -27,6 +27,7 @@ import {
 } from "primeng/primeng";
 import {
     DynamicFormValidationService,
+	DynamicFormService,
     DynamicFormControlComponent,
     DynamicFormControlModel,
     DynamicFormArrayGroupModel,
@@ -141,9 +142,10 @@ export class DynamicPrimeNGFormControlComponent extends DynamicFormControlCompon
 	
 
     constructor(protected changeDetectorRef: ChangeDetectorRef,
-                protected validationService: DynamicFormValidationService) {
+                protected validationService: DynamicFormValidationService,
+				protected dynamicFormService: DynamicFormService) {
 
-        super(changeDetectorRef, validationService);
+        super(changeDetectorRef, validationService, dynamicFormService);
     }
 
     ngOnChanges(changes: SimpleChanges) {

@@ -16,6 +16,7 @@ export interface DynamicFormValueControlModelConfig<T> extends DynamicFormContro
     required?: boolean;
     tabIndex?: number;
     validators?: DynamicValidatorsMap;
+    hiddenValidators?: DynamicValidatorsMap;
     value?: T;
 }
 
@@ -26,6 +27,7 @@ export abstract class DynamicFormValueControlModel<T> extends DynamicFormControl
     @serializable() required: boolean;
     @serializable() tabIndex: number | null;
     @serializable() validators: DynamicValidatorsMap | null;
+    @serializable() hiddenValidators: DynamicValidatorsMap | null;
     @serializable("value") _value: T | null;
     valueUpdates: Subject<T>;
 
@@ -38,6 +40,7 @@ export abstract class DynamicFormValueControlModel<T> extends DynamicFormControl
         this.required = typeof config.required === "boolean" ? config.required : false;
         this.tabIndex = config.tabIndex || null;
         this.validators = config.validators || null;
+        this.hiddenValidators = config.validators || null;
         this._value = config.value || null;
 
         this.valueUpdates = new Subject<T>();
