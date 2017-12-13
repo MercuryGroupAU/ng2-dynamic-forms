@@ -1,0 +1,13 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\packages",
+    "\\packages\\core",
+    "\\packages\\core\\src",
+    "\\packages\\ui-basic\\src",
+    "\\packages\\ui-bootstrap",
+    "\\packages\\ui-bootstrap\\src"
+  ],
+  "SelectedNode": "\\packages\\ui-bootstrap\\src\\dynamic-bootstrap-form-control.component.html",
+  "PreviewInSolutionExplorer": false
+}

@@ -1,65 +1,37 @@
 <fieldset [disabled]="isModelReadOnly()">
     <div [class.form-group]="asBootstrapFormGroup || model.cls.element.container.includes('form-group')" [formGroup]="group" [ngClass]="getStyle()" (dragover)="onDragover($event)">
     
-<!--<p>Req: {{model.required}} Show Errors: {{showErrorMessages}} Errors: {{errorMessages}} Error Length: {{errorMessages.length}}</p>-->
-    
-        <label *ngIf="((model.label || model.legend) && (model.showLabel || dragMode)) && (type !== 3 || model.type === 'CHECKBOX_GROUP')" [attr.for]="model.id" class="col-sm-3 control-label">
-            <i *ngIf="model.required" class="fa fa-asterisk fa-1" style="color: red" aria-hidden="true"></i>
-            {{model.label}}
-            <ng-container *ngIf="type !== 1 && template?.align === 'LABEL'">
-                <ng-container *ngTemplateOutlet="template?.templateRef; context: model"></ng-container>
-            </ng-container>
-        </label> 
-        <label *ngIf="!model.showLabel && !dragMode" [attr.for]="model.id" class="col-sm-3 control-label">
-            &nbsp;
-        </label> 
+    <!--Label for standard control-->
+    <label *ngIf="((model.label || model.legend) && (model.showLabel || dragMode)) && (type !== 3 || model.type === 'CHECKBOX_GROUP')" [attr.for]="model.id" class="col-sm-3 control-label">
+        <i *ngIf="model.required" class="fa fa-asterisk fa-1" style="color: red" aria-hidden="true"></i>
+        {{model.label}}
+        <ng-container *ngIf="type !== 1 && template?.align === 'LABEL'">
+            <ng-container *ngTemplateOutlet="template?.templateRef; context: model"></ng-container>
+        </ng-container>
+    </label> 
         
-
-    <!--<div *ngIf="(model.label || model.legend) && (model.showLabel || dragMode)">
-        <label *ngIf="type !== 3 || model.type === 'CHECKBOX_GROUP'" [attr.for]="model.id" [ngClass]="model.cls.element.label">
-            <i *ngIf="model.required" class="fa fa-asterisk fa-1" style="color: red" aria-hidden="true"></i>
-            {{model.label}}
-            <ng-container *ngIf="type !== 1 && template?.align === 'LABEL'">
-                <ng-container *ngTemplateOutlet="template?.templateRef; context: model"></ng-container>
-            </ng-container>
-        </label>
-        <legend *ngIf="type === 3 && model.type !== 'CHECKBOX_GROUP'" [attr.for]="model.id" [ngClass]="model.cls.element.label">
-            <i *ngIf="model.required" class="fa fa-asterisk fa-1" style="color: red" aria-hidden="true"></i>
-            {{model.legend}}
-            <ng-container *ngIf="type !== 1 && template?.align === 'LABEL'">
-                <ng-container *ngTemplateOutlet="template?.templateRef; context: model"></ng-container>
-            </ng-container>
-        </legend>
-    </div>-->
+    <!--place holder for control without label-->
+    <label *ngIf="!model.showLabel && !dragMode" [attr.for]="model.id" class="col-sm-3 control-label">&nbsp;</label> 
+        
+    <!--legend for Group-->
+    <legend *ngIf="((model.label || model.legend) && (model.showLabel || dragMode)) && type === 3 && model.type !== 'CHECKBOX_GROUP'" [attr.for]="model.id" [ngClass]="model.cls.element.label">
+        <i *ngIf="model.required" class="fa fa-asterisk fa-1" style="color: red" aria-hidden="true"></i>
+        {{model.legend}}
+        <ng-container *ngIf="type !== 1 && template?.align === 'LABEL'">
+            <ng-container *ngTemplateOutlet="template?.templateRef; context: model"></ng-container>
+        </ng-container>
+    </legend>
 
     <ng-container *ngIf="type !== 1 && template?.align === 'START'">
         <ng-container *ngTemplateOutlet="template?.templateRef; context: model"></ng-container>
     </ng-container>
-
-    <!--Checkbox-->
-    <div *ngIf="type === 2" [ngClass]="model.cls.grid.control" style="border: 2px dotted magenta">
-        <div [class.disabled]="model.disabled" [ngClass]="model.cls.element.control || 'checkbox'">
-            <input type="checkbox"
-                   [attr.tabindex]="model.tabIndex"
-                   [checked]="model.checked"
-                   [dynamicId]="bindId && model.id"
-                   [formControlName]="model.id"
-                   [indeterminate]="model.indeterminate"
-                   [name]="model.name"
-                   [ngClass]="model.cls.element.control"
-                   [required]="model.required"
-                   [value]="model.value"
-                   (blur)="onFocusChange($event)"
-                   (change)="onValueChange($event)"
-                   (focus)="onFocusChange($event)"/>
-        </div>
-    </div>
+        
 
     
     <!-- All except checkbox-->
-    <div *ngIf="type !== 2" [ngClass]="model.cls.grid.control" class="col-sm-7">
+    <div class="col-sm-6">
         <ng-container [ngSwitch]="type">
-            <!--Array-->
+            <!-- 1: Array -->
             <div *ngSwitchCase="1" [dynamicId]="bindId && model.id" [formArrayName]="model.id" [ngClass]="model.cls.element.control">
                 <div *ngFor="let groupModel of model.groups; let idx = index" role="group" [formGroupName]="idx" [ngClass]="[model.cls.element.group, model.cls.grid.group]">
                     <dynamic-bootstrap-form-control *ngFor="let controlModel of groupModel.group"
@@ -77,63 +49,79 @@
                     </dynamic-bootstrap-form-control>
                     <ng-container *ngTemplateOutlet="template?.templateRef; context: groupModel"></ng-container>
                 </div>
+            </div>            
+            <!-- 2: Checkbox -->
+            <div *ngSwitchCase="2" class="fa-border col-sm-1">
+                <input type="checkbox"
+                       [attr.tabindex]="model.tabIndex"
+                       [checked]="model.checked"
+                       [dynamicId]="bindId && model.id"
+                       [formControlName]="model.id"
+                       [indeterminate]="model.indeterminate"
+                       [name]="model.name"
+                       [ngClass]="model.cls.element.control"
+                       [required]="model.required"
+                       [value]="model.value"
+                       (blur)="onFocusChange($event)"
+                       (change)="onValueChange($event)"
+                       (focus)="onFocusChange($event)" />
             </div>
-
-            <!--Group-->
-            <div *ngSwitchCase="3">
-                <fieldset [dynamicId]="bindId && model.id" [formGroupName]="model.id" [name]="model.name" [ngClass]="model.cls.element.control">
-                    <!-- <legend *ngIf="model.legend" [innerHTML]="model.legend"></legend> -->
-                    <div *ngIf="dragMode && model.type !== 'CHECKBOX_GROUP';else formGroupStandardTemplate">
-                        <form-sortable
-                            [(ngModel)]="model.group"
-                            [group]="group.get(model.id)"
-                            [ngModelOptions]="{standalone: true}"
-                            placeholderItem="Drag here"
-                            itemClass="sortable-item clearfix"
-                            itemActiveClass="sortable-item-active"
-                            [parent]="parent">
-                            <ng-template #itemTemplate let-item="item" let-group="group" let-parent="parent">
-                                <dynamic-bootstrap-form-control
-                                    [asBootstrapFormGroup]="false"
-                                    [model]="item.value"
-                                    [group]="group"
-                                    [parent]="parent"
-                                    [hasErrorMessaging]="item.value.hasErrorMessages"
-                                    [templates]="templates"
-                                    [dragMode]="true"
-                                    [ngClass]="[item.value.cls.element.host, item.value.cls.grid.host]"
-                                    (blur)="onFocusChange($event)"
-                                    (change)="onValueChange($event)"
-                                    (focus)="onFocusChange($event)"
-                                    (downloadFile)="onDownloadFile($event)"
-                                    (deleteFile)="onDeleteFile($event)">
-                                </dynamic-bootstrap-form-control>
-                            </ng-template>
-                        </form-sortable>
+            <!-- 3: Group -->
+            <fieldset *ngSwitchCase="3" [dynamicId]="bindId && model.id" [formGroupName]="model.id" [name]="model.name">
+                <!-- <legend *ngIf="model.legend" [innerHTML]="model.legend"></legend> -->
+                <div *ngIf="dragMode && model.type !== 'CHECKBOX_GROUP';else formGroupStandardTemplate">
+                    <form-sortable
+                        [(ngModel)]="model.group"
+                        [group]="group.get(model.id)"
+                        [ngModelOptions]="{standalone: true}"
+                        placeholderItem="Drag here"
+                        itemClass="sortable-item clearfix"
+                        itemActiveClass="sortable-item-active"
+                        [parent]="parent">
+                        <ng-template #itemTemplate let-item="item" let-group="group" let-parent="parent">
+                            <dynamic-bootstrap-form-control
+                                [asBootstrapFormGroup]="false"
+                                [model]="item.value"
+                                [group]="group"
+                                [parent]="parent"
+                                [hasErrorMessaging]="item.value.hasErrorMessages"
+                                [templates]="templates"
+                                [dragMode]="true"
+                                [ngClass]="[item.value.cls.element.host, item.value.cls.grid.host]"
+                                (blur)="onFocusChange($event)"
+                                (change)="onValueChange($event)"
+                                (focus)="onFocusChange($event)"
+                                (downloadFile)="onDownloadFile($event)"
+                                (deleteFile)="onDeleteFile($event)">
+                            </dynamic-bootstrap-form-control>
+                        </ng-template>
+                    </form-sortable>
+                </div>
+                <ng-template #formGroupStandardTemplate>
+                    <div class=" row fa-border">
+                        <div class="col-md-6 col-lg-4" *ngFor="let controlModel of model.group">
+                            <label class="checkbox-inline float-left">
+                                <input type="checkbox"
+                                       [attr.tabindex]="controlModel.tabIndex"
+                                       [checked]="controlModel.checked"
+                                       [dynamicId]="bindId && controlModel.id"
+                                       [formControlName]="controlModel.id"
+                                       [indeterminate]="controlModel.indeterminate"
+                                       [name]="controlModel.name"
+                                       [ngClass]="controlModel.cls.element.control"
+                                       [required]="controlModel.required"
+                                       [value]="controlModel.value"
+                                       (blur)="onFocusChange($event)"
+                                       (change)="onValueChange($event)"
+                                       (focus)="onFocusChange($event)" />
+                                {{controlModel.label}}
+                            </label>
+                        </div>
                     </div>
-                    <ng-template #formGroupStandardTemplate>
-                        <dynamic-bootstrap-form-control *ngFor="let controlModel of model.group"
-                                                        [asBootstrapFormGroup]="false"
-                                                        [group]="group.get(model.id)"
-                                                        [hasErrorMessaging]="controlModel.hasErrorMessages"
-                                                        [model]="controlModel"
-                                                        [templates]="templates"
-                                                        [ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
-                                                        (blur)="onFocusChange($event)"
-                                                        (change)="onValueChange($event)"
-                                                        (focus)="onFocusChange($event)"
-                                                        (downloadFile)="onDownloadFile($event)"
-                                                        (deleteFile)="onDeleteFile($event)">
-                        </dynamic-bootstrap-form-control>
-                    </ng-template>
-                </fieldset>
-            </div>
-            
-            <!--Checkbox-->
-
-
-            <!--Input-->
-            <div *ngSwitchCase="4" [class.input-group]="model.required"><!--model.prefix || model.suffix-->
+                </ng-template>
+            </fieldset>
+            <!-- 4: Input -->
+            <div *ngSwitchCase="4" [class.input-group]="model.required">
                 <!--<div *ngIf="model.prefix" class="input-group-addon" [innerHTML]="model.prefix"></div>-->
                 <input class="form-control"
                        [attr.aria-required]="model.required"
@@ -173,22 +161,24 @@
                     <option *ngFor="let option of model.list" [value]="option">
                 </datalist>
             </div>
-
-            <!--Radio Group-->
-            <fieldset *ngSwitchCase="5" role="radiogroup"
-                      [attr.tabindex]="model.tabIndex"
-                      [dynamicId]="bindId && model.id"
-                      [name]="model.name"
-                      [ngClass]="model.cls.element.control"
-                      (change)="onValueChange($event)">
-                <!--<legend *ngIf="model.legend" [innerHTML]="model.legend"></legend>-->
-                <label class="radio-inline" *ngFor="let option of model.options$ | async">
-                    <input type="radio" [formControlName]="model.id" [name]="model.name" [value]="option.value" (blur)="onFocusChange($event)" (focus)="onFocusChange($event)">
-                    {{option.label}}
-                </label>
-            </fieldset>
-
-            <!--Select / drop down-->
+            <!-- 5: Radio Group -->
+            <div class="fa-border" *ngSwitchCase="5">
+                <fieldset role="radiogroup"
+                          [attr.tabindex]="model.tabIndex"
+                          [dynamicId]="bindId && model.id"
+                          [name]="model.name"
+                          [ngClass]="model.cls.element.control"
+                          (change)="onValueChange($event)">
+                    <!--<legend *ngIf="model.legend" [innerHTML]="model.legend"></legend>-->
+                    <div class="col-md-6 col-lg-4" *ngFor="let option of model.options$ | async">
+                        <label class="radio-inline">
+                            <input type="radio" [formControlName]="model.id" [name]="model.name" [value]="option.value" (blur)="onFocusChange($event)" (focus)="onFocusChange($event)">
+                            {{option.label}}
+                        </label>
+                    </div>
+                </fieldset>
+            </div>
+            <!-- 6: Select / drop down -->
             <div *ngSwitchCase="6" [class.input-group]="model.required">
                 <select class="form-control"
                         [attr.tabindex]="model.tabIndex"
@@ -206,8 +196,7 @@
                 <div *ngIf="model.required && errorMessages.length <=0" class="input-group-addon"><i class="fa fa-check fa-fw" style="color: green" aria-hidden="true"></i></div>
                 <div *ngIf="model.required && errorMessages.length >0" class="input-group-addon"><i class="fa fa-exclamation-circle fa-fw" style="color: red" aria-hidden="true"></i></div>
             </div>
-
-            <!--Text Area-->
+            <!-- 7: Text Area -->
             <textarea *ngSwitchCase="7" class="form-control"
                           [attr.tabindex]="model.tabIndex"
                           [dynamicId]="bindId && model.id"
@@ -227,11 +216,9 @@
                           (change)="onValueChange($event)"
                           (focus)="onFocusChange($event)">
             </textarea>
-
-            <!--Disclaimer-->
+            <!-- 8: Disclaimer-->
             <div [innerHTML]="model.content" *ngSwitchCase="8" [ngStyle]="model.style"></div>
-
-            <!--Signature-->
+            <!-- 9: Signature -->
             <div *ngSwitchCase="9" [ngClass]="model.cls.element.control">
                 <div *ngIf="!dragMode" class="col-sm-7" style="border: 1px solid #ccc;border-radius: 4px; width: 400px;">
                     <signature-pad [options]="signaturePadOptions" (onEndEvent)="drawComplete()"></signature-pad>
@@ -240,15 +227,11 @@
                     <button (click)="onResetSignature()" class="btn btn-danger">Reset</button>
                 </div>
             </div>
-
-            <!--Help Message-->
-            <!--<span *ngIf="hasHint" class="help-block" [innerHTML]="model.hint" [ngClass]="model.cls.element.hint"></span>-->
-
         </ng-container>
     </div>
 
-    <!--Required Message-->
-    <div class="col-sm-2">
+    <!--Validation Error Message-->
+    <div class="col-sm-3">
         <div *ngIf="showErrorMessages" class="validation alert alert-danger small">
             <ng-container *ngFor="let message of errorMessages" >{{ message }}</ng-container> 
         </div>
