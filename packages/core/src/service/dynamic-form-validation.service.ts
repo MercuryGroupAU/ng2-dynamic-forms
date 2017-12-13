@@ -173,6 +173,10 @@ export class DynamicFormValidationService {
                     let messageKey = Utils.equals(errorCode, "minlength", "maxlength") ?
                         errorCode.replace("length", "Length") : errorCode;
 
+					if (model.type === "CHECKBOX" && messageKey === "required") {
+						messageKey = "requiredTrue";
+					}
+					
                     if (errorMessages.hasOwnProperty(messageKey)) {
 
                         let error = control.getError(errorCode),
