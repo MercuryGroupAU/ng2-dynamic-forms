@@ -36,6 +36,7 @@ export interface DynamicInputModelConfig extends DynamicInputControlModelConfig<
 	documentId?: number;
     documentName?: string;
 	dateDefaultsToday?: boolean;
+	directiveInputType?: string;
 }
 
 export class DynamicInputModel extends DynamicInputControlModel<string | number | Date | string[]> {
@@ -53,7 +54,7 @@ export class DynamicInputModel extends DynamicInputControlModel<string | number 
     @serializable() documentId: number | null;
     @serializable() documentName: string | null;
 	@serializable() dateDefaultsToday: boolean | null;
-
+	@serializable() directiveInputType: string;
 
     private listId: string | null = null;
 
@@ -75,7 +76,8 @@ export class DynamicInputModel extends DynamicInputControlModel<string | number 
         this.documentId = Utils.isNumber(config.documentId) ? config.documentId : null;
         this.documentName = config.documentName || null;
 		this.dateDefaultsToday = typeof config.dateDefaultsToday === "boolean" ? config.dateDefaultsToday : null;
-
+		this.directiveInputType = config.directiveInputType || null;
+		
         if (this.list) {
             this.listId = `${this.id}List`;
         }

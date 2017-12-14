@@ -1,13 +1,15 @@
 import {
     AfterViewInit,
     ChangeDetectorRef,
+	ApplicationRef,
     EventEmitter,
     OnChanges,
     OnDestroy,
     OnInit,
     QueryList,
     SimpleChange,
-    SimpleChanges
+    SimpleChanges,
+	ViewChild
 } from "@angular/core";
 import { FormControl, FormGroup, Validators } from "@angular/forms";
 import { Subscription } from "rxjs/Subscription";
@@ -21,6 +23,7 @@ import {
     DYNAMIC_FORM_CONTROL_INPUT_TYPE_FILE
 } from "../model/input/dynamic-input.model";
 import { DynamicTemplateDirective } from "../directive/dynamic-template.directive";
+import { DynamicInputDirective } from "../directive/dynamic-input.directive";
 import { Utils } from "../utils/core.utils";
 import { RelationUtils } from "../utils/relation.utils";
 import { DynamicFormValidationService } from "../service/dynamic-form-validation.service";
@@ -57,6 +60,7 @@ export enum DynamicFormControlEventType {
 
 export abstract class DynamicFormControlComponent implements OnChanges, OnInit, AfterViewInit, OnDestroy {
 
+    @ViewChild(DynamicInputDirective) dynamicInputDirective: DynamicInputDirective;
     bindId: boolean;
     context: DynamicFormArrayGroupModel | null;
     control: FormControl;
@@ -244,7 +248,6 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
                     this.template = template;
                 }
             }
-
         });
     }
 
@@ -289,7 +292,10 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 
 		let newValue = RelationUtils.getCalculatedFormControlValue(this.model, this.group);
 		if (this.control.value !== newValue) {
-			this.control.setValue(newValue);
+            this.control.setValue(newValue);
+            if (this.dynamicInputDirective && (this.model as DynamicInputModel).directiveInputType === "currency") {
+                this.dynamicInputDirective.onBlur(newValue);
+            }
 		}
     }
 	

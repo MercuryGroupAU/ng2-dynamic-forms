@@ -24,8 +24,10 @@ static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGrou
 		}
 		let initialControl = controlGroup.get(model.calculatedRelation.initialControlId) as FormControl;
 		value = null;
-		// text caltulation (numbers only)
-		if ((model as DynamicInputModel).inputType && (model as DynamicInputModel).inputType === "text") {
+		// text calculation (numbers & currency only)
+		let type = (model as DynamicInputModel).inputType;
+		let directiveType = (model as DynamicInputModel).directiveInputType;
+		if ((type && type === "number") || (directiveType && directiveType === "currency")) {
 			if (!isNaN(initialControl.value)) {
 				value = Number(initialControl.value);
 				model.calculatedRelation.operations.forEach(op => {

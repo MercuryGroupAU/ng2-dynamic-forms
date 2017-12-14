@@ -5,6 +5,7 @@ import { DynamicFormService } from "./service/dynamic-form.service";
 import { DynamicFormValidationService } from "./service/dynamic-form-validation.service";
 import { DynamicIdDirective } from "./directive/dynamic-id.directive";
 import { DynamicTemplateDirective } from "./directive/dynamic-template.directive";
+import { DynamicInputDirective, DynamicTelephonePipe, DynamicCurrencyPipe } from "./directive/dynamic-input.directive";
 
 @NgModule({
 
@@ -14,11 +15,17 @@ import { DynamicTemplateDirective } from "./directive/dynamic-template.directive
     ],
     declarations: [
         DynamicIdDirective,
-        DynamicTemplateDirective
+        DynamicTemplateDirective,
+		DynamicInputDirective,
+		DynamicTelephonePipe,
+		DynamicCurrencyPipe
     ],
     exports: [
         DynamicIdDirective,
-        DynamicTemplateDirective
+        DynamicTemplateDirective,
+		DynamicInputDirective,
+		DynamicTelephonePipe,
+		DynamicCurrencyPipe
     ]
 })
 
@@ -32,7 +39,9 @@ export class DynamicFormsCoreModule {
 
             providers: [
                 DynamicFormService,
-                DynamicFormValidationService
+                DynamicFormValidationService,
+				DynamicTelephonePipe,
+				DynamicCurrencyPipe
             ]
         };
     }

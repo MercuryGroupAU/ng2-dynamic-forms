@@ -149,7 +149,8 @@
                        [type]="model.inputType"
                        (blur)="onFocusChange($event)"
                        (change)="onValueChange($event)"
-                       (focus)="onFocusChange($event)"/>
+                       (focus)="onFocusChange($event)"
+					   dynamicInput="{{model.directiveInputType}}"/>
                 <div *ngIf="model.required && errorMessages.length <=0" class="input-group-addon"><i class="fa fa-check fa-fw" style="color: green" aria-hidden="true"></i></div>
                 <div *ngIf="model.required && errorMessages.length >0" class="input-group-addon"><i class="fa fa-exclamation-circle fa-fw" style="color: red" aria-hidden="true"></i></div>
                 <!--<div *ngIf="model.suffix" class="input-group-addon" [innerHTML]="model.suffix"></div>-->

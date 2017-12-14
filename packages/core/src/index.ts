@@ -5,6 +5,7 @@ export * from "./decorator/serializable.decorator";
 
 export * from "./directive/dynamic-template.directive";
 export * from "./directive/dynamic-id.directive";
+export * from "./directive/dynamic-input.directive";
 
 export * from "./model/dynamic-form-control.model";
 export * from "./model/dynamic-form-value-control.model";
