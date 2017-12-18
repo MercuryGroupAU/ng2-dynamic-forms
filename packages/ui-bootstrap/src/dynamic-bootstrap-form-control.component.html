@@ -28,7 +28,7 @@
         
 
     
-    <!-- All except checkbox-->
+    <!-- All types-->
     <div class="col-sm-6">
         <ng-container [ngSwitch]="type">
             <!-- 1: Array -->
@@ -218,7 +218,7 @@
                           (focus)="onFocusChange($event)">
             </textarea>
             <!-- 8: Disclaimer-->
-            <div [innerHTML]="model.content" *ngSwitchCase="8" [ngStyle]="model.style"></div>
+            <div [innerHTML]="model.content | safe: 'html'" *ngSwitchCase="8" [ngStyle]="model.style"></div>
             <!-- 9: Signature -->
             <div *ngSwitchCase="9" [ngClass]="model.cls.element.control">
                 <div *ngIf="!dragMode" class="col-sm-7" style="border: 1px solid #ccc;border-radius: 4px; width: 400px;">
