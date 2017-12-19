@@ -106,9 +106,10 @@ export class DynamicInputDirective implements OnInit {
     }
 
     ngOnInit() {
-        if (this.inputType === "currency" || this.inputType === "telephone") {
-            if (this.el.style) this.el.style.maxWidth = "180px";
-        }
+		//disabling this, it looks weird for required phone/currency fields
+        //if (this.inputType === "currency" || this.inputType === "telephone") {
+        //    if (this.el.style) this.el.style.maxWidth = "180px";
+        //}
     }
 	
     @HostListener("focus", ["$event.target.value"])
