@@ -4,10 +4,11 @@
     "\\packages",
     "\\packages\\core",
     "\\packages\\core\\src",
-    "\\packages\\ui-basic\\src",
+    "\\packages\\core\\src\\component",
+    "\\packages\\core\\src\\pipes",
     "\\packages\\ui-bootstrap",
     "\\packages\\ui-bootstrap\\src"
   ],
-  "SelectedNode": "\\packages\\ui-bootstrap\\src\\dynamic-bootstrap-form-control.component.html",
+  "SelectedNode": "\\packages\\core\\src\\pipes\\safe.pipe.ts",
   "PreviewInSolutionExplorer": false
 }
