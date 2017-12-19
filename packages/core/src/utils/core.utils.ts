@@ -102,4 +102,15 @@ export class Utils {
 
         return Utils.isString(value) && regexDateISO.test(value) ? new Date(value) : value;
     }
+	
+	static addDaysToToday(days: number):string {
+		let date: Date;
+		date = new Date();
+		date.setDate(date.getDate() + days);
+		var curr_date = date.getDate();
+		var curr_month = date.getMonth() + 1;
+		var curr_year = date.getFullYear();
+		let dateString = curr_year + "-" + curr_month + "-" + curr_date;
+		return dateString;
+	}
 }

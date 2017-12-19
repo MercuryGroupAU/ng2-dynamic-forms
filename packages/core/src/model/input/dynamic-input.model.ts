@@ -28,8 +28,12 @@ export interface DynamicInputModelConfig extends DynamicInputControlModelConfig<
     inputType?: string;
     list?: string[];
     mask?: string | RegExp | (string | RegExp)[];
+	startDate?: number | string | Date;
+	startDateAdditionalDays?: string;
     max?: number | string | Date;
+	maxAdditionalDays?: string;
     min?: number | string | Date;
+	minAdditionalDays?: string;
     multiple?: boolean;
     pattern?: string;
     step?: number;
@@ -46,8 +50,12 @@ export class DynamicInputModel extends DynamicInputControlModel<string | number 
     files: FileList | null = null;
     @serializable() list: string[] | null;
     @serializable() mask: string | RegExp | (string | RegExp)[] | null;
+	@serializable() startDate: number | string | Date | null;
+	@serializable() startDateAdditionalDays: string | null;
     @serializable() max: number | string | Date | null;
+	@serializable() maxAdditionalDays: string | null;
     @serializable() min: number | string | Date | null;
+	@serializable() minAdditionalDays: string | null;
     @serializable() multiple: boolean | null;
     @serializable() pattern: string | null;
     @serializable() step: number | null;
@@ -68,8 +76,12 @@ export class DynamicInputModel extends DynamicInputControlModel<string | number 
         this.inputType = config.inputType || DYNAMIC_FORM_CONTROL_INPUT_TYPE_TEXT;
         this.list = Array.isArray(config.list) ? config.list : null;
         this.mask = config.mask || null;
+		this.startDate = config.startDate !== undefined ? config.startDate : null;
+		this.startDateAdditionalDays = config.startDateAdditionalDays || null;
         this.max = config.max !== undefined ? config.max : null;
+		this.maxAdditionalDays = config.maxAdditionalDays || null;
         this.min = config.min !== undefined ? config.min : null;
+		this.minAdditionalDays = config.minAdditionalDays || null;
         this.multiple = typeof config.multiple === "boolean" ? config.multiple : null;
         this.pattern = config.pattern || null;
         this.step = typeof config.step === "number" ? config.step : null;

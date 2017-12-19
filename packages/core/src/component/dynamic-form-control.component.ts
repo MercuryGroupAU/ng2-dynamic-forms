@@ -152,9 +152,22 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 		
 		if (this.model.constructor.name === "DynamicInputModel") {
 			let input = this.model as DynamicInputModel;
-			if (input.inputType === "date" && input.dateDefaultsToday && !input.value) {
-				let today = new Date().toISOString().substring(0, 10);
-				this.control.setValue(today);
+			if (input.inputType === "date" && !this.dragMode) {
+				//for dates on load of a real form (not drag mode)
+				//determine their default date & ranges
+				if ((input.startDateAdditionalDays || input.startDate) && !input.value) {
+					if (input.startDateAdditionalDays) {
+						this.control.setValue(Utils.addDaysToToday(Number(input.startDateAdditionalDays)));
+					} else {
+						this.control.setValue(input.startDate);
+					}
+				}
+				if (input.minAdditionalDays && !input.min) {
+					input.min = Utils.addDaysToToday(Number(input.minAdditionalDays));
+				}
+				if (input.maxAdditionalDays && !input.max) {
+					input.max = Utils.addDaysToToday(Number(input.maxAdditionalDays));
+				}
 			}
 		}
 		

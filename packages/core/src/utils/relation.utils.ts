@@ -62,11 +62,11 @@ static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGrou
 			if (model.calculatedRelation.operations[0].operator === "-") {
 				date.setDate(startDate.getDate() - Number(model.calculatedRelation.operations[0].value));
 			}
-			// var curr_date = date.getDate();
-			// var curr_month = date.getMonth() + 1;
-			// var curr_year = date.getFullYear();
-			// let dateString = curr_year + "-" + curr_month + "-" + curr_date;
-			let dateString = date.toISOString().substring(0, 10);
+			var curr_date = date.getDate();
+			var curr_month = date.getMonth() + 1;
+			var curr_year = date.getFullYear();
+			let dateString = curr_year + "-" + curr_month + "-" + curr_date;
+			//let dateString = date.toISOString().substring(0, 10);
 			return dateString;
 		}
 		
