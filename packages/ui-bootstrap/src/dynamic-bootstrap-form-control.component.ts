@@ -112,7 +112,9 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
 	}
 
 	drawComplete() {
-		this.control.setValue(this.signaturePad.toDataURL());
+		if (!this.isModelReadOnly()) {
+			this.control.setValue(this.signaturePad.toDataURL());
+		}
 	}
 
     onDragover(event: DragEvent): void {

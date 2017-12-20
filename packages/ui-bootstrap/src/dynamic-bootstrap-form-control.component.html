@@ -224,7 +224,7 @@
                 <div *ngIf="!dragMode" class="col-sm-7" style="border: 1px solid #ccc;border-radius: 4px; width: 400px;">
                     <signature-pad [options]="signaturePadOptions" (onEndEvent)="drawComplete()"></signature-pad>
                 </div>
-                <div *ngIf="!dragMode" class="col-sm-2">
+                <div *ngIf="!dragMode && !isModelReadOnly()" class="col-sm-2">
                     <button (click)="onResetSignature()" class="btn btn-danger">Reset</button>
                 </div>
             </div>
