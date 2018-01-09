@@ -68,7 +68,14 @@
                             <th>Edit</th>
                             <th>Delete</th>
                             <tr *ngFor="let groupModel of model.groups; let idx = index">
-                                <td *ngFor="let controlModel of groupModel.group">{{controlModel.value}}</td>
+                                <td *ngFor="let controlModel of groupModel.group">
+									<span *ngIf="controlModel.type === 'INPUT' && controlModel.inputType === 'file' && controlModel.files?.length > 0; else regularValue" >
+										{{controlModel.files[0].name}}
+									</span>
+									<ng-template #regularValue>
+										{{controlModel.value}}
+									</ng-template
+								</td>
                                 <td>
                                     <!-- <button type="button" class="btn btn-danger btn-sm rounded" (click)="removeArrayLine(context, index)">&#10005;</button> -->
                                     <a class="btn btn-primary" aria-label="Edit" title="Edit row" tooltip="Edit row" (click)="editArrayItem(idx);staticModal.show();">
@@ -89,7 +96,10 @@
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h4 class="modal-title pull-left">Array Item</h4>
+                                        <h4 class="modal-title pull-left">
+											<span *ngIf="isEditArrayItem; else addItemTemplate">Edit Item</span>
+											<ng-template #addItemTemplate>Add Item</ng-template>
+										</h4>
                                     </div>
                                     <div class="modal-body">
                                         <div>
@@ -225,9 +235,12 @@
                     <div *ngIf="model.required && errorMessages.length <=0" class="input-group-addon"><i class="fa fa-check fa-fw" style="color: green" aria-hidden="true"></i></div>
                     <div *ngIf="model.required && errorMessages.length >0" class="input-group-addon"><i class="fa fa-exclamation-circle fa-fw" style="color: red" aria-hidden="true"></i></div>
                     <!--<div *ngIf="model.suffix" class="input-group-addon" [innerHTML]="model.suffix"></div>-->
-                    <div *ngIf="model.inputType === 'file' && model.documentId !== null && !dragMode">
-                        <a href="#" (click)="onDownloadFile($event); false">{{model.documentName}}</a>
-                        <button (click)="onDeleteFile($event)">remove</button>
+                    <div *ngIf="model.inputType === 'file' && !dragMode">
+						<div *ngIf="model.documentId !== null; else showNameTemplate">
+							<a href="#" (click)="onDownloadFile($event); false">{{model.documentName}}</a>
+							<button (click)="onDeleteFile($event)">remove</button>
+						</div>
+						<ng-template #showNameTemplate><label *ngIf="model.documentName">{{model.documentName}}</label></ng-template>
                     </div>
                     <datalist *ngIf="model.list" [id]="model.listId">
                         <option *ngFor="let option of model.list" [value]="option">

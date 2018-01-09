@@ -17,6 +17,7 @@ import {
 	DynamicFormService,
     DynamicFormControlModel,
     DynamicFormArrayGroupModel,
+	DynamicInputModel,
     DynamicFormControlComponent,
     DynamicFormControlEvent,
 	DocumentEvent,
@@ -89,20 +90,12 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
     editedArrayitemIndex?: number;
     arrayItemGroup: FormGroup;
 	addArrayItem() {
-		//let formArrayModel = this.dynamicFormService.findById(this.model.id, this.formModel) as DynamicFormArrayModel;
-	    //this.arrayItem = (this.model as DynamicFormArrayModel).groupFactory();
-		//this.arrayItem = new DynamicFormArrayGroupModel((this.model as DynamicFormArrayModel), (this.model as DynamicFormArrayModel).groupFactory());
-		
-		let formArrayControl = this.group.get(this.model.id) as FormArray; 
-		this.dynamicFormService.addFormArrayGroup(formArrayControl, (this.model as DynamicFormArrayModel));
-        this.arrayItem = (this.model as DynamicFormArrayModel).groups[(this.model as DynamicFormArrayModel).groups.length - 1];
+		this.arrayItem = new DynamicFormArrayGroupModel(null, (this.model as DynamicFormArrayModel).groupFactory());
 	    this.arrayItemGroup = this.dynamicFormService.createFormGroup(this.arrayItem.group);
 		this.showArrayModal = true;
 	}
 	
     cancelArrayItem() {
-        if (!this.isEditArrayItem)
-            this.removeArrayLine((this.model as DynamicFormArrayModel).groups.length - 1);
         this.arrayItem = null;
         this.arrayItemGroup = null;
 		this.showArrayModal = false;
@@ -114,18 +107,32 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
 		this.showArrayModal = true;
 		this.isEditArrayItem = true;
 		this.editedArrayitemIndex = index;
-        this.arrayItem = (this.model as DynamicFormArrayModel).groups[index];
+		this.arrayItem = new DynamicFormArrayGroupModel(null, (this.model as DynamicFormArrayModel).groupFactory(), (this.model as DynamicFormArrayModel).groups[index].index);
+		this.arrayItem.group.forEach(ctrl => {
+			let octrl = (this.model as DynamicFormArrayModel).groups[index].group.filter(c => c.id === ctrl.id)[0];
+			(ctrl as DynamicFormValueControlModel<any>).value = (octrl as DynamicFormValueControlModel<any>).value;
+			if (ctrl.type === "INPUT" && (ctrl as DynamicInputModel).inputType === "file") {
+				console.log("ASSIGNING FILES STUFF", octrl);
+				(ctrl as DynamicInputModel).files = (octrl as DynamicInputModel).files;
+				if ((octrl as DynamicInputModel).documentId) {
+					(ctrl as DynamicInputModel).documentId = (octrl as DynamicInputModel).documentId;
+					(ctrl as DynamicInputModel).documentName = (octrl as DynamicInputModel).documentName;
+				} else if ((octrl as DynamicInputModel).files && (octrl as DynamicInputModel).files.length > 0) {
+				}   (ctrl as DynamicInputModel).documentName = (octrl as DynamicInputModel).files[0].name;
+				console.log("AFTER ASSIGN", ctrl);
+			}
+		});
 	    this.arrayItemGroup = this.dynamicFormService.createFormGroup(this.arrayItem.group);
 	}
 	
 	saveArrayItem() {
 		let formArrayControl = this.group.get(this.model.id) as FormArray; 
-		if (!this.isEditArrayItem) {
-			(this.model as DynamicFormArrayModel).groups[this.editedArrayitemIndex] = this.arrayItem; 
+		if (this.isEditArrayItem) {
+			(this.model as DynamicFormArrayModel).groups[this.editedArrayitemIndex].group = this.arrayItem.group; 
 		}
 		else {
 			this.dynamicFormService.addExistingFormArrayGroup(formArrayControl, (this.model as DynamicFormArrayModel), this.arrayItem.group);
-        }
+		}
         this.arrayItem = null;
 	    this.arrayItemGroup = null;
 		this.editedArrayitemIndex = null;
