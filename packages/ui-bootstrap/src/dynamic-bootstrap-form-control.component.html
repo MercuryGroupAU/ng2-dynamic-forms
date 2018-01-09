@@ -2,7 +2,7 @@
     <div [class.form-group]="asBootstrapFormGroup || model.cls.element.container.includes('form-group')" [formGroup]="group" [ngClass]="getStyle()">
         <!-- (dragover)="onDragover($event)" -->
         <!--Label for standard control-->
-        <label *ngIf="((model.label || model.legend) && (model.showLabel || dragMode)) && (type !== 3 || model.type === 'CHECKBOX_GROUP')" [attr.for]="model.id" class="col-sm-3 control-label">
+        <label *ngIf="((model.label || model.legend) && (model.showLabel || dragMode)) && (type !== 3 || model.type === 'CHECKBOX_GROUP')" [attr.for]="model.id" class="col-sm-2 control-label">
             <i *ngIf="model.required" class="fa fa-asterisk fa-1" style="color: red" aria-hidden="true"></i>
             {{model.label}}
             <ng-container *ngIf="template?.align === 'LABEL'">
@@ -11,7 +11,7 @@
         </label>
 
         <!--place holder for control without label-->
-        <label *ngIf="!model.showLabel && !dragMode" [attr.for]="model.id" class="col-sm-3 control-label">&nbsp;</label>
+        <label *ngIf="!model.showLabel && !dragMode" [attr.for]="model.id" class="col-sm-2 control-label">&nbsp;</label>
 
         <!--legend for Group-->
         <legend *ngIf="((model.label || model.legend) && (model.showLabel || dragMode)) && type === 3 && model.type !== 'CHECKBOX_GROUP'" [attr.for]="model.id" [ngClass]="model.cls.element.label">
@@ -26,10 +26,8 @@
             <ng-container *ngTemplateOutlet="template?.templateRef; context: model"></ng-container>
         </ng-container>
 
-
-
         <!-- All types-->
-        <div class="col-sm-6">
+        <div class="col-sm-7">
             <ng-container [ngSwitch]="type">
                 <!-- 1: Array -->
                 <div *ngSwitchCase="1" [dynamicId]="bindId && model.id" [formArrayName]="model.id" [ngClass]="model.cls.element.control">

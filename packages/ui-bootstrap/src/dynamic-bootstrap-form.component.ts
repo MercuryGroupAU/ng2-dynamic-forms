@@ -18,17 +18,17 @@ export class DynamicBootstrapFormComponent extends DynamicFormComponent {
 
     @Input() group: FormGroup;
     @Input() model: DynamicFormControlModel[];
-	@Input() dragMode: boolean = false;
-	@Input() readOnlyMode: boolean = false;
+	@Input() dragMode = false;
+	@Input() readOnlyMode = false;
 	@Input() userGroups: any[];
 	@Input() workflowActions: any[];
 
-    @Output() blur: EventEmitter<DynamicFormControlEvent> = new EventEmitter<DynamicFormControlEvent>();
-    @Output() change: EventEmitter<DynamicFormControlEvent> = new EventEmitter<DynamicFormControlEvent>();
-    @Output() focus: EventEmitter<DynamicFormControlEvent> = new EventEmitter<DynamicFormControlEvent>();
-	@Output() downloadFile: EventEmitter<DocumentEvent> = new EventEmitter<DocumentEvent>();
-    @Output() deleteFile: EventEmitter<DocumentEvent> = new EventEmitter<DocumentEvent>();
-    @Output() drop: EventEmitter<DropEvent> = new EventEmitter<DropEvent>();
+    @Output() blur = new EventEmitter<DynamicFormControlEvent>();
+    @Output() change = new EventEmitter<DynamicFormControlEvent>();
+    @Output() focus = new EventEmitter<DynamicFormControlEvent>();
+	@Output() downloadFile = new EventEmitter<DocumentEvent>();
+    @Output() deleteFile = new EventEmitter<DocumentEvent>();
+    @Output() drop = new EventEmitter<DropEvent>();
 
     @ContentChildren(DynamicTemplateDirective) templates: QueryList<DynamicTemplateDirective>;
 
