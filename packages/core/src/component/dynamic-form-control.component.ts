@@ -68,6 +68,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     hasErrorMessaging: boolean = false;
     hasFocus: boolean;
     model: DynamicFormControlModel;
+	formModel: DynamicFormControlModel[];
 
     contentTemplates: QueryList<DynamicTemplateDirective>;
     inputTemplates: QueryList<DynamicTemplateDirective> | null = null;
@@ -94,7 +95,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
     
     onDownloadFile($event: Event | CustomEvent | DynamicFormControlEvent | any) {
-		if (this.model.constructor.name === "DynamicInputModel") {
+		if (this.model.type === "INPUT") {
 			this.downloadFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId, parentId: null });
 		} else {
 			this.downloadFile.emit({ modelId: ($event as any).modelId, documentId: ($event as any).documentId, parentId: ($event as any).parentId });
@@ -102,7 +103,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
     
     onDeleteFile($event: Event | CustomEvent | DynamicFormControlEvent | any) {
-		if (this.model.constructor.name === "DynamicInputModel") {
+		if (this.model.type === "INPUT") {
 			this.deleteFile.emit({ modelId: this.model.id, documentId: (this.model as DynamicInputModel).documentId, parentId: null });
 		} else {
 			this.deleteFile.emit({ modelId: ($event as any).modelId, documentId: ($event as any).documentId, parentId: ($event as any).parentId });
@@ -125,7 +126,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
                 this.unsubscribe();
 
                 if (this.group) {
-
+					//console.log("ON CHANGES GROUP", this.group);
                     this.control = this.group.get(this.model.id) as FormControl;
 				    this.subscriptions.push(this.control.valueChanges.subscribe(value => this.onControlValueChanges(value)));
                 }
@@ -150,7 +151,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 
     ngOnInit(): void {
 		
-		if (this.model.constructor.name === "DynamicInputModel") {
+		if (this.model.type === "INPUT") {
 			let input = this.model as DynamicInputModel;
 			if (input.inputType === "date" && !this.dragMode) {
 				//for dates on load of a real form (not drag mode)
@@ -296,7 +297,8 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 		//check if calculated relations
 		if (this.model.calculatedRelation && this.model.calculatedRelation.initialControlId) {
 			RelationUtils.getRelatedFormControlsForCalculation(this.model, this.group).forEach(control => {
-				this.subscriptions.push(control.valueChanges.subscribe(() => this.updateModelCalculatedValue()));
+				if (control)
+					this.subscriptions.push(control.valueChanges.subscribe(() => this.updateModelCalculatedValue()));
 			});
 		}
 	}

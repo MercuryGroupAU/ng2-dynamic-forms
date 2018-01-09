@@ -215,6 +215,12 @@ export class DynamicFormService {
         }
     }
 
+	addExistingFormArrayGroup(formArray: FormArray, model: DynamicFormArrayModel, item: DynamicFormControlModel[] ): void {
+
+        let groupModel = model.addExistingGroup(item);
+
+        formArray.push(this.createFormGroup(groupModel.group, null, groupModel));
+    }
 
     addFormArrayGroup(formArray: FormArray, model: DynamicFormArrayModel): void {
 

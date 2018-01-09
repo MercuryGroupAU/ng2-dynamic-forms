@@ -13,6 +13,7 @@ export class DynamicFormArrayGroupModel implements DynamicPathable {
     context: DynamicFormArrayModel;
     @serializable() group: DynamicFormControlModel[];
     @serializable() index: number;
+	@serializable() readonly type: string = "ARRAYGROUP";
 
     constructor(context: DynamicFormArrayModel, group: DynamicFormControlModel[] = [], index: number = -1) {
 
@@ -46,6 +47,7 @@ export interface DynamicFormArrayModelConfig extends DynamicFormControlModelConf
     groups?: DynamicFormArrayGroupModel[];
     initialCount?: number;
     validator?: DynamicValidatorsMap;
+	rowIndex?: number;
 }
 
 export class DynamicFormArrayModel extends DynamicFormControlModel {
@@ -57,8 +59,9 @@ export class DynamicFormArrayModel extends DynamicFormControlModel {
     @serializable() groups: DynamicFormArrayGroupModel[] = [];
     @serializable() initialCount: number;
     @serializable() validator: DynamicValidatorsMap | null;
+	@serializable() rowIndex: number;
 
-    @serializable() readonly groupPrototype: DynamicFormControlModel[]; // only to recreate model from JSON
+    @serializable() groupPrototype: DynamicFormControlModel[]; // only to recreate model from JSON
     readonly origin: DynamicFormControlModel[]; // deprecated - only for backwards compatibility;
     @serializable() readonly type: string = DYNAMIC_FORM_CONTROL_TYPE_ARRAY;
 
@@ -78,6 +81,7 @@ export class DynamicFormArrayModel extends DynamicFormControlModel {
         this.groupValidator = config.groupValidator || null;
         this.initialCount = typeof config.initialCount === "number" ? config.initialCount : 1;
         this.validator = config.validator || null;
+		this.rowIndex = typeof config.rowIndex === "number" ? config.rowIndex : 0;
 
         if (Array.isArray(config.groups)) {
 
@@ -110,15 +114,25 @@ export class DynamicFormArrayModel extends DynamicFormControlModel {
     }
 
     insertGroup(index: number): DynamicFormArrayGroupModel {
-
         let group = new DynamicFormArrayGroupModel(this, this.groupFactory());
-
+		
         this.groups.splice(index, 0, group);
         this.updateGroupIndex();
-
         return group;
     }
 
+	addExistingGroup(item: DynamicFormControlModel[]): DynamicFormArrayGroupModel {
+        return this.insertExistingGroup(item, this.groups.length);
+    }
+	
+	insertExistingGroup(item: DynamicFormControlModel[], index: number): DynamicFormArrayGroupModel {
+        let group = new DynamicFormArrayGroupModel(this, item);
+		
+        this.groups.splice(index, 0, group);
+        this.updateGroupIndex();
+        return group;
+    }
+	
     moveGroup(index: number, step: number): void {
 
         this.groups.splice(index + step, 0, ...this.groups.splice(index, 1));

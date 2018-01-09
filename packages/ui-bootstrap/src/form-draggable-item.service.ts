@@ -17,6 +17,7 @@ export class FormDraggableItemService {
   }
 
   captureItem(overZoneIndex: number, newIndex: number): FormDraggableItem {
+      //console.log("captureItem " + overZoneIndex+" - newIndex" + newIndex);
     if (this.draggableItem.currentZoneIndex !== overZoneIndex) {
       this.draggableItem.currentZoneIndex = overZoneIndex;
       this.onCapture.next(this.draggableItem);

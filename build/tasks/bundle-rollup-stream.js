@@ -49,6 +49,7 @@ module.exports = function (entryRootPath, moduleName, globalsName, pkg, dest) {
         "ngx-bootstrap/alert": "ngx-bootstrap/alert",
         "ngx-bootstrap/tabs": "ngx-bootstrap/tabs",
         "ngx-bootstrap/sortable": "ngx-bootstrap/sortable",
+		"ngx-bootstrap/modal": "ngx-bootstrap/modal",
         "primeng/primeng": "primeng/primeng",
         "rxjs/Observable": "Rx.Observable",
         "rxjs/Subject": "Rx.Subject",

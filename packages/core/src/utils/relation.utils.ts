@@ -23,6 +23,11 @@ static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGrou
 			throw new Error(`FormControl ${model.id} cannot depend on itself for initial calculation`);
 		}
 		let initialControl = controlGroup.get(model.calculatedRelation.initialControlId) as FormControl;
+		if (!initialControl) {
+			console.log("FAILED TO GET INITIAL CONTROL ID", model.calculatedRelation.initialControlId);
+			console.log("MODEL", model);
+			console.log("FORM GROUP", controlGroup);
+		}
 		value = null;
 		// text calculation (numbers & currency only)
 		let type = (model as DynamicInputModel).inputType;
@@ -172,7 +177,7 @@ static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGrou
 				
 				Object.keys(controlGroup.controls).forEach(c => {
 					let ac = controlGroup.get(c);
-					if (ac.constructor.name === "FormGroup") {
+					if (ac instanceof FormGroup) {
 						 subgroups.push(ac);
 					}
 				});
@@ -200,7 +205,7 @@ static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGrou
 				let subgroups: AbstractControl[] = [];				
 				Object.keys(formGroup.controls).forEach(c => {
 					let ac = formGroup.get(c);
-					if (ac.constructor.name === "FormGroup") {
+					if (ac instanceof FormGroup) {
 						 subgroups.push(ac);
 					}
 				});
@@ -257,7 +262,7 @@ static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGrou
 				let subgroups: AbstractControl[] = [];				
 				Object.keys(formGroup.controls).forEach(c => {
 					let ac = formGroup.get(c);
-					if (ac.constructor.name === "FormGroup") {
+					if (ac instanceof FormGroup) {
 						 subgroups.push(ac);
 					}
 				});

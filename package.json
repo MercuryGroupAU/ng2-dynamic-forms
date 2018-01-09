@@ -66,7 +66,7 @@
     "foundation-sites": "^6.4.3",
     "hammerjs": "^2.0.8",
     "ionic-angular": "^3.6.1",
-    "ngx-bootstrap": "2.0.0-beta.7",
+    "ngx-bootstrap": "^2.0.0-beta.7",
     "primeng": "^4.2.0",
     "quill": "^1.3.2",
     "rxjs": "^5.4.3",

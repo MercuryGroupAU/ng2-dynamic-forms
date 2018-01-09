@@ -11,7 +11,7 @@ import {
 	ViewChild,
     SimpleChanges
 } from "@angular/core";
-import { FormGroup } from "@angular/forms";
+import { FormGroup, FormArray } from "@angular/forms";
 import {
     DynamicFormValidationService,
 	DynamicFormService,
@@ -32,7 +32,8 @@ import {
     DYNAMIC_FORM_CONTROL_TYPE_TEXTAREA,
 	DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER,
 	DYNAMIC_FORM_CONTROL_TYPE_SIGNATURE,
-	DynamicFormValueControlModel
+	DynamicFormValueControlModel,
+	DynamicFormArrayModel
 } from "@ng-dynamic-forms/core";
 import { SignaturePad } from "angular2-signaturepad/signature-pad";
 
@@ -65,6 +66,7 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
     @Input() group: FormGroup;
     @Input() hasErrorMessaging: boolean = false;
     @Input() model: DynamicFormControlModel;
+	@Input() formModel: DynamicFormControlModel[];
 	@Input() dragMode:boolean = false;
 	@Input() readOnlyMode:boolean = false;
 	@Input() userGroups: any;
@@ -80,6 +82,61 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
     type: BootstrapFormControlType | null;
 
 	@ViewChild(SignaturePad) signaturePad: SignaturePad;
+	
+	showArrayModal: boolean = false;
+	arrayItem: DynamicFormArrayGroupModel;
+	isEditArrayItem: boolean = false;
+    editedArrayitemIndex?: number;
+    arrayItemGroup: FormGroup;
+	addArrayItem() {
+		//let formArrayModel = this.dynamicFormService.findById(this.model.id, this.formModel) as DynamicFormArrayModel;
+	    //this.arrayItem = (this.model as DynamicFormArrayModel).groupFactory();
+		//this.arrayItem = new DynamicFormArrayGroupModel((this.model as DynamicFormArrayModel), (this.model as DynamicFormArrayModel).groupFactory());
+		
+		let formArrayControl = this.group.get(this.model.id) as FormArray; 
+		this.dynamicFormService.addFormArrayGroup(formArrayControl, (this.model as DynamicFormArrayModel));
+        this.arrayItem = (this.model as DynamicFormArrayModel).groups[(this.model as DynamicFormArrayModel).groups.length - 1];
+	    this.arrayItemGroup = this.dynamicFormService.createFormGroup(this.arrayItem.group);
+		this.showArrayModal = true;
+	}
+	
+    cancelArrayItem() {
+        if (!this.isEditArrayItem)
+            this.removeArrayLine((this.model as DynamicFormArrayModel).groups.length - 1);
+        this.arrayItem = null;
+        this.arrayItemGroup = null;
+		this.showArrayModal = false;
+		this.isEditArrayItem = false;
+		this.editedArrayitemIndex = null;
+	}
+	
+	editArrayItem(index: number) {
+		this.showArrayModal = true;
+		this.isEditArrayItem = true;
+		this.editedArrayitemIndex = index;
+        this.arrayItem = (this.model as DynamicFormArrayModel).groups[index];
+	    this.arrayItemGroup = this.dynamicFormService.createFormGroup(this.arrayItem.group);
+	}
+	
+	saveArrayItem() {
+		let formArrayControl = this.group.get(this.model.id) as FormArray; 
+		if (!this.isEditArrayItem) {
+			(this.model as DynamicFormArrayModel).groups[this.editedArrayitemIndex] = this.arrayItem; 
+		}
+		else {
+			this.dynamicFormService.addExistingFormArrayGroup(formArrayControl, (this.model as DynamicFormArrayModel), this.arrayItem.group);
+        }
+        this.arrayItem = null;
+	    this.arrayItemGroup = null;
+		this.editedArrayitemIndex = null;
+		this.showArrayModal = false;
+		this.isEditArrayItem = false;
+	}
+	
+	removeArrayLine(index: number) {
+        let formArrayControl = this.group.get(this.model.id) as FormArray;
+        this.dynamicFormService.removeFormArrayGroup(index, formArrayControl, (this.model as DynamicFormArrayModel));
+    }
 	
 	public signaturePadOptions: Object = { // passed through to szimek/signature_pad constructor
         "minWidth": 1,
@@ -116,11 +173,11 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
 			this.control.setValue(this.signaturePad.toDataURL());
 		}
 	}
-
-    onDragover(event: DragEvent): void {
-		if (this.model.type === DYNAMIC_FORM_CONTROL_TYPE_GROUP)
-			event.stopPropagation();
-    }
+	
+    //onDragover(event: DragEvent): void {
+		// if (this.model.type === DYNAMIC_FORM_CONTROL_TYPE_GROUP)
+			// event.stopPropagation();
+    //}
 	
 	onResetSignature() {
 		if (this.signaturePad) {

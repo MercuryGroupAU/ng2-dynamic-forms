@@ -10,27 +10,29 @@ import { FormSortableItem } from "./form-sortable-item";
     selector: "form-sortable",
     exportAs: "form-sortable",
     template: `
-<div
-    [ngClass]="wrapperClass"
-    (dragover)="onItemDragoverWrapper($event)"
-    (dragenter)="onItemDragenter($event)"
-    (drop)="onItemDrop($event)"
-    (dragleave)="onItemDragleave($event)">
-  <div
-        *ngIf="showPlaceholder"
-        [ngClass]="placeholderClass"
-        (dragover)="onItemDragover($event, 0)"
-    >{{placeholderItem}}</div>
-  <div
-        *ngFor="let item of items; let i=index;"
-        [ngClass]="[ itemClass, item.active ? itemActiveClass : '' ]"
-        [ngStyle]="{'cursor':'move'}"
-        draggable="true"
-        (dragstart)="onItemDragstart($event, item, i)"
-        (dragend)="onItemDragend($event)"
-        (dragover)="onItemDragover($event, i)"
-    ><ng-template [ngTemplateOutlet]="itemTemplate || defItemTemplate" [ngTemplateOutletContext]="{item:item, index: i, group:group, parent:this}"></ng-template>
-  </div>
+<div [ngClass]="wrapperClass"
+     (dragover)="onItemDragoverWrapper($event)"
+     (dragenter)="onItemDragenter($event)"
+     (drop)="onItemDrop($event)"
+     (dragleave)="onItemDragleave($event)">  
+
+    <div *ngIf="showPlaceholder"
+          [ngClass]="placeholderClass"
+          (dragover)="onItemDragover($event, 0)">
+            {{placeholderItem}}
+    </div>
+
+    <div *ngFor="let item of items; let i=index;"
+         [ngClass]="[ itemClass, item.active ? itemActiveClass : '' ]"
+         [ngStyle]="{'cursor':'move'}"
+         draggable="true"
+         (dragstart)="onItemDragstart($event, item, i)"
+         (dragend)="onItemDragend($event)"
+         (dragover)="onItemDragover($event, i)">
+         <ng-template [ngTemplateOutlet]="itemTemplate || defItemTemplate" 
+                      [ngTemplateOutletContext]="{item:item, index: i, group:group, parent:this}">
+         </ng-template>
+    </div>
 </div>
 
 <ng-template #defItemTemplate let-item="item">{{item.value}}</ng-template>  
@@ -46,6 +48,9 @@ import { FormSortableItem } from "./form-sortable-item";
 /* tslint:enable */
 export class FormSortableComponent implements ControlValueAccessor {
     private static globalZoneIndex = 0;
+
+    @Input()
+    controlId: string;
 
     /** field name if input array consists of objects */
     @Input()
@@ -103,26 +108,32 @@ export class FormSortableComponent implements ControlValueAccessor {
 
     set items(value: FormSortableItem[]) {
         // Add new controls to the form group before updating the list so it doesn't break
-        if (this.group && value) {
-            value.forEach(item => {
-                if (!this.group.get(item.initData.id))
-                    this.addItemToForm(item.initData, this.group);
-            });
-        }
+        if (!this.parent) {
+            //console.log(this.controlId + " Setting Items");
+            //console.log(this.controlId +" this.group before ", this.group);
+            if (this.group && value) {
+                value.forEach(item => {
+                    if (!this.group.get(item.initData.id))
+                        this.addItemToForm(item.initData, this.group);
+                });
+            }
 
-        //console.log("updating items");
-        //console.log(value);
-        this.itemsList = value || [];
-        const out = this.items.map((x: FormSortableItem) => x.initData);
-        this.onChanged(out);
-        this.onChange.emit(out);
+            //console.log(this.controlId +" value ", value);
+            //console.log(this.controlId +" this.parent ", this.parent);
+            //console.log(this.controlId +" this.group after ", this.group);
+            this.itemsList = value || [];
+            const out = this.items.map((x: FormSortableItem) => x.initData);
+            this.onChanged(out);
+            this.onChange.emit(out);
 
-        // Remove old controls from the form group after updating the list so it doesn't break
-        if (this.group) {
-            for (let ctrlId in this.group.controls) {
-                if (this.group.controls.hasOwnProperty(ctrlId) && !this.itemsList.some(item => item.initData.id === ctrlId)) {
-                    //console.log("removing item " + ctrlId);
-                    this.group.removeControl(ctrlId);
+            // Remove old controls from the form group after updating the list so it doesn't break
+            if (this.group) {
+                for (let ctrlId in this.group.controls) {
+                    if (this.group.controls.hasOwnProperty(ctrlId) &&
+                        !this.itemsList.some(item => item.initData.id === ctrlId)) {
+                        //console.log("removing item " + ctrlId);
+                        this.group.removeControl(ctrlId);
+                    }
                 }
             }
         }
@@ -130,10 +141,23 @@ export class FormSortableComponent implements ControlValueAccessor {
 
     private addItemToForm(formControlModel: DynamicFormControlModel, formGroup: FormGroup): void {
         //console.log("adding item " + formControlModel.id);
-        if (this.createFormControl)
+        //if (this.createFormControl) {
+        //    console.log("ADDING CONTROL", formControlModel);
+        //    console.log("TO GROUP", formGroup);
+        //    formGroup.addControl(formControlModel.id, this.createFormControl(formControlModel));
+        //} else if (this.parent) {
+        //    console.log("PARENT ADDING CONTROL", formControlModel);
+        //    this.parent.addItemToForm(formControlModel, formGroup);
+        //}
+        //if (this.parent) {
+        //    console.log(this.controlId +"PARENT ADDING CONTROL", formControlModel);
+        //    this.parent.addItemToForm(formControlModel, formGroup);
+        //} else
+            if (this.createFormControl) {
+            //console.log(this.controlId +"ADDING CONTROL", formControlModel);
+            //console.log(this.controlId +"TO GROUP", formGroup);
             formGroup.addControl(formControlModel.id, this.createFormControl(formControlModel));
-        else if (this.parent)
-            this.parent.addItemToForm(formControlModel, formGroup);
+        }
     }
 
     onTouched: any = Function.prototype;
@@ -155,6 +179,10 @@ export class FormSortableComponent implements ControlValueAccessor {
 
     onItemDragstart(event: DragEvent, item: FormSortableItem, i: number): void {
         //console.log("dragstart: zone " + this.currentZoneIndex);
+        //console.log("onItemDragstart controlID", this.controlId);
+        //console.log("onItemDragstart item", item);
+        //console.log("onItemDragstart i", i);
+        //console.log(this.controlId + " onItemDragstart (" + this.currentZoneIndex + ")");
         event.stopPropagation();
         this.initDragstartEvent(event);
         this.onTouched();
@@ -184,36 +212,45 @@ export class FormSortableComponent implements ControlValueAccessor {
 
     onItemDragoverWrapper(event: DragEvent): void {
         //console.log("dragover wrapper: zone " + this.currentZoneIndex);
+        //console.log(this.controlId + " onItemDragoverWrapper");
         this.cancelEvent(event);
         event.stopPropagation();
     }
 
     onItemDragover(event: DragEvent, i: number): void {
         //console.log("dragover item: zone " + this.currentZoneIndex + " item " + i);
-        var item = this.draggableItemService.getItem();
-        if (this.sourceOnly || !item)
-            return;
+        if (this.currentZoneIndex !== -1) {
+            var item = this.draggableItemService.getItem();
+            //console.log(this.controlId + " onItemDragover item", item);
+            if (this.sourceOnly || !item) {
+                //console.log(this.controlId + "onItemDragover RETURNING", item);
+                return;
+            }
 
-        event.preventDefault();
+            event.preventDefault();
 
-        const dragItem = this.draggableItemService.captureItem(
-            this.currentZoneIndex,
-            this.items.length
-        );
+            const dragItem = this.draggableItemService.captureItem(
+                this.currentZoneIndex,
+                this.items.length
+            );
+            //console.log(this.controlId + " onItemDragover dragItem", dragItem);
 
-        this.pendingItem = item;
-        
-        if (!this.itemsBeforeItemAdded)
-            this.itemsBeforeItemAdded = this.itemsList;
+            this.pendingItem = item;
+            //console.log(this.controlId + " onItemDragover pendingItem", this.pendingItem);
+            //console.log(this.controlId + " onItemDragover itemsBeforeItemAdded before", this.itemsBeforeItemAdded);
+            if (!this.itemsBeforeItemAdded)
+                this.itemsBeforeItemAdded = this.itemsList;
+            //console.log(this.controlId + " onItemDragover itemsBeforeItemAdded after", this.itemsBeforeItemAdded);
 
-        dragItem.currentIndex = i;
-        this.items = [
-            ...this.itemsBeforeItemAdded.slice(0, i),
-            dragItem.item,
-            ...this.itemsBeforeItemAdded.slice(i)
-        ];
-
-        this.updatePlaceholderState();
+            dragItem.currentIndex = i;
+            this.items = [
+                ...this.itemsBeforeItemAdded.slice(0, i),
+                dragItem.item,
+                ...this.itemsBeforeItemAdded.slice(i)
+            ];
+            //console.log(this.controlId + " onItemDragover items", this.items);
+            this.updatePlaceholderState();
+        }
     }
 
     cancelEvent(event: DragEvent): void {
@@ -223,14 +260,18 @@ export class FormSortableComponent implements ControlValueAccessor {
 
     onItemCaptured(item: FormDraggableItem): void {
         // remove the item from the list if it has been dragged away from its original container
+        //console.log(this.controlId + " onItemCapture (" + this.currentZoneIndex + ")");
+        //console.log("item.initialZoneIndex", item.initialZoneIndex);
         if (!this.sourceOnly && item && item.initialZoneIndex === this.currentZoneIndex) {
             //console.log("item captured: zone " + this.currentZoneIndex + " item " + item.initialIndex);
+            //console.log("onItemCaptured item", item);
             // make sure this isn't triggered again
             item.initialZoneIndex = -1;
             this.items = [
                 ...this.itemsList.slice(0, item.initialIndex),
                 ...this.itemsList.slice(item.initialIndex + 1)
             ];
+            //console.log("onItemCaptured items", this.items);
             this.updatePlaceholderState();
         }
     }
@@ -258,7 +299,7 @@ export class FormSortableComponent implements ControlValueAccessor {
     }
 
     updatePlaceholderState(): void {
-        this.showPlaceholder = !this.itemsList.length;
+        this.showPlaceholder = !this.itemsList || !this.itemsList.length;
     }
 
     // tslint:disable-next-line
@@ -271,6 +312,7 @@ export class FormSortableComponent implements ControlValueAccessor {
 
     onItemDragend(event: DragEvent): void {
         //console.log("dragend: zone " + this.currentZoneIndex);
+        //console.log(this.controlId + "onItemDragend");
         event.stopPropagation();
         this.cancelEvent(event);
         const dragItem = this.draggableItemService.getItem();
@@ -294,6 +336,7 @@ export class FormSortableComponent implements ControlValueAccessor {
     }
 
     onItemDragleave(event: DragEvent): void {
+        //console.log(this.controlId + "onItemDragleave");
         event.stopPropagation();
 
         if (this.second)
@@ -303,6 +346,7 @@ export class FormSortableComponent implements ControlValueAccessor {
 
         if (!this.first && !this.second && !this.sourceOnly) {
             //console.log("dragleave: zone " + this.currentZoneIndex);
+            //console.log("REMOVING PENDING ITEM");
             this.removePendingItem();
         }
     }
@@ -321,6 +365,7 @@ export class FormSortableComponent implements ControlValueAccessor {
     }
 
     onItemDrop(event: DragEvent): void {
+        //console.log(this.controlId + "onItemDrop");
         //console.log("drop: zone " + this.currentZoneIndex);
         event.stopPropagation();
         this.cancelEvent(event);
