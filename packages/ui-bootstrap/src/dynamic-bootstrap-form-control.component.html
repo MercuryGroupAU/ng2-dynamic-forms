@@ -32,7 +32,7 @@
                 <!-- 1: Array -->
                 <div *ngSwitchCase="1" [dynamicId]="bindId && model.id" [formArrayName]="model.id" [ngClass]="model.cls.element.control">
                     <div *ngIf="dragMode; else formGroupStandardTemplate">
-                        <div *ngFor="let groupModel of model.groups; let idx = index" role="group" [formGroupName]="idx" [ngClass]="[model.cls.element.group, model.cls.grid.group]">
+                        <!-- <div *ngFor="let groupModel of model.groups; let idx = index" role="group" [formGroupName]="idx" [ngClass]="[model.cls.element.group, model.cls.grid.group]">
                             <dynamic-bootstrap-form-control *ngFor="let controlModel of groupModel.group"
                                                             [bindId]="false"
                                                             [context]="groupModel"
@@ -46,19 +46,19 @@
                                                             (focus)="onFocusChange($event)">
                             </dynamic-bootstrap-form-control>
                             <ng-container *ngTemplateOutlet="template?.templateRef; context: groupModel"></ng-container>
-                        </div>
+                        </div> -->
 
-<!--                             <dynamic-bootstrap-form-control *ngFor="let controlModel of model.groupPrototype"
-                                                            [asBootstrapFormGroup]="false"
-                                                            [group]="model.formGroup"
-                                                            [model]="controlModel"
-                                                            [hasErrorMessaging]="controlModel.hasErrorMessages"
-                                                            [templates]="templates"
-                                                            [ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
-                                                            (blur)="onFocusChange($event)"
-                                                            (change)="onValueChange($event)"
-                                                            (focus)="onFocusChange($event)">
-                                </dynamic-bootstrap-form-control> -->
+						<dynamic-bootstrap-form-control *ngFor="let controlModel of model.groupPrototype"
+														[asBootstrapFormGroup]="false"
+														[group]="groupPrototypeGroup"
+														[model]="controlModel"
+														[hasErrorMessaging]="controlModel.hasErrorMessages"
+														[templates]="templates"
+														[ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
+														(blur)="onFocusChange($event)"
+														(change)="onValueChange($event)"
+														(focus)="onFocusChange($event)">
+						</dynamic-bootstrap-form-control>
                     </div>
                     <ng-template #formGroupStandardTemplate>
                         <table border="1px solid black">

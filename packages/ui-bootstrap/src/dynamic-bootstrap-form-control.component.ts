@@ -89,6 +89,8 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
 	isEditArrayItem: boolean = false;
     editedArrayitemIndex?: number;
     arrayItemGroup: FormGroup;
+	groupPrototypeGroup: FormGroup;
+	
 	addArrayItem() {
 		this.arrayItem = new DynamicFormArrayGroupModel(null, (this.model as DynamicFormArrayModel).groupFactory());
 	    this.arrayItemGroup = this.dynamicFormService.createFormGroup(this.arrayItem.group);
@@ -112,14 +114,12 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
 			let octrl = (this.model as DynamicFormArrayModel).groups[index].group.filter(c => c.id === ctrl.id)[0];
 			(ctrl as DynamicFormValueControlModel<any>).value = (octrl as DynamicFormValueControlModel<any>).value;
 			if (ctrl.type === "INPUT" && (ctrl as DynamicInputModel).inputType === "file") {
-				console.log("ASSIGNING FILES STUFF", octrl);
 				(ctrl as DynamicInputModel).files = (octrl as DynamicInputModel).files;
 				if ((octrl as DynamicInputModel).documentId) {
 					(ctrl as DynamicInputModel).documentId = (octrl as DynamicInputModel).documentId;
 					(ctrl as DynamicInputModel).documentName = (octrl as DynamicInputModel).documentName;
 				} else if ((octrl as DynamicInputModel).files && (octrl as DynamicInputModel).files.length > 0) {
 				}   (ctrl as DynamicInputModel).documentName = (octrl as DynamicInputModel).files[0].name;
-				console.log("AFTER ASSIGN", ctrl);
 			}
 		});
 	    this.arrayItemGroup = this.dynamicFormService.createFormGroup(this.arrayItem.group);
@@ -207,6 +207,10 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
     }
 
     ngOnChanges(changes: SimpleChanges) {
+		if (this.model.type === "ARRAY") {
+			this.groupPrototypeGroup = this.dynamicFormService.createFormGroup((this.model as DynamicFormArrayModel).groupPrototype, null, this.model);
+		}
+		
         super.ngOnChanges(changes);
 
         if (changes["model"]) {
