@@ -365,6 +365,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
                     m.hiddenValidators = m.validators;
                     this.group.controls[m.id].setValidators([]);
                     this.group.controls[m.id].updateValueAndValidity();
+					m.required = false;
                 }
 				this.model.cls.grid.container = "hidden";
 			}
@@ -373,6 +374,9 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
                     m.validators = m.hiddenValidators;
                     this.group.controls[m.id].setValidators(Validators.compose(this.validationService.getValidators(m.validators || {})));
                     this.group.controls[m.id].updateValueAndValidity();
+					if (m.validators.hasOwnProperty("required") || m.validators.hasOwnProperty("requiredTrue")) {
+						m.required = true;
+					}
 				}
 				this.model.cls.grid.container = "";
 			}
