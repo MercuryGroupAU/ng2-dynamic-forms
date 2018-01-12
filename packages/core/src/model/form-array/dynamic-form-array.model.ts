@@ -47,7 +47,7 @@ export interface DynamicFormArrayModelConfig extends DynamicFormControlModelConf
     groups?: DynamicFormArrayGroupModel[];
     initialCount?: number;
     validator?: DynamicValidatorsMap;
-	rowIndex?: number;
+	nextControlId?: number;
 }
 
 export class DynamicFormArrayModel extends DynamicFormControlModel {
@@ -59,7 +59,7 @@ export class DynamicFormArrayModel extends DynamicFormControlModel {
     @serializable() groups: DynamicFormArrayGroupModel[] = [];
     @serializable() initialCount: number;
     @serializable() validator: DynamicValidatorsMap | null;
-	@serializable() rowIndex: number;
+	@serializable() nextControlId: number;
 
     @serializable() groupPrototype: DynamicFormControlModel[]; // only to recreate model from JSON
     readonly origin: DynamicFormControlModel[]; // deprecated - only for backwards compatibility;
@@ -81,7 +81,7 @@ export class DynamicFormArrayModel extends DynamicFormControlModel {
         this.groupValidator = config.groupValidator || null;
         this.initialCount = typeof config.initialCount === "number" ? config.initialCount : 1;
         this.validator = config.validator || null;
-		this.rowIndex = typeof config.rowIndex === "number" ? config.rowIndex : 0;
+		this.nextControlId = typeof config.nextControlId === "number" ? config.nextControlId : 1;
 
         if (Array.isArray(config.groups)) {
 

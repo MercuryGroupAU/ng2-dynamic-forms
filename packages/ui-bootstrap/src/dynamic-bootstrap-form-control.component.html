@@ -90,7 +90,7 @@
                                 </td>
                             </tr>
                         </table>
-                        <button type="button" (click)="addArrayItem();staticModal.show();">Add item</button>
+                        <button type="button" [disabled]="model.groupPrototype.length === 0" (click)="addArrayItem();staticModal.show();">Add item</button>
 
                         <div class="modal fade" bsModal #staticModal="bs-modal" [config]="{backdrop: 'static'}" tabindex="-1" role="dialog" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
@@ -150,7 +150,20 @@
                 <!-- 3: Group -->
                 <fieldset *ngSwitchCase="3" [dynamicId]="bindId && model.id" [formGroupName]="model.id" [name]="model.name">
                     <!-- <legend *ngIf="model.legend" [innerHTML]="model.legend"></legend> -->
-                    <div *ngIf="dragMode && model.type !== 'CHECKBOX_GROUP';else formGroupStandardTemplate">
+                    <div *ngIf="model.type !== 'CHECKBOX_GROUP';else formGroupStandardTemplate">
+						<dynamic-bootstrap-form-control *ngFor="let controlModel of model.group"
+													[asBootstrapFormGroup]="false"
+													[group]="control"
+													[hasErrorMessaging]="controlModel.hasErrorMessages"
+													[model]="controlModel"
+													[templates]="templates"
+													[ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
+													(blur)="onFocusChange($event)"
+													(change)="onValueChange($event)"
+													(focus)="onFocusChange($event)"
+													(downloadFile)="onDownloadFile($event)"
+													(deleteFile)="onDeleteFile($event)">
+						</dynamic-bootstrap-form-control>
                         <!-- <form-sortable controlId="'SUUUUUUUB'"
                             [(ngModel)]="model.group"
                             [group]="group.get(model.id)"
@@ -159,8 +172,8 @@
                             itemClass="sortable-item clearfix"
                             itemActiveClass="sortable-item-active"
                             [parent]="parent"> -->
-                        <ng-template #itemTemplate let-item="item" let-group="group" let-parent="parent">
-                            <dynamic-bootstrap-form-control [asBootstrapFormGroup]="false"
+                        <!-- <ng-template #itemTemplate let-item="item" let-group="group" let-parent="parent"> -->
+                            <!-- <dynamic-bootstrap-form-control [asBootstrapFormGroup]="false"
                                                             [model]="item.value"
                                                             [group]="group"
                                                             [parent]="parent"
@@ -173,8 +186,8 @@
                                                             (focus)="onFocusChange($event)"
                                                             (downloadFile)="onDownloadFile($event)"
                                                             (deleteFile)="onDeleteFile($event)">
-                            </dynamic-bootstrap-form-control>
-                        </ng-template>
+                            </dynamic-bootstrap-form-control> -->
+                        <!-- </ng-template> -->
                         <!-- </form-sortable> -->
                     </div>
                     <ng-template #formGroupStandardTemplate>
@@ -205,6 +218,7 @@
                 <div *ngSwitchCase="4" [class.input-group]="model.required">
                     <!--<div *ngIf="model.prefix" class="input-group-addon" [innerHTML]="model.prefix"></div>-->
                     <input class="form-control"
+						   [readOnly]="model.readOnly"
                            [attr.aria-required]="model.required"
                            [attr.accept]="model.accept"
                            [attr.autoComplete]="model.autoComplete"
@@ -275,7 +289,7 @@
                             (blur)="onFocusChange($event)"
                             (change)="onValueChange($event)"
                             (focus)="onFocusChange($event)">
-                        <option name="pl" value="">Please select</option>
+                        <option name="pl" [ngValue]="null">Please select</option>
                         <option *ngFor="let option of model.options$ | async" [attr.name]="model.name" [ngValue]="option.value">{{ option.label }}</option>
                     </select>
                     <div *ngIf="model.required && errorMessages.length <=0" class="input-group-addon"><i class="fa fa-check fa-fw" style="color: green" aria-hidden="true"></i></div>

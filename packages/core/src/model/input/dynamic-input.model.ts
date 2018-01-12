@@ -41,6 +41,7 @@ export interface DynamicInputModelConfig extends DynamicInputControlModelConfig<
     documentName?: string;
 	dateDefaultsToday?: boolean;
 	directiveInputType?: string;
+	readOnly?: boolean;
 }
 
 export class DynamicInputModel extends DynamicInputControlModel<string | number | Date | string[]> {
@@ -63,6 +64,7 @@ export class DynamicInputModel extends DynamicInputControlModel<string | number 
     @serializable() documentName: string | null;
 	@serializable() dateDefaultsToday: boolean | null;
 	@serializable() directiveInputType: string;
+	@serializable() readOnly:boolean | null;
 
     private listId: string | null = null;
 
@@ -89,6 +91,7 @@ export class DynamicInputModel extends DynamicInputControlModel<string | number 
         this.documentName = config.documentName || null;
 		this.dateDefaultsToday = typeof config.dateDefaultsToday === "boolean" ? config.dateDefaultsToday : null;
 		this.directiveInputType = config.directiveInputType || null;
+		this.readOnly = typeof config.readOnly === "boolean" ? config.readOnly : null;
 		
         if (this.list) {
             this.listId = `${this.id}List`;

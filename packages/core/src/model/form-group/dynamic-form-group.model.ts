@@ -15,6 +15,7 @@ export interface DynamicFormGroupModelConfig extends DynamicFormControlModelConf
     group?: DynamicFormControlModel[];
     legend?: string;
     validator?: DynamicValidatorsMap;
+	nextControlId?: number;
 }
 
 export class DynamicFormGroupModel extends DynamicFormControlModel {
@@ -23,6 +24,7 @@ export class DynamicFormGroupModel extends DynamicFormControlModel {
     @serializable() group: DynamicFormControlModel[] = [];
     @serializable() legend: string | null;
     @serializable() validator: DynamicValidatorsMap | null;
+	@serializable() nextControlId: number | null;
 
     @serializable() readonly type: string = DYNAMIC_FORM_CONTROL_TYPE_GROUP;
 
@@ -34,6 +36,7 @@ export class DynamicFormGroupModel extends DynamicFormControlModel {
         this.group = Array.isArray(config.group) ? config.group : [];
         this.legend = config.legend || null;
         this.validator = config.validator || null;
+		this.nextControlId = typeof config.nextControlId === "number" ? config.nextControlId : 1;
     }
 
     get(index: number): DynamicFormControlModel {

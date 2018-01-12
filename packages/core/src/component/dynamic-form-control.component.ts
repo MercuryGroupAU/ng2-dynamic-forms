@@ -126,7 +126,6 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
                 this.unsubscribe();
 
                 if (this.group) {
-					//console.log("ON CHANGES GROUP", this.group);
                     this.control = this.group.get(this.model.id) as FormControl;
 				    this.subscriptions.push(this.control.valueChanges.subscribe(value => this.onControlValueChanges(value)));
                 }
@@ -244,7 +243,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
 
     get showErrorMessages(): boolean {
-        return this.hasErrorMessaging && this.control.touched && !this.hasFocus && this.isInvalid;
+        return this.hasErrorMessaging && ((this.control.touched && !this.hasFocus) || (this.model.type === "INPUT" && (this.model as DynamicInputModel).readOnly)) && this.isInvalid;
     }
 
     get templates(): QueryList<DynamicTemplateDirective> {
