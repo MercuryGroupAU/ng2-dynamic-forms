@@ -215,7 +215,7 @@
                     <!-- <div *ngIf="parent.type === 'ARRAY'"><button (click)="">X</button></div> -->
                 </fieldset>
                 <!-- 4: Input -->
-                <div *ngSwitchCase="4" [class.input-group]="model.required">
+                <div *ngSwitchCase="4" [class.input-group]="model.required || model.tooltip">
                     <!--<div *ngIf="model.prefix" class="input-group-addon" [innerHTML]="model.prefix"></div>-->
                     <input class="form-control"
 						   [readOnly]="model.readOnly"
@@ -246,6 +246,11 @@
                            (change)="onValueChange($event)"
                            (focus)="onFocusChange($event)"
                            dynamicInput="{{model.directiveInputType}}" />
+				    <div *ngIf="model.tooltip" class="input-group-addon">
+						<dynamic-help-modal [helpTitle]="'Help'">
+							<div [innerHTML]="model.tooltip | safe: 'html'"></div>
+						</dynamic-help-modal>
+					</div>
                     <div *ngIf="model.required && errorMessages.length <=0" class="input-group-addon"><i class="fa fa-check fa-fw" style="color: green" aria-hidden="true"></i></div>
                     <div *ngIf="model.required && errorMessages.length >0" class="input-group-addon"><i class="fa fa-exclamation-circle fa-fw" style="color: red" aria-hidden="true"></i></div>
                     <!--<div *ngIf="model.suffix" class="input-group-addon" [innerHTML]="model.suffix"></div>-->
@@ -278,7 +283,7 @@
                     </fieldset>
                 </div>
                 <!-- 6: Select / drop down -->
-                <div *ngSwitchCase="6" [class.input-group]="model.required">
+                <div *ngSwitchCase="6" [class.input-group]="model.required || model.tooltip">
                     <select class="form-control"
                             [attr.tabindex]="model.tabIndex"
                             [dynamicId]="bindId && model.id"
@@ -292,11 +297,17 @@
                         <option name="pl" [ngValue]="null">Please select</option>
                         <option *ngFor="let option of model.options$ | async" [attr.name]="model.name" [ngValue]="option.value">{{ option.label }}</option>
                     </select>
+					<div *ngIf="model.tooltip" class="input-group-addon">
+						<dynamic-help-modal [helpTitle]="'Help'">
+							<div [innerHTML]="model.tooltip | safe: 'html'"></div>
+						</dynamic-help-modal>
+					</div>
                     <div *ngIf="model.required && errorMessages.length <=0" class="input-group-addon"><i class="fa fa-check fa-fw" style="color: green" aria-hidden="true"></i></div>
                     <div *ngIf="model.required && errorMessages.length >0" class="input-group-addon"><i class="fa fa-exclamation-circle fa-fw" style="color: red" aria-hidden="true"></i></div>
                 </div>
                 <!-- 7: Text Area -->
                 <textarea *ngSwitchCase="7" class="form-control"
+						  [readOnly]="model.readOnly"
                           [attr.tabindex]="model.tabIndex"
                           [dynamicId]="bindId && model.id"
                           [cols]="model.cols"
@@ -327,6 +338,7 @@
                     </div>
                 </div>
             </ng-container>
+			
         </div>
 
         <!--Validation Error Message-->

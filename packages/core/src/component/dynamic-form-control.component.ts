@@ -243,7 +243,10 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
     }
 
     get showErrorMessages(): boolean {
-        return this.hasErrorMessaging && ((this.control.touched && !this.hasFocus) || (this.model.type === "INPUT" && (this.model as DynamicInputModel).readOnly)) && this.isInvalid;
+        return this.hasErrorMessaging && 
+		this.isInvalid &&
+		((this.control.touched && !this.hasFocus) || 
+		((this.model.type === "INPUT" || this.model.type === "TEXTAREA") && (this.model as DynamicInputModel).readOnly));
     }
 
     get templates(): QueryList<DynamicTemplateDirective> {

@@ -12,6 +12,7 @@ import { SortableModule } from "ngx-bootstrap/sortable";
 import { FormSortableComponent } from "./formsortable.component";
 import { FormDraggableItemService } from "./form-draggable-item.service";
 import { ModalModule } from "ngx-bootstrap/modal";
+import { DynamicHelpModalComponent } from "./dynamicHelpModal.component";
 
 @NgModule({
 
@@ -30,13 +31,15 @@ import { ModalModule } from "ngx-bootstrap/modal";
     declarations: [
         DynamicBootstrapFormControlComponent,
         DynamicBootstrapFormComponent,
-        FormSortableComponent
+        FormSortableComponent,
+		DynamicHelpModalComponent
     ],
     exports: [
         DynamicFormsCoreModule,
         DynamicBootstrapFormControlComponent,
         DynamicBootstrapFormComponent,
         FormSortableComponent,
+		DynamicHelpModalComponent,
         AlertModule,
         TabsModule,
         SortableModule,

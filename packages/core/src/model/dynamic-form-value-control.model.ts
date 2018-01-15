@@ -14,6 +14,7 @@ export interface DynamicFormValueControlModelConfig<T> extends DynamicFormContro
     asyncValidators?: DynamicValidatorsMap;
     hint?: string;
     required?: boolean;
+	tooltip?: string;
     tabIndex?: number;
     validators?: DynamicValidatorsMap;
     hiddenValidators?: DynamicValidatorsMap;
@@ -25,6 +26,7 @@ export abstract class DynamicFormValueControlModel<T> extends DynamicFormControl
     @serializable() asyncValidators: DynamicValidatorsMap | null;
     @serializable() hint: string | null;
     @serializable() required: boolean;
+	@serializable() tooltip: string | null;
     @serializable() tabIndex: number | null;
     @serializable() validators: DynamicValidatorsMap | null;
     @serializable() hiddenValidators: DynamicValidatorsMap | null;
@@ -38,6 +40,7 @@ export abstract class DynamicFormValueControlModel<T> extends DynamicFormControl
         this.asyncValidators = config.asyncValidators || null;
         this.hint = config.hint || null;
         this.required = typeof config.required === "boolean" ? config.required : false;
+		this.tooltip = config.tooltip || null;
         this.tabIndex = config.tabIndex || null;
         this.validators = config.validators || null;
         this.hiddenValidators = config.hiddenValidators || null;
