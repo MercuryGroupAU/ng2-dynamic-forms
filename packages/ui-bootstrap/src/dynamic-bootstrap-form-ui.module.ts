@@ -13,6 +13,7 @@ import { FormSortableComponent } from "./formsortable.component";
 import { FormDraggableItemService } from "./form-draggable-item.service";
 import { ModalModule } from "ngx-bootstrap/modal";
 import { DynamicHelpModalComponent } from "./dynamicHelpModal.component";
+import { NgxMyDatePickerModule } from "ngx-mydatepicker";
 
 @NgModule({
 
@@ -26,7 +27,8 @@ import { DynamicHelpModalComponent } from "./dynamicHelpModal.component";
         AlertModule.forRoot(),
         TabsModule.forRoot(),
         SortableModule.forRoot(),
-		ModalModule.forRoot()
+		ModalModule.forRoot(),
+        NgxMyDatePickerModule.forRoot()
     ],
     declarations: [
         DynamicBootstrapFormControlComponent,

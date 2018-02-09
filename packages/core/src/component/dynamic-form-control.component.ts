@@ -22,6 +22,7 @@ import {
     DYNAMIC_FORM_CONTROL_TYPE_INPUT,
     DYNAMIC_FORM_CONTROL_INPUT_TYPE_FILE
 } from "../model/input/dynamic-input.model";
+import { DynamicDatePickerModel } from "../model/datepicker/dynamic-datepicker.model";
 import { DynamicTemplateDirective } from "../directive/dynamic-template.directive";
 import { DynamicInputDirective } from "../directive/dynamic-input.directive";
 import { Utils } from "../utils/core.utils";
@@ -169,6 +170,17 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 					input.max = Utils.addDaysToToday(Number(input.maxAdditionalDays));
 				}
 			}
+		}
+		
+		if (this.model.type === "DATEPICKER") {
+			let picker = this.model as DynamicDatePickerModel;
+			if ((picker.startDateAdditionalDays || picker.startDate) && !picker.value) {
+					if (picker.startDateAdditionalDays) {
+						this.control.setValue(Utils.addDaysToToday(Number(picker.startDateAdditionalDays)));
+					} else {
+						this.control.setValue(picker.startDate);
+					}
+				}
 		}
 		
         if (!Utils.isDefined(this.model) || !Utils.isDefined(this.group)) {

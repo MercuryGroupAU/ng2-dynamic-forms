@@ -30,51 +30,54 @@ static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGrou
 		}
 		value = null;
 		// text calculation (numbers & currency only)
-		let type = (model as DynamicInputModel).inputType;
-		let directiveType = (model as DynamicInputModel).directiveInputType;
-		if ((type && type === "number") || (directiveType && directiveType === "currency")) {
-			if (!isNaN(initialControl.value)) {
-				value = Number(initialControl.value);
-				model.calculatedRelation.operations.forEach(op => {
-					if (model.id === op.controlId) {
-						throw new Error(`FormControl ${model.id} cannot depend on itself for calculation`);
-					}
+		if (model.type === "INPUT") {
+			let type = (model as DynamicInputModel).inputType;
+			let directiveType = (model as DynamicInputModel).directiveInputType;
+			if ((type && type === "number") || (directiveType && directiveType === "currency")) {
+				if (!isNaN(initialControl.value)) {
+					value = Number(initialControl.value);
+					model.calculatedRelation.operations.forEach(op => {
+						if (model.id === op.controlId) {
+							throw new Error(`FormControl ${model.id} cannot depend on itself for calculation`);
+						}
 
-					let operationControl = controlGroup.get(op.controlId) as FormControl;
-					if (operationControl && operationControl.value && !isNaN(operationControl.value)) {
-						if (op.operator === "+")
-							value = value + Number(operationControl.value);
-						if (op.operator === "-")
-							value = value - Number(operationControl.value);
-						if (op.operator === "*")
-							value = value * Number(operationControl.value);
-						if (op.operator === "/")
-							value = value / Number(operationControl.value);
-					}
-				});
+						let operationControl = controlGroup.get(op.controlId) as FormControl;
+						if (operationControl && operationControl.value && !isNaN(operationControl.value)) {
+							if (op.operator === "+")
+								value = value + Number(operationControl.value);
+							if (op.operator === "-")
+								value = value - Number(operationControl.value);
+							if (op.operator === "*")
+								value = value * Number(operationControl.value);
+							if (op.operator === "/")
+								value = value / Number(operationControl.value);
+						}
+					});
+				}
+				return value;
 			}
-			return value;
 		}
 		
-		let date: Date;
-		date = new Date();
-		//date calculation
-		if ((model as DynamicInputModel).inputType && (model as DynamicInputModel).inputType === "date") {
-			let startDate = new Date(initialControl.value);
-			if (model.calculatedRelation.operations[0].operator === "+") {
-				date.setDate(startDate.getDate() + Number(model.calculatedRelation.operations[0].value));
-			}
-			if (model.calculatedRelation.operations[0].operator === "-") {
-				date.setDate(startDate.getDate() - Number(model.calculatedRelation.operations[0].value));
-			}
-			var curr_date = date.getDate();
-			var curr_month = date.getMonth() + 1;
-			var curr_year = date.getFullYear();
-			let dateString = curr_year + "-" + curr_month + "-" + curr_date;
-			//let dateString = date.toISOString().substring(0, 10);
-			return dateString;
+		if (model.type === "DATEPICKER") {
+			let date: Date;
+			date = new Date();
+			//date calculation
+			// if ((model as DynamicInputModel).inputType && (model as DynamicInputModel).inputType === "date") {
+				let startDate = new Date(initialControl.value);
+				if (model.calculatedRelation.operations[0].operator === "+") {
+					date.setDate(startDate.getDate() + Number(model.calculatedRelation.operations[0].value));
+				}
+				if (model.calculatedRelation.operations[0].operator === "-") {
+					date.setDate(startDate.getDate() - Number(model.calculatedRelation.operations[0].value));
+				}
+				var curr_date = date.getDate();
+				var curr_month = date.getMonth() + 1;
+				var curr_year = date.getFullYear();
+				let dateString = curr_year + "-" + curr_month + "-" + curr_date;
+				//let dateString = date.toISOString().substring(0, 10);
+				return dateString;
+			//}
 		}
-		
 		return null;
 	}
 

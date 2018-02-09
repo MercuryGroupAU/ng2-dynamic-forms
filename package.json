@@ -61,6 +61,7 @@
     "@telerik/kendo-intl": "^1.2.1",
     "angular2-signaturepad": "^2.6.1",
     "angular2-text-mask": "^8.0.4",
+    "ngx-mydatepicker": "^2.4.3",
     "bootstrap": "^3.3.7",
     "core-js": "^2.5.1",
     "foundation-sites": "^6.4.3",

@@ -33,6 +33,7 @@ import {
     DYNAMIC_FORM_CONTROL_TYPE_TEXTAREA,
 	DYNAMIC_FORM_CONTROL_TYPE_DISCLAIMER,
 	DYNAMIC_FORM_CONTROL_TYPE_SIGNATURE,
+	DYNAMIC_FORM_CONTROL_TYPE_DATEPICKER,
 	DynamicFormValueControlModel,
 	DynamicFormArrayModel
 } from "@ng-dynamic-forms/core";
@@ -48,7 +49,8 @@ export const enum BootstrapFormControlType {
     Select = 6, //"SELECT",
     TextArea = 7, //"TEXTAREA"
 	Disclaimer = 8, //"DISCLAIMER",
-	Signature = 9 //"SIGNATURE"
+	Signature = 9, //"SIGNATURE"
+	DatePicker = 10 //"DATEPICKER"
 }
 
 @Component({
@@ -249,6 +251,9 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
 				
 			case DYNAMIC_FORM_CONTROL_TYPE_SIGNATURE:
                 return BootstrapFormControlType.Signature;
+				
+			case DYNAMIC_FORM_CONTROL_TYPE_DATEPICKER:
+                return BootstrapFormControlType.DatePicker;
 				
             default:
                 return null;
