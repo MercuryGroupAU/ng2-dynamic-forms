@@ -43,6 +43,7 @@ module.exports = function (entryRootPath, moduleName, globalsName, pkg, dest) {
         "@progress/kendo-angular-inputs": "progress/kendo-angular-inputs", // TODO
         "@progress/kendo-angular-upload": "progress/kendo-angular-upload", // TODO
         "angular2-signaturepad": "angular2-signaturepad",
+		"ngx-mydatepicker": "ngx-mydatepicker",
         "angular2-signaturepad/signature-pad": "angular2-signaturepad/signature-pad",
         "angular2-text-mask": "angular2-text-mask", // TODO
         "ionic-angular": "ionic-angular", // TODO

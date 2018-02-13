@@ -1,13 +1,13 @@
 import { ClsConfig } from "../dynamic-form-control.model";
 import { serializable } from "../../decorator/serializable.decorator";
 import { DynamicDateControlModel, DynamicDateControlModelConfig } from "../dynamic-date-control.model";
-import { INgxMyDpOptions } from "ngx-mydatepicker";
+import { INgxMyDpOptions, IMyDateModel } from "ngx-mydatepicker";
 
 export const DYNAMIC_FORM_CONTROL_TYPE_DATEPICKER = "DATEPICKER";
 
 export interface DynamicDatePickerModelConfig extends DynamicDateControlModelConfig {
 
-	startDate?: number | string | Date;
+	startDate?: IMyDateModel;
 	startDateAdditionalDays?: string;
 	maxAdditionalDays?: string;
 	minAdditionalDays?: string;   
@@ -22,7 +22,7 @@ export interface DynamicDatePickerModelConfig extends DynamicDateControlModelCon
 
 export class DynamicDatePickerModel extends DynamicDateControlModel {
 
-	@serializable() startDate: number | string | Date | null;
+	@serializable() startDate: IMyDateModel | null;
 	@serializable() startDateAdditionalDays: string | null;
 	@serializable() maxAdditionalDays: string | null;
 	@serializable() minAdditionalDays: string | null;
@@ -45,7 +45,7 @@ export class DynamicDatePickerModel extends DynamicDateControlModel {
 		this.minAdditionalDays = config.minAdditionalDays || null;
 		this.dateDefaultsToday = typeof config.dateDefaultsToday === "boolean" ? config.dateDefaultsToday : null;
 		this.readOnly = typeof config.readOnly === "boolean" ? config.readOnly : null;
-		this.options = { todayBtnTxt: "Today", dateFormat: "dd/mm/yyyy" };
+		this.options = config.options ? config.options : { todayBtnTxt: "Today", dateFormat: "dd/mm/yyyy" };
 		
 		this.focusedDate = config.focusedDate || null;
         this.inline = typeof config.inline === "boolean" ? config.inline : false;

@@ -110,7 +110,26 @@ export class Utils {
 		var curr_date = date.getDate();
 		var curr_month = date.getMonth() + 1;
 		var curr_year = date.getFullYear();
-		let dateString = curr_year + "-" + curr_month + "-" + curr_date;
+		let dateString = curr_year + "-" + this.digit(curr_month) + "-" + this.digit(curr_date);
 		return dateString;
+	}
+	
+	static changeDateFormat(days: number): string {
+        let date: Date;
+		date = new Date();
+		date.setDate(date.getDate() + days);
+		var month = this.digit((date.getMonth() + 1));
+        return date.getDate() + "/" + month + "/" + date.getFullYear();
+	}
+	static digit(n:number):string {
+		return n > 9 ? "" + n: "0" + n;
+	}
+	static addDaysToToday2(days: number):any {
+		let date: Date;
+		date = new Date();
+		date.setDate(date.getDate() + days);
+		var ret = { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate() };
+		console.log("RETURNING DATE", ret);
+		return ret;
 	}
 }

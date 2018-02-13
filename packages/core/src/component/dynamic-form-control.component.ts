@@ -149,7 +149,14 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
         }
     }
 
+	getDate(date: any): Date {
+        return new Date(date.year, date.month - 1, date.day, 0, 0, 0, 0);
+    }
+	
     ngOnInit(): void {
+		if (this.model.calculatedRelation) {
+			this.setControlCalculatedRelations();
+		}
 		
 		if (this.model.type === "INPUT") {
 			let input = this.model as DynamicInputModel;
@@ -172,15 +179,33 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 			}
 		}
 		
-		if (this.model.type === "DATEPICKER") {
+		if (this.model.type === "DATEPICKER" && !this.dragMode) {
 			let picker = this.model as DynamicDatePickerModel;
 			if ((picker.startDateAdditionalDays || picker.startDate) && !picker.value) {
-					if (picker.startDateAdditionalDays) {
-						this.control.setValue(Utils.addDaysToToday(Number(picker.startDateAdditionalDays)));
-					} else {
-						this.control.setValue(picker.startDate);
-					}
+				if (picker.startDateAdditionalDays) {
+					 var formattedDate = Utils.changeDateFormat(Number(picker.startDateAdditionalDays));
+					var setValue = Utils.addDaysToToday2(Number(picker.startDateAdditionalDays));
+					var fullValue = { 
+						date : setValue //, 
+						//formatted: formattedDate
+						// jsdate: this.getDate(setValue),
+						// epoc: Math.round(this.getDate(setValue).getTime() / 1000.0)
+					};
+					this.control.setValue(fullValue);
+				} else {
+					this.control.setValue(picker.startDate);
 				}
+				
+				if (picker.minAdditionalDays) {
+					var min = Utils.addDaysToToday2(Number(picker.minAdditionalDays));
+					picker.options.disableUntil = min;
+				}
+					
+				if (picker.maxAdditionalDays) {
+					var max = Utils.addDaysToToday2(Number(picker.maxAdditionalDays));
+					picker.options.disableSince = max;
+				}
+			}
 		}
 		
         if (!Utils.isDefined(this.model) || !Utils.isDefined(this.group)) {
@@ -189,10 +214,6 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 		if (this.model.relation.length > 0) {
             this.setControlRelations();
         }
-		
-		if (this.model.calculatedRelation) {
-			this.setControlCalculatedRelations();
-		}
 		
 		if (!this.dragMode) {
 			if (this.model.workflowRelation && this.model.workflowRelation.length > 0) {
@@ -258,7 +279,8 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
         return this.hasErrorMessaging && 
 		this.isInvalid &&
 		((this.control.touched && !this.hasFocus) || 
-		((this.model.type === "INPUT" || this.model.type === "TEXTAREA") && (this.model as DynamicInputModel).readOnly));
+		((this.model.type === "INPUT" || this.model.type === "TEXTAREA" || this.model.type === "DATEPICKER") 
+		&& (this.model as DynamicInputModel).readOnly));
     }
 
     get templates(): QueryList<DynamicTemplateDirective> {
@@ -346,8 +368,7 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 
     onControlValueChanges(value: DynamicFormControlValue): void {
 
-        if (this.model instanceof DynamicFormValueControlModel
-        ) {
+        if (this.model instanceof DynamicFormValueControlModel) {
 
             let model = this.model as DynamicFormValueControlModel<DynamicFormControlValue>;
 

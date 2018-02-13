@@ -343,8 +343,6 @@
                     <input class="form-control"
 						   [readOnly]="model.readOnly"
                            [attr.aria-required]="model.required"
-                           [attr.max]="model.max"
-                           [attr.min]="model.min"
                            [attr.tabindex]="model.tabIndex"
                            [autofocus]="model.autoFocus"
                            [dynamicId]="bindId && model.id"
@@ -352,7 +350,6 @@
                            [name]="model.name"
                            [ngClass]="model.cls.element.control"
                            [placeholder]="model.placeholder"
-                           [readonly]="model.readOnly"
                            [required]="model.required"
 						   [options]="model.options"
                            (blur)="onFocusChange($event)"
@@ -362,10 +359,10 @@
 						   #dp="ngx-mydatepicker" />
 						   <!-- (inputFieldChanged)="onDateOneInput($event)" 
 						   (dateChanged)="onDateOneChanged($event)" -->
-				   <div class="input-group-addon" tooltip="Clear" placement="top" style="cursor: pointer" (click)="dp.clearDate()">
+				   <div *ngIf="!model.readOnly && !model.disabled" class="input-group-addon" tooltip="Clear" placement="top" style="cursor: pointer" (click)="dp.clearDate()">
 						<i class="fa fa-ban" aria-hidden="true"></i>
 					</div>
-					<div class="input-group-addon" tooltip="Open" placement="top" style="cursor: pointer" (click)="dp.toggleCalendar()">
+					<div *ngIf="!model.readOnly && !model.disabled" class="input-group-addon" tooltip="Open" placement="top" style="cursor: pointer" (click)="dp.toggleCalendar()">
 						<i class="fa fa-calendar" aria-hidden="true"></i>
 					</div>
 				    <div *ngIf="model.tooltip" class="input-group-addon">
