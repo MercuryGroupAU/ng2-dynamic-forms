@@ -181,9 +181,13 @@ export class DynamicFormValidationService {
 
                         let error = control.getError(errorCode),
                             template = errorMessages[messageKey] as string;
-
                         messages.push(this.parseErrorMessageTemplate(template, model, error));
-                    }
+                    } 
+					// Pretty iffy stuff here, but invalidDateFormat comes from ngx-myDatePicker and isn't a registered NG_VALIDATOR
+					else if (messageKey === "invalidDateFormat") {
+						messages = [];
+						messages.push(model.label +" date is invalid");
+					}
                 });
 
             } else if (control instanceof FormGroup || control instanceof FormArray) {
