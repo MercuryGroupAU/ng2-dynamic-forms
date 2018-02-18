@@ -20,6 +20,7 @@ import {
 	DynamicInputModel,
     DynamicFormControlComponent,
     DynamicFormControlEvent,
+	DynamicDatePickerModel,
 	DocumentEvent,
 	DropEvent,
     DynamicTemplateDirective,
@@ -95,6 +96,13 @@ export class DynamicBootstrapFormControlComponent extends DynamicFormControlComp
 	
 	addArrayItem() {
 		this.arrayItem = new DynamicFormArrayGroupModel(null, (this.model as DynamicFormArrayModel).groupFactory());
+		// this.arrayItem.group.forEach(ctrl => { 
+			// if (ctrl.type === "DATEPICKER") {
+				// console.log("setting parent for control", ctrl); 
+				// ctrl.parent = this.model;
+				// (ctrl as DynamicDatePickerModel).parentId = this.model.id;
+			// }
+		// });
 	    this.arrayItemGroup = this.dynamicFormService.createFormGroup(this.arrayItem.group);
 		this.showArrayModal = true;
 	}

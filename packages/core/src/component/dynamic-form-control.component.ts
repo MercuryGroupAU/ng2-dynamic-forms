@@ -17,6 +17,7 @@ import { DynamicFormControlModel } from "../model/dynamic-form-control.model";
 import { DynamicFormValueControlModel, DynamicFormControlValue } from "../model/dynamic-form-value-control.model";
 import { DynamicFormControlRelationGroup } from "../model/dynamic-form-control-relation.model";
 import { DynamicFormArrayGroupModel } from "../model/form-array/dynamic-form-array.model";
+import { DynamicFormGroupModel } from "../model/form-group/dynamic-form-group.model";
 import {
     DynamicInputModel,
     DYNAMIC_FORM_CONTROL_TYPE_INPUT,
@@ -29,7 +30,7 @@ import { Utils } from "../utils/core.utils";
 import { RelationUtils } from "../utils/relation.utils";
 import { DynamicFormValidationService } from "../service/dynamic-form-validation.service";
 import { DynamicFormService } from "../service/dynamic-form.service";
-
+import { IMyDateModel, IMyInputFieldChanged, IMyOptions } from "ngx-mydatepicker";
 export interface DynamicFormControlEvent {
 
     $event: Event | FocusEvent | DynamicFormControlEvent | any;
@@ -110,18 +111,91 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 			this.deleteFile.emit({ modelId: ($event as any).modelId, documentId: ($event as any).documentId, parentId: ($event as any).parentId });
 		}
     }
+	onDateOneChanged(event: IMyDateModel): void { 
+		if(!event.jsdate) {
+			this.updatePickers(false, null); 
+			return;
+		}
+		
+		let d: Date = new Date(event.jsdate.getTime());
+		this.updatePickers(true, d); 
+	}
     
+	getParentArray(): DynamicFormControlModel[] {
+		//console.log("getting control parent", this.model);
+		if (this.model.parent) {
+			if ((this.model.parent as DynamicFormControlModel).type === "GROUP")
+				return (this.model.parent as DynamicFormGroupModel).group;
+		}
+		else if (this.model.type === "DATEPICKER" && (this.model as DynamicDatePickerModel).parentId && this.formModel) {
+			let parent = this.formModel.filter(c => c.id === (this.model as DynamicDatePickerModel).parentId)[0];
+			//console.log("ARRAY PARENT", parent);
+		}
+		else 
+			return this.formModel;
+		return null;
+	}
+	
+	updatePickers(isValid:boolean, date:any):void {
+		let parent = this.getParentArray();
+		//console.log("update picker for id", this.model.id);
+		if (parent) {
+			let relatedPickers = parent.filter(c => c.type === "DATEPICKER" && c.id !== this.model.id && 
+								((c as DynamicDatePickerModel).minDateControlId === this.model.id || (c as DynamicDatePickerModel).maxDateControlId === this.model.id));
+			//console.log("relatedPickers", relatedPickers);
+			if (relatedPickers) {
+				relatedPickers.forEach((picker: DynamicDatePickerModel) => {
+					//console.log("Updating picker id", picker.id);
+					//console.log("PICKER MIN BEFORE UPDATE", picker.options.disableUntil);
+					if (picker.minDateControlId === this.model.id) {
+						if (isValid) {
+							let d: Date = new Date(date);
+							d.setDate(d.getDate() - 1);
+							let duCopy: IMyOptions = this.getCopyOfOptions(picker.options);
+							duCopy.disableUntil = { year: d.getFullYear(), month: d.getMonth() + 1, day: d.getDate() };
+							picker.options = duCopy;
+							
+						} else {
+							//console.log("Reseting DisableUntil (invalid)");
+							//picker.options.disableUntil = null;
+							let duCopy: IMyOptions = this.getCopyOfOptions(picker.options);
+							duCopy.disableUntil = { year: 0, month: 0, day: 0 };
+							picker.options = duCopy;
+						}
+					}
+					if (picker.maxDateControlId === this.model.id) {
+						if (isValid) {
+							let d: Date = new Date(date);
+							d.setDate(d.getDate() + 1);
+							let dsCopy: IMyOptions = this.getCopyOfOptions(picker.options);
+							dsCopy.disableSince = { year: d.getFullYear(), month: d.getMonth() + 1, day: d.getDate() };
+							picker.options = dsCopy;
+						} else {
+							//picker.options.disableSince = null;
+							// let d: Date = new Date(date);
+							// d.setDate(d.getDate() + 1);
+							let dsCopy: IMyOptions = this.getCopyOfOptions(picker.options);
+							dsCopy.disableSince = { year: 0, month: 0, day: 0 };
+							picker.options = dsCopy;
+						}
+					}
+					//console.log("PICKER MIN AFTER UPDATE", picker.options.disableUntil);
+				});
+			}
+		}
+	}
+	getCopyOfOptions(options: IMyOptions): IMyOptions {
+		return JSON.parse(JSON.stringify(options));
+    }
     constructor(protected changeDetectorRef: ChangeDetectorRef,
                 protected validationService: DynamicFormValidationService,
 				protected dynamicFormService: DynamicFormService) { }
 
     ngOnChanges(changes: SimpleChanges) {
-
         let groupChange = changes["group"] as SimpleChange,
             modelChange = changes["model"] as SimpleChange;
 
         if (groupChange || modelChange) {
-
             if (this.model) {
 
                 this.unsubscribe();
@@ -145,19 +219,20 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
                 if (this.model.relation.length > 0) {
                     this.setControlRelations();
                 }
+				
+				if (this.model.calculatedRelation) {
+					this.setControlCalculatedRelations();
+				}
+				
             }
         }
     }
 
-	getDate(date: any): Date {
-        return new Date(date.year, date.month - 1, date.day, 0, 0, 0, 0);
-    }
+	// getDate(date: any): Date {
+        // return new Date(date.year, date.month - 1, date.day, 0, 0, 0, 0);
+    // }
 	
     ngOnInit(): void {
-		if (this.model.calculatedRelation) {
-			this.setControlCalculatedRelations();
-		}
-		
 		if (this.model.type === "INPUT") {
 			let input = this.model as DynamicInputModel;
 			if (input.inputType === "date" && !this.dragMode) {
@@ -183,27 +258,45 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 			let picker = this.model as DynamicDatePickerModel;
 			if ((picker.startDateAdditionalDays || picker.startDate) && !picker.value) {
 				if (picker.startDateAdditionalDays) {
-					 var formattedDate = Utils.changeDateFormat(Number(picker.startDateAdditionalDays));
-					var setValue = Utils.addDaysToToday2(Number(picker.startDateAdditionalDays));
-					var fullValue = { 
-						date : setValue //, 
+					// var v = { 
+						// date : date //, 
 						//formatted: formattedDate
-						// jsdate: this.getDate(setValue),
-						// epoc: Math.round(this.getDate(setValue).getTime() / 1000.0)
-					};
-					this.control.setValue(fullValue);
+						// jsdate: this.getDate(date),
+						// epoc: Math.round(this.getDate(date).getTime() / 1000.0)
+					//};
+					this.control.setValue({ date: Utils.datePickerAddDaysToToday(Number(picker.startDateAdditionalDays)) });
 				} else {
 					this.control.setValue(picker.startDate);
 				}
+			}
+			if (picker.minAdditionalDays) {
+				picker.options.disableUntil = Utils.datePickerAddDaysToToday(Number(picker.minAdditionalDays));
+			}
 				
-				if (picker.minAdditionalDays) {
-					var min = Utils.addDaysToToday2(Number(picker.minAdditionalDays));
-					picker.options.disableUntil = min;
+			if (picker.maxAdditionalDays) {
+				picker.options.disableSince = Utils.datePickerAddDaysToToday(Number(picker.maxAdditionalDays));
+			}
+			
+			if (picker.minDateControlId) {
+				let parent = this.getParentArray();
+				if (parent) {
+					let ctrl = this.group.get(picker.minDateControlId);
+					if (ctrl && ctrl.value) {				
+						let dsCopy: IMyOptions = this.getCopyOfOptions((this.model as DynamicDatePickerModel).options);
+						dsCopy.disableUntil = { year: ctrl.value.date.year, month: ctrl.value.date.month, day: ctrl.value.date.day };
+						(this.model as DynamicDatePickerModel).options = dsCopy;
+					}
 				}
-					
-				if (picker.maxAdditionalDays) {
-					var max = Utils.addDaysToToday2(Number(picker.maxAdditionalDays));
-					picker.options.disableSince = max;
+			}
+			if (picker.maxDateControlId) {
+				let parent = this.getParentArray();
+				if (parent) {
+				let ctrl = this.group.get(picker.maxDateControlId);
+					if (ctrl && ctrl.value) {
+						let dsCopy: IMyOptions = this.getCopyOfOptions((this.model as DynamicDatePickerModel).options);
+						dsCopy.disableSince = { year: ctrl.value.date.year, month: ctrl.value.date.month, day: ctrl.value.date.day };
+						(this.model as DynamicDatePickerModel).options = dsCopy;
+					}
 				}
 			}
 		}
@@ -214,6 +307,10 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
 		if (this.model.relation.length > 0) {
             this.setControlRelations();
         }
+		
+		if (this.model.calculatedRelation) {
+			this.setControlCalculatedRelations();
+		}
 		
 		if (!this.dragMode) {
 			if (this.model.workflowRelation && this.model.workflowRelation.length > 0) {
@@ -347,6 +444,9 @@ export abstract class DynamicFormControlComponent implements OnChanges, OnInit, 
             if (this.dynamicInputDirective && (this.model as DynamicInputModel).directiveInputType === "currency") {
                 this.dynamicInputDirective.onBlur(newValue);
             }
+			if (this.model.type === "DATEPICKER") {
+				this.updatePickers(true, newValue);
+			}
 		}
     }
 	

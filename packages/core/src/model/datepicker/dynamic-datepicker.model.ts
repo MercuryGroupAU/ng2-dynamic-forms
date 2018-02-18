@@ -10,11 +10,12 @@ export interface DynamicDatePickerModelConfig extends DynamicDateControlModelCon
 	startDate?: IMyDateModel;
 	startDateAdditionalDays?: string;
 	maxAdditionalDays?: string;
-	minAdditionalDays?: string;   
-	dateDefaultsToday?: boolean;
+	maxDateControlId?: string;
+	minAdditionalDays?: string;
+	minDateControlId?: string;
+	parentId?:string;
 	readOnly?: boolean;
 	options?: INgxMyDpOptions;
-		
 	focusedDate?: string | Date;
     inline?: boolean;
     toggleIcon?: string;
@@ -25,10 +26,12 @@ export class DynamicDatePickerModel extends DynamicDateControlModel {
 	@serializable() startDate: IMyDateModel | null;
 	@serializable() startDateAdditionalDays: string | null;
 	@serializable() maxAdditionalDays: string | null;
+	@serializable() maxDateControlId: string | null;
 	@serializable() minAdditionalDays: string | null;
-	@serializable() dateDefaultsToday: boolean | null;
+	@serializable() minDateControlId: string | null;
 	@serializable() readOnly:boolean | null;
 	@serializable() options:INgxMyDpOptions | null;
+	@serializable() parentId: string | null;
 	
 	@serializable() focusedDate: string | Date | null;
     @serializable() inline: boolean;
@@ -42,10 +45,12 @@ export class DynamicDatePickerModel extends DynamicDateControlModel {
         this.startDate = config.startDate !== undefined ? config.startDate : null;
 		this.startDateAdditionalDays = config.startDateAdditionalDays || null;
 		this.maxAdditionalDays = config.maxAdditionalDays || null;
+		this.maxDateControlId = config.maxDateControlId || null;
 		this.minAdditionalDays = config.minAdditionalDays || null;
-		this.dateDefaultsToday = typeof config.dateDefaultsToday === "boolean" ? config.dateDefaultsToday : null;
+		this.minDateControlId = config.minDateControlId || null;
 		this.readOnly = typeof config.readOnly === "boolean" ? config.readOnly : null;
 		this.options = config.options ? config.options : { todayBtnTxt: "Today", dateFormat: "dd/mm/yyyy" };
+		this.parentId = config.parentId || null;
 		
 		this.focusedDate = config.focusedDate || null;
         this.inline = typeof config.inline === "boolean" ? config.inline : false;

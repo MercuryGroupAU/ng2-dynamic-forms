@@ -98,7 +98,9 @@ export class DynamicFormArrayModel extends DynamicFormControlModel {
     }
 
     private updateGroupIndex(): void {
-        this.groups.forEach((group, index) => group.index = index);
+        this.groups.forEach((group, index) => {
+            group.index = index;
+        });
     }
 
     get size(): number {

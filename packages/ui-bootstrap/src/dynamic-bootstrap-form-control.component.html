@@ -69,12 +69,20 @@
                             <th>Delete</th>
                             <tr *ngFor="let groupModel of model.groups; let idx = index">
                                 <td *ngFor="let controlModel of groupModel.group">
-									<span *ngIf="controlModel.type === 'INPUT' && controlModel.inputType === 'file' && controlModel.files?.length > 0; else regularValue" >
+									<span *ngIf="controlModel.type === 'INPUT' && controlModel.inputType === 'file' && controlModel.files?.length > 0; else other" >
 										{{controlModel.files[0].name}}
 									</span>
-									<ng-template #regularValue>
-										{{controlModel.value}}
-									</ng-template
+									<ng-template #other>
+										<div *ngIf="controlModel.type === 'DATEPICKER'; else regularValue">
+											<div *ngIf="controlModel.value">
+												{{controlModel.value.formatted}}
+											</div>
+									   </div>
+									   <ng-template #regularValue>
+											{{controlModel.value}}
+										</ng-template>
+									</ng-template>
+									
 								</td>
                                 <td>
                                     <!-- <button type="button" class="btn btn-danger btn-sm rounded" (click)="removeArrayLine(context, index)">&#10005;</button> -->
@@ -110,6 +118,7 @@
                                                                             [group]="arrayItemGroup"
                                                                             [hasErrorMessaging]="controlModel.hasErrorMessages"
                                                                             [model]="controlModel"
+																			[formModel]="formModel"
                                                                             [templates]="templates"
                                                                             [ngClass]="[controlModel.cls.element.host, controlModel.cls.grid.host]"
                                                                             (blur)="onFocusChange($event)"
@@ -356,9 +365,9 @@
                            (change)="onValueChange($event)"
                            (focus)="onFocusChange($event)"
 						   style="float:none" ngx-mydatepicker
+						   (dateChanged)="onDateOneChanged($event)"
 						   #dp="ngx-mydatepicker" />
-						   <!-- (inputFieldChanged)="onDateOneInput($event)" 
-						   (dateChanged)="onDateOneChanged($event)" -->
+						   <!-- (inputFieldChanged)="onDateOneInput($event, model.id)"  -->
 				   <div *ngIf="!model.readOnly && !model.disabled" class="input-group-addon" tooltip="Clear" placement="top" style="cursor: pointer" (click)="dp.clearDate()">
 						<i class="fa fa-ban" aria-hidden="true"></i>
 					</div>

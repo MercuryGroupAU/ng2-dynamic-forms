@@ -58,7 +58,6 @@ static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGrou
 		
 			//input type date calculation
 			if (type === "date") {
-				console.log("CALCULATING INPUT DATE");
 				let date: Date;
 				date = new Date();
 				let startDate = new Date(initialControl.value);
@@ -75,7 +74,6 @@ static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGrou
 				var syear = date.getFullYear();
 				let dateString = syear + "-" + smonth + "-" + sday;
 				//let dateString = date.toISOString().substring(0, 10);
-				console.log("INPUT DATE VLUE", dateString);
 				return dateString;
 			}
 		}
@@ -86,7 +84,6 @@ static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGrou
 			date = new Date();
 			var originalDate = initialControl.value.date.month + "/" + initialControl.value.date.day + "/" + initialControl.value.date.year;
 			let startDate = new Date(originalDate);
-			console.log("START DATE", startDate);
 			if (model.calculatedRelation.operations[0].operator === "+") {
 				date.setDate(startDate.getDate() + Number(model.calculatedRelation.operations[0].value));
 			}
@@ -96,15 +93,13 @@ static getCalculatedFormControlValue(model: DynamicFormControlModel, controlGrou
 			var day = date.getDate();
 			var month = date.getMonth() + 1;
 			var year = date.getFullYear();
-			var pickerDate = { date: { year: year, month: month, day: day }, 
-				formatted: day.toString() + "/" + month.toString() + "/" + year.toString() //get format from options
-			};
-			console.log("ASSIGNING CALCULATED PICKER VALUE", pickerDate);
+			var pickerDate = { date: { year: year, month: month, day: day } };
+			// formatted: day.toString() + "/" + month.toString() + "/" + year.toString() //get format from options
 			return pickerDate;
 		}
 		return null;
 	}
-
+	
 	static getRelatedFormControlsForCalculation(model: DynamicFormControlModel, controlGroup: FormGroup): FormControl[] {
 		let controls: FormControl[] = [];
 		if (model.id === model.calculatedRelation.initialControlId) {
