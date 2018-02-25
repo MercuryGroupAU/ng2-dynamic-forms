@@ -2,6 +2,7 @@
 .DS_STORE
 npm-debug.log
 
+.tmp/
 coverage/
 dist/
 docs/
@@ -12,6 +13,12 @@ sample/aot/
 sample/app/**/*.js
 sample/app/**/*.js.map
 sample/app/**/*.d.ts
+sample/main.aot.ngc.js
+sample/main.aot.ngc.js.map
+sample/main.aot.ngc.d.ts
+sample/main.js
+sample/main.js.map
+sample/main.d.ts
 sample/dist
 sample/fonts
 sample/images
