@@ -186,7 +186,7 @@ gulp.task("build:packages:dist", function (done) {
         "copy:build:dist",
         "copy:bundles:dist",
         "copy:package:dist",
-		"copy:dist:npm",
+	   "copy:dist:npm",
         
         //"clean:tmp",
         "copy:packages:tmp",
