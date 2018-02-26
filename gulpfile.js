@@ -74,19 +74,19 @@ gulp.task("lint:packages",
 
 
 gulp.task("clean:dist",
-    TASK_CLEAN([`${DIST_BASE_PATH}**/*`]));
+    TASK_CLEAN(`${DIST_BASE_PATH}`));
 
 gulp.task("clean:tmp",
-    TASK_CLEAN([`${TMP_ROOT}`]));
+    TASK_CLEAN(`${TMP_ROOT}`));
 
 gulp.task("clean:build",
-    TASK_CLEAN([`${BUILD_BASE_PATH}`]));
+    TASK_CLEAN(`${BUILD_BASE_PATH}`));
 
 gulp.task("clean:test",
-    TASK_CLEAN([`${TEST_PATH}/**/*`]));
+    TASK_CLEAN(`${TEST_PATH}/**/*`));
 
 gulp.task("clean:dist:npm",
-    TASK_CLEAN([`${NPM_PATH}**/*`]));
+    TASK_CLEAN(`${NPM_PATH}**/*`));
 
 
 gulp.task("copy:packages:dist",
@@ -186,8 +186,8 @@ gulp.task("build:packages:dist", function (done) {
         "copy:build:dist",
         "copy:bundles:dist",
         "copy:package:dist",
-        //"copy:dist:npm",
-
+		"copy:dist:npm",
+        
         //"clean:tmp",
         "copy:packages:tmp",
         "inline:resources:tmp",
@@ -198,7 +198,9 @@ gulp.task("build:packages:dist", function (done) {
         "copy:bundles:dist",
         "copy:package:dist",
         //"remove:moduleId:dist",
+		"copy:dist:npm",
         //"clean:tmp",
+        //"clean:tmp:build",
         done
     );
 });

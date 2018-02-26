@@ -7,7 +7,7 @@
     "bundle:sample:rollup": "rollup -c rollup.config.js",
     "bundle:sample:webpack": "webpack --config ./webpack.config.js",
     "build:packages": "gulp build:packages",
-	"build:packages:dist": "gulp build:packages:dist",
+    "build:packages:dist": "gulp build:packages:dist",
     "gulp": "gulp",
     "lint:packages": "tslint -c ./tslint.json './packages/**/*.ts'",
     "start": "lite-server -c bs-config.js",
