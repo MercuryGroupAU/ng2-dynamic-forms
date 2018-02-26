@@ -1,13 +1,14 @@
 const gulp = require("gulp"),
     runSequence = require("run-sequence"),
-    pkg = require("./package.json");
+    pkg = require("./package.json"),
+    ngc = require('@angular/compiler-cli/src/main').main;
 
 const TASK_BUNDLE_ROLLUP = require("./build/tasks/bundle-rollup-stream"),
     TASK_CLEAN = require("./build/tasks/clean"),
     TASK_COPY = require("./build/tasks/copy"),
     TASK_INCREMENT_VERSION = require("./build/tasks/increment-version"),
     TASK_INLINE_NG2_TEMPLATES = require("./build/tasks/inline-ng2-templates"),
-	TASK_INLINE_RESOURCES = require("./build/tasks/inline-resources"),
+    TASK_INLINE_RESOURCES = require("./build/tasks/inline-resources"),
     TASK_LINT_TYPESCRIPT = require("./build/tasks/lint-typescript"),
     TASK_PREPROCESS = require("./build/tasks/preprocess"),
     TASK_REMOVE_MODULE_ID = require("./build/tasks/remove-module-id"),
@@ -175,7 +176,6 @@ gulp.task("build:packages:dist", function (done) {
     runSequence(
         "lint:packages",
         "clean:tmp",
-        "clean:build",
         "copy:core:tmp",
         "inline:resources:tmp",
         //"preprocess:packages:tmp",
